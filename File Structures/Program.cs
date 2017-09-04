@@ -16,7 +16,7 @@ namespace File_Structures
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new FormEntities());
+            Application.Run(new MainForm());
         }
     }
 }

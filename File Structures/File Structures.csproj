@@ -48,16 +48,34 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="FormEntities.cs">
+    <Compile Include="FormCreateAttribute.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="FormEntities.Designer.cs">
-      <DependentUpon>FormEntities.cs</DependentUpon>
+    <Compile Include="FormCreateAttribute.Designer.cs">
+      <DependentUpon>FormCreateAttribute.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FormCreateEntity.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormCreateEntity.Designer.cs">
+      <DependentUpon>FormCreateEntity.cs</DependentUpon>
+    </Compile>
+    <Compile Include="MainForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="MainForm.Designer.cs">
+      <DependentUpon>MainForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <EmbeddedResource Include="FormEntities.resx">
-      <DependentUpon>FormEntities.cs</DependentUpon>
+    <EmbeddedResource Include="FormCreateAttribute.resx">
+      <DependentUpon>FormCreateAttribute.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FormCreateEntity.resx">
+      <DependentUpon>FormCreateEntity.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="MainForm.resx">
+      <DependentUpon>MainForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
