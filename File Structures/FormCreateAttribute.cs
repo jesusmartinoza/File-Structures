@@ -17,6 +17,7 @@ namespace File_Structures
         public FormCreateAttribute()
         {
             InitializeComponent();
+            CenterToScreen();
 
             var materialSkinManager = MaterialSkinManager.Instance;
             materialSkinManager.AddFormToManage(this);
