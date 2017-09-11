@@ -6,6 +6,12 @@ using System.Threading.Tasks;
 
 namespace File_Structures
 {
+    /**
+     *  +--- Name ---+--- File Address ---+--- Attrs Address ----+---- Data Address ----+--- NextEntityAddress ----+
+     *        30               8                    8                      8                       8                = 62
+     *        
+     * 62 bytes in file per entity
+     **/
     class Entity
     {
         string name;
@@ -17,18 +23,13 @@ namespace File_Structures
         public Entity(string name)
         {
             this.Name = name;
+            this.FileAddress = 8;
+            this.attrsAddress = -1;
+            this.dataAddress = -1;
+            this.nextEntityAddress = -1;
         }
 
-        public Entity(string name, long fileAddress, long attributesAddress, long dataAddress, long nextEntityAddress)
-        {
-            this.Name = name;
-            this.FileAddress = fileAddress;
-            this.AttrsAddress = attributesAddress;
-            this.DataAddress = dataAddress;
-            this.NextEntityAddress = nextEntityAddress;
-        }
-
-        public string Name { get => name; set => name = value; }
+        public string Name { get => name; set => name = value.PadRight(30); }
         public long FileAddress { get => fileAddress; set => fileAddress = value; }
         public long AttrsAddress { get => attrsAddress; set => attrsAddress = value; }
         public long DataAddress { get => dataAddress; set => dataAddress = value; }
@@ -37,7 +38,7 @@ namespace File_Structures
         /**
          * The name is the only attribute that can't be repeated.
          * */
-        public override bool Equals(object obj)
+    public override bool Equals(object obj)
         {
             var entity = obj as Entity;
             return entity != null &&

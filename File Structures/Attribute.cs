@@ -6,6 +6,12 @@ using System.Threading.Tasks;
 
 namespace File_Structures
 {
+    /**
+    *  +--- Name ---+--- Type ---+--- Length ----+---- Address ----+--- Index Address ----+--- Index Type ----+--- Next Address ----+
+    *        30           1              4                8                  8                      4                  8            
+    *        
+    * 63 bytes in file per attribute
+    **/
     class Attribute
     {
         public enum IndexType

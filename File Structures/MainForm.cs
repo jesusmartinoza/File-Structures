@@ -24,7 +24,7 @@ namespace File_Structures
         public MainForm()
         {
             entities = new SortedList<string, Entity>();
-            f = new File();
+            f = new File("file-structures.dat");
 
             InitializeComponent();
             InitDataGridView();
@@ -143,15 +143,19 @@ namespace File_Structures
 
                 if (prevIndex != -1) {
                     Entity prevEntity = entities.Values[prevIndex];
+                    long size = f.GetSize();
 
+                    newEntity.FileAddress = size;
                     newEntity.NextEntityAddress = prevEntity.NextEntityAddress;
-                    prevEntity.NextEntityAddress = f.GetSize(); // Address where would be located the new entity.
+                    prevEntity.NextEntityAddress = size; // Address where would be located the new entity.
                     
-                    f.UpdateEntity(prevEntity);
+                    f.WriteEntity(prevEntity);
+                } else {
+                    f.SetHeader(newEntity.FileAddress);
                 }
 
                 // Write new entity in file and reload grid view
-                f.PushEntity(newEntity);
+                f.WriteEntity(newEntity);
                 ReloadEntitiesGridView();
             }
         }
