@@ -127,21 +127,25 @@ namespace File_Structures
          * */
         private void DeleteAttribute(Attribute attr)
         {
-            var index = attributes.IndexOf(attr);
-        
-            /*if (index == 0)
-                f.SetHeader(entity.NextEntityAddress); // Update header
-            else
-            {
-                var prevEntity = entities.ElementAt(index - 1);
+            List<Attribute> entityAttrs = attributes.Where(a => a.EntityName.Equals(attr.EntityName)).ToList();
+            var index = entityAttrs.IndexOf(attr);
+            var entity = entities[attr.EntityName];
 
-                prevEntity.Value.NextEntityAddress = entity.NextEntityAddress;
-                f.WriteEntity(prevEntity.Value);
+            if (index == 0) {
+                entity.AttrsAddress = attr.NexAttributeAddress; // Update entity
+                f.WriteEntity(entity);
+                ReloadEntitiesGridView();
+            }
+            else {
+                var prevAttr = entityAttrs.ElementAt(index - 1);
+
+                prevAttr.NexAttributeAddress = attr.NexAttributeAddress;
+                f.WriteAttribute(prevAttr);
             }
 
             // Remove from memory list
-            entities.RemoveAt(index);
-            ReloadEntitiesGridView();*/
+            attributes.Remove(attr);
+            ReloadAttrsGridView();
         }
 
         /**
@@ -281,7 +285,7 @@ namespace File_Structures
                     Attribute prevAttr = entityAttrs[prevIndex];
 
                     attr.NexAttributeAddress = prevAttr.NexAttributeAddress;
-                    prevAttr.NexAttributeAddress = size; // Address where would be located the new adress.
+                    prevAttr.NexAttributeAddress = size; // Address where would be located the new attribute.
 
                     f.WriteAttribute(prevAttr);
                 }

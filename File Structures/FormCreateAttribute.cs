@@ -48,11 +48,13 @@ namespace File_Structures
 
         /**
          * If valid data trigger OnCreateAttribute method.
+         * TODO: Validate empty length;
+         * TODO: Combobox no editable
          * */
         private void btnCreate_Click(object sender, EventArgs e)
         {
             var type = comboBoxType.GetItemText(comboBoxType.SelectedItem) == "String" ? 'S' : 'I';
-            var length = Convert.ToInt64(textFieldLength.Text);
+            var length = Convert.ToInt32(textFieldLength.Text);
             var indexType = (Attribute.IndexType) comboBoxIndex.SelectedIndex;
             var entity = entities[comboBoxEntity.GetItemText(comboBoxEntity.SelectedItem)];
 

@@ -27,22 +27,22 @@ namespace File_Structures
         string name;
         long fileAddress;
         char type;
-        long length;
+        int length;
         long indexAddress;
         IndexType indexType;
         long nexAttributeAddress;
         string entityName;
 
-        public string Name { get => name; set => name = value; }
+        public string Name { get => name; set => name = value.PadRight(30); }
         public long FileAddress { get => fileAddress; set => fileAddress = value; }
         public char Type { get => type; set => type = value; }
-        public long Length { get => length; set => length = value; }
+        public int Length { get => length; set => length = value; }
         public long IndexAddress { get => indexAddress; set => indexAddress = value; }
         public IndexType IndexTypeV { get => indexType; set => indexType = value; }
         public long NexAttributeAddress { get => nexAttributeAddress; set => nexAttributeAddress = value; }
         public string EntityName { get => entityName; set => entityName = value; }
 
-        public Attribute(string name, char type, long length, IndexType indexType, string entityName)
+        public Attribute(string name, char type, int length, IndexType indexType, string entityName)
         {
             Name = name;
             Type = type;
