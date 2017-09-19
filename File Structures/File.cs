@@ -75,6 +75,13 @@ namespace File_Structures
             Open();
 
             bw.BaseStream.Seek(attr.FileAddress, SeekOrigin.Begin);
+            bw.Write(attr.Name);
+            bw.Write(attr.FileAddress);
+            bw.Write(attr.Type);
+            bw.Write(attr.Length);
+            bw.Write(attr.IndexAddress);
+            bw.Write((int) attr.IndexTypeV);
+            bw.Write(attr.NexAttributeAddress);
 
             Close();
         }

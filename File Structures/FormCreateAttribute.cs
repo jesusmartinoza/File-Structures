@@ -54,13 +54,14 @@ namespace File_Structures
             var type = comboBoxType.GetItemText(comboBoxType.SelectedItem) == "String" ? 'S' : 'I';
             var length = Convert.ToInt64(textFieldLength.Text);
             var indexType = (Attribute.IndexType) comboBoxIndex.SelectedIndex;
+            var entity = entities[comboBoxEntity.GetItemText(comboBoxEntity.SelectedItem)];
 
             if (textFieldName.Text == String.Empty)
                 MessageBox.Show("Name is required");
             else if(length <= 0)
                 MessageBox.Show("Positive length is required");
             else {
-                listener.OnCreateAttribute(new Attribute(textFieldName.Text, type, length, indexType));
+                listener.OnCreateAttribute(new Attribute(textFieldName.Text, type, length, indexType, entity.Name));
             }
         }
     }

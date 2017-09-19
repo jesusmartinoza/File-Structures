@@ -31,6 +31,7 @@ namespace File_Structures
         long indexAddress;
         IndexType indexType;
         long nexAttributeAddress;
+        string entityName;
 
         public string Name { get => name; set => name = value; }
         public long FileAddress { get => fileAddress; set => fileAddress = value; }
@@ -39,16 +40,18 @@ namespace File_Structures
         public long IndexAddress { get => indexAddress; set => indexAddress = value; }
         public IndexType IndexTypeV { get => indexType; set => indexType = value; }
         public long NexAttributeAddress { get => nexAttributeAddress; set => nexAttributeAddress = value; }
+        public string EntityName { get => entityName; set => entityName = value; }
 
-        public Attribute(string name, char type, long length, IndexType indexType)
+        public Attribute(string name, char type, long length, IndexType indexType, string entityName)
         {
-            this.Name = name;
-            this.Type = type;
-            this.Length = length;
-            this.IndexTypeV = indexType;
-            this.FileAddress = -1;
-            this.IndexAddress = -1;
-            this.NexAttributeAddress = -1;
+            Name = name;
+            Type = type;
+            Length = length;
+            IndexTypeV = indexType;
+            EntityName = entityName.Trim();
+            FileAddress = -1;
+            IndexAddress = -1;
+            NexAttributeAddress = -1;
         }
     }
 }

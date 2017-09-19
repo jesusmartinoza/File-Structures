@@ -24,8 +24,8 @@ namespace File_Structures
         public MainForm()
         {
             f = new File("file-structures.dat");
-            string[] entityHeaders = { "Name", "Address", "Attributes Address", "Data Address", "Next Entity Address" };
-            string[] attrHeaders = { "Name", "Address", "Type", "Length", "Index Type", "Index Address", "Next Attribute Address" };
+            string[] entityHeaders = {"Name", "Address", "Attributes Address", "Data Address", "Next Entity Address" };
+            string[] attrHeaders = {"Entity", "Name", "Address", "Type", "Length", "Index Type", "Index Address", "Next Attribute Address" };
             entities = f.GetEntities();
             attributes = f.GetAttributes();
 
@@ -87,14 +87,82 @@ namespace File_Structures
          * */
         private void dataGridView_CellClick(object sender, DataGridViewCellEventArgs e)
         {
-            switch (e.ColumnIndex)
-            {
-                case 5: // Edit button
-                    break;
-                case 6: // Delete button
-                    MessageBox.Show((e.RowIndex + 1) + "  Row  " + (e.ColumnIndex + 1) + "  Column button clicked ");
-                    break;
+            if(e.RowIndex != -1) {
+                var entity = entities.ElementAt(e.RowIndex);
+
+                switch (e.ColumnIndex)
+                {
+                    case 5: // Edit button
+                        break;
+                    case 6: // Delete button
+                        DeleteEntity(entity.Value);
+                        break;
+                }
             }
+        }
+
+        /**
+         * Capture cell click and decide if is edit or delete click.
+         * TODO: Validate empty row
+         * */
+        private void dataGridViewAttrs_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        {
+            if (e.RowIndex != -1)
+            {
+                var attr = attributes.ElementAt(e.RowIndex);
+
+                switch (e.ColumnIndex)
+                {
+                    case 8: // Edit button
+                        break;
+                    case 9: // Delete button
+                        DeleteAttribute(attr);
+                        break;
+                }
+            }
+        }
+
+        /**
+         * Delete entity from memoery list and file
+         * */
+        private void DeleteAttribute(Attribute attr)
+        {
+            var index = attributes.IndexOf(attr);
+        
+            /*if (index == 0)
+                f.SetHeader(entity.NextEntityAddress); // Update header
+            else
+            {
+                var prevEntity = entities.ElementAt(index - 1);
+
+                prevEntity.Value.NextEntityAddress = entity.NextEntityAddress;
+                f.WriteEntity(prevEntity.Value);
+            }
+
+            // Remove from memory list
+            entities.RemoveAt(index);
+            ReloadEntitiesGridView();*/
+        }
+
+        /**
+         * Delete entity from memoery list and file
+         * */
+        private void DeleteEntity(Entity entity)
+        {
+            var index = entities.IndexOfValue(entity);
+            
+            if (index == 0)
+                f.SetHeader(entity.NextEntityAddress); // Update header
+            else {
+                var prevEntity = entities.ElementAt(index - 1);
+
+                prevEntity.Value.NextEntityAddress = entity.NextEntityAddress;
+                f.WriteEntity(prevEntity.Value);
+            }
+
+            // Remove from memory list
+            entities.RemoveAt(index);
+            ReloadEntitiesGridView();
         }
 
         /**
@@ -145,7 +213,7 @@ namespace File_Structures
             dataGridViewAttrs.Rows.Clear();
 
             foreach (var a in attributes)
-                dataGridViewAttrs.Rows.Add(a.Name, a.FileAddress, a.Type, a.Length, a.IndexTypeV, a.IndexAddress, a.NexAttributeAddress);
+                dataGridViewAttrs.Rows.Add(a.EntityName, a.Name, a.FileAddress, a.Type, a.Length, a.IndexTypeV, a.IndexAddress, a.NexAttributeAddress);
         }
 
 
@@ -192,25 +260,30 @@ namespace File_Structures
         public void OnCreateAttribute(Attribute attr)
         {
             if (!attributes.Contains(attr)) {
+                List<Attribute> entityAttrs = attributes.Where(a => a.EntityName.Equals(attr.EntityName)).ToList();
                 long size = f.GetSize();
+                var entity = entities[attr.EntityName];
 
                 // Push attribute into List
+                attr.FileAddress = size;
                 attributes.Add(attr);
 
-                // Get previous item and modify it
-                int prevIndex = attributes.IndexOf(attr) - 1;
+                // Modify entity or previous items
+                if (entityAttrs.Count == 0) {
+                    // Update entity
+                    entity.AttrsAddress = attr.FileAddress;
+                    f.WriteEntity(entity);
+                    ReloadEntitiesGridView();
+                } else {
+                    entityAttrs.Add(attr);
 
-                if (prevIndex != -1) {
-                    Attribute prevAttr = attributes[prevIndex];
+                    int prevIndex = entityAttrs.IndexOf(attr) - 1;
+                    Attribute prevAttr = entityAttrs[prevIndex];
 
-                    attr.FileAddress = size;
                     attr.NexAttributeAddress = prevAttr.NexAttributeAddress;
                     prevAttr.NexAttributeAddress = size; // Address where would be located the new adress.
 
                     f.WriteAttribute(prevAttr);
-                }
-                else {
-                    attr.FileAddress = size;
                 }
 
                 // Write new attribute in file and reload grid view

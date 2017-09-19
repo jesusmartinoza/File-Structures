@@ -140,6 +140,7 @@
             this.dataGridViewAttrs.Name = "dataGridViewAttrs";
             this.dataGridViewAttrs.Size = new System.Drawing.Size(785, 343);
             this.dataGridViewAttrs.TabIndex = 1;
+            this.dataGridViewAttrs.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridViewAttrs_CellContentClick);
             // 
             // btnSaveFile
             // 

@@ -12,7 +12,7 @@ namespace File_Structures
      *        
      * 62 bytes in file per entity
      **/
-    class Entity
+    public class Entity
     {
         string name;
         long fileAddress;
