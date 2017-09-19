@@ -20,6 +20,12 @@ namespace File_Structures
         long dataAddress;
         long nextEntityAddress;
 
+        public string Name { get => name; set => name = value.PadRight(30); }
+        public long FileAddress { get => fileAddress; set => fileAddress = value; }
+        public long AttrsAddress { get => attrsAddress; set => attrsAddress = value; }
+        public long DataAddress { get => dataAddress; set => dataAddress = value; }
+        public long NextEntityAddress { get => nextEntityAddress; set => nextEntityAddress = value; }
+
         public Entity(string name)
         {
             this.Name = name;
@@ -29,16 +35,10 @@ namespace File_Structures
             this.nextEntityAddress = -1;
         }
 
-        public string Name { get => name; set => name = value.PadRight(30); }
-        public long FileAddress { get => fileAddress; set => fileAddress = value; }
-        public long AttrsAddress { get => attrsAddress; set => attrsAddress = value; }
-        public long DataAddress { get => dataAddress; set => dataAddress = value; }
-        public long NextEntityAddress { get => nextEntityAddress; set => nextEntityAddress = value; }
-
         /**
          * The name is the only attribute that can't be repeated.
          * */
-    public override bool Equals(object obj)
+        public override bool Equals(object obj)
         {
             var entity = obj as Entity;
             return entity != null &&

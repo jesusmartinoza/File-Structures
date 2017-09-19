@@ -12,7 +12,7 @@ using MaterialSkin.Controls;
 
 namespace File_Structures
 {
-    public partial class MainForm : MaterialForm, CreateEntityListener
+    public partial class MainForm : MaterialForm, CreateEntityListener, CreateAttributeListener
     {
         SortedList<string, Entity> entities;
         List<Attribute> attributes;
@@ -23,11 +23,15 @@ namespace File_Structures
          * */
         public MainForm()
         {
-            entities = new SortedList<string, Entity>();
             f = new File("file-structures.dat");
+            string[] entityHeaders = { "Name", "Address", "Attributes Address", "Data Address", "Next Entity Address" };
+            string[] attrHeaders = { "Name", "Address", "Type", "Length", "Index Type", "Index Address", "Next Attribute Address" };
+            entities = f.GetEntities();
+            attributes = f.GetAttributes();
 
             InitializeComponent();
-            InitDataGridView();
+            InitDataGridView(dataGridViewEntities, entityHeaders);
+            InitDataGridView(dataGridViewAttrs, attrHeaders);
             CenterToScreen();
 
             // Config material skin
@@ -39,23 +43,22 @@ namespace File_Structures
 
         /**
          * Set DataGridView headers and column buttons
+         * @param gridView - DataGridView to fill
+         * @param headers - Headers of the grid
          * */
-        private void InitDataGridView()
+        private void InitDataGridView(DataGridView gridView, string[] headers)
         {
-            string[] columns = { "Name", "Address", "Attributes Address", "Data Address", "Next Entity Address" };
-
-            dataGridViewEntities.ColumnCount = columns.Length;
+            gridView.ColumnCount = headers.Length;
 
             // Add headers
-            for (int i = 0; i < columns.Length; i++) {
-                dataGridViewEntities.Columns[i].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
-                dataGridViewEntities.Columns[i].Name = columns[i];
+            for (int i = 0; i < headers.Length; i++) {
+                gridView.Columns[i].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+                gridView.Columns[i].Name = headers[i];
             }
 
             // Add edit and delete cell column
-            AddDataGridViewButtonColumn("EDIT", "Edit", "#1abc9c");
-            AddDataGridViewButtonColumn("X", "Delete", "#D91E18");
-
+            AddDataGridViewButtonColumn(gridView, "EDIT", "Edit", "#1abc9c");
+            AddDataGridViewButtonColumn(gridView, "X", "Delete", "#D91E18");
         }
 
         /**
@@ -64,7 +67,7 @@ namespace File_Structures
          * @param name Button name
          * @param hexcolor Color in HEX 
          * */
-        private void AddDataGridViewButtonColumn(string text, string name, string hexColor)
+        private void AddDataGridViewButtonColumn(DataGridView gridView, string text, string name, string hexColor)
         {
             DataGridViewButtonColumn btn = new DataGridViewButtonColumn();
             btn.HeaderText = "";
@@ -76,7 +79,7 @@ namespace File_Structures
             btn.Name = name;
             btn.UseColumnTextForButtonValue = true;
 
-            dataGridViewEntities.Columns.Add(btn);
+            gridView.Columns.Add(btn);
         }
 
         /**
@@ -108,8 +111,17 @@ namespace File_Structures
          * */
         private void BtnAddAttr_Click(object sender, EventArgs e)
         {
-            FormCreateAttribute f = new FormCreateAttribute();
-            f.ShowDialog(this);
+            if (entities.Count == 0)
+                MessageBox.Show("Please create some entity :)");
+            else {
+                FormCreateAttribute f = new FormCreateAttribute(this, entities);
+                f.ShowDialog(this);
+            }
+        }
+
+        private void btnOpenFile_Click(object sender, EventArgs e)
+        {
+
         }
 
         /**
@@ -125,14 +137,25 @@ namespace File_Structures
             }
         }
 
+        /**
+         * Clear Rows of dataGridViewAttrs and fill with entities list.
+         * */
+        private void ReloadAttrsGridView()
+        {
+            dataGridViewAttrs.Rows.Clear();
+
+            foreach (var a in attributes)
+                dataGridViewAttrs.Rows.Add(a.Name, a.FileAddress, a.Type, a.Length, a.IndexTypeV, a.IndexAddress, a.NexAttributeAddress);
+        }
+
+
         /************************************************************************
          *                I  N  T  E  R  F  A  C  E  S                          *
          ************************************************************************/
         public void OnCreateEntity(string name)
         {
-            if (entities.ContainsKey(name)) {
-                MessageBox.Show(name + " already exists in file.");
-            } else {
+            if (!entities.ContainsKey(name)) {
+                long size = f.GetSize();
                 Entity newEntity = new Entity(name);
 
                 // Push entity into SortedList
@@ -141,22 +164,60 @@ namespace File_Structures
                 // Get previous item and modify it
                 int prevIndex = entities.IndexOfKey(name) - 1;
 
-                if (prevIndex != -1) {
+                if (prevIndex != -1)
+                {
                     Entity prevEntity = entities.Values[prevIndex];
-                    long size = f.GetSize();
 
                     newEntity.FileAddress = size;
                     newEntity.NextEntityAddress = prevEntity.NextEntityAddress;
                     prevEntity.NextEntityAddress = size; // Address where would be located the new entity.
-                    
+
                     f.WriteEntity(prevEntity);
-                } else {
+                }
+                else
+                {
+                    newEntity.FileAddress = entities.Count == 1 ? size + 1 : size;
+                    newEntity.NextEntityAddress = f.GetHeader();
                     f.SetHeader(newEntity.FileAddress);
                 }
 
                 // Write new entity in file and reload grid view
                 f.WriteEntity(newEntity);
                 ReloadEntitiesGridView();
+            } else {
+                MessageBox.Show(name + " already exists in file.");
+            }
+        }
+
+        public void OnCreateAttribute(Attribute attr)
+        {
+            if (!attributes.Contains(attr)) {
+                long size = f.GetSize();
+
+                // Push attribute into List
+                attributes.Add(attr);
+
+                // Get previous item and modify it
+                int prevIndex = attributes.IndexOf(attr) - 1;
+
+                if (prevIndex != -1) {
+                    Attribute prevAttr = attributes[prevIndex];
+
+                    attr.FileAddress = size;
+                    attr.NexAttributeAddress = prevAttr.NexAttributeAddress;
+                    prevAttr.NexAttributeAddress = size; // Address where would be located the new adress.
+
+                    f.WriteAttribute(prevAttr);
+                }
+                else {
+                    attr.FileAddress = size;
+                }
+
+                // Write new attribute in file and reload grid view
+                f.WriteAttribute(attr);
+                ReloadAttrsGridView();
+            } else {
+                MessageBox.Show(attr.Name + " already exists in file.");
             }
         }
     }

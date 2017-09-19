@@ -25,6 +25,9 @@ namespace File_Structures
             Close();
         }
 
+        /**
+         * Init FileStream, Binary Writer and Binary Reader
+         * */
         public void Open()
         {
             fs = new FileStream(fileName, FileMode.OpenOrCreate, FileAccess.ReadWrite);
@@ -32,6 +35,9 @@ namespace File_Structures
             br = new BinaryReader(fs);
         }
 
+         /**
+         * Close FileStream, Binary Writer and Binary Reader
+         * */
         public void Close()
         {
             fs.Close();
@@ -39,6 +45,44 @@ namespace File_Structures
             br.Close();
         }
 
+        public SortedList<string, Entity> GetEntities()
+        {
+            var list = new SortedList<string, Entity>();
+
+            Open();
+
+            Close();
+
+            return list;
+        }
+
+        public List<Attribute> GetAttributes()
+        {
+            var list = new List<Attribute>();
+
+            Open();
+
+            Close();
+
+            return list;
+        }
+
+        /**
+        * Write given attribute in file
+        * */
+        public void WriteAttribute(Attribute attr)
+        {
+            Open();
+
+            bw.BaseStream.Seek(attr.FileAddress, SeekOrigin.Begin);
+
+            Close();
+        }
+
+
+        /**
+         * Write given entity in file
+         * */
         public void WriteEntity(Entity entity)
         {
             Open();
@@ -53,14 +97,34 @@ namespace File_Structures
             Close();
         }
 
+        /**
+         * Change file header
+         * @param {long} header - New header
+         * */
         public void SetHeader(long header)
         {
             Open();
-
             bw.Write(header);
-
             Close();
         }
+
+        /**
+         * Get file header
+         * */
+        public long GetHeader()
+        {
+            long header;
+
+            Open();
+            header = br.ReadInt64();
+            Close();
+
+            return header;
+        }
+
+        /**
+         * Get file size
+         * */
         public long GetSize()
         {
             Open();

@@ -36,6 +36,8 @@
             this.tabPage2 = new System.Windows.Forms.TabPage();
             this.btnAddAttr = new MaterialSkin.Controls.MaterialRaisedButton();
             this.dataGridViewAttrs = new System.Windows.Forms.DataGridView();
+            this.btnSaveFile = new MaterialSkin.Controls.MaterialRaisedButton();
+            this.btnOpenFile = new MaterialSkin.Controls.MaterialRaisedButton();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridViewEntities)).BeginInit();
             this.tabControl.SuspendLayout();
             this.tabPage1.SuspendLayout();
@@ -139,11 +141,46 @@
             this.dataGridViewAttrs.Size = new System.Drawing.Size(785, 343);
             this.dataGridViewAttrs.TabIndex = 1;
             // 
+            // btnSaveFile
+            // 
+            this.btnSaveFile.AutoSize = true;
+            this.btnSaveFile.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.btnSaveFile.BackColor = System.Drawing.SystemColors.Highlight;
+            this.btnSaveFile.Depth = 0;
+            this.btnSaveFile.Icon = null;
+            this.btnSaveFile.Location = new System.Drawing.Point(678, 34);
+            this.btnSaveFile.MouseState = MaterialSkin.MouseState.HOVER;
+            this.btnSaveFile.Name = "btnSaveFile";
+            this.btnSaveFile.Primary = true;
+            this.btnSaveFile.Size = new System.Drawing.Size(117, 36);
+            this.btnSaveFile.TabIndex = 5;
+            this.btnSaveFile.Text = "Save File As...";
+            this.btnSaveFile.UseVisualStyleBackColor = false;
+            // 
+            // btnOpenFile
+            // 
+            this.btnOpenFile.AutoSize = true;
+            this.btnOpenFile.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.btnOpenFile.BackColor = System.Drawing.SystemColors.Highlight;
+            this.btnOpenFile.Depth = 0;
+            this.btnOpenFile.Icon = null;
+            this.btnOpenFile.Location = new System.Drawing.Point(615, 34);
+            this.btnOpenFile.MouseState = MaterialSkin.MouseState.HOVER;
+            this.btnOpenFile.Name = "btnOpenFile";
+            this.btnOpenFile.Primary = true;
+            this.btnOpenFile.Size = new System.Drawing.Size(57, 36);
+            this.btnOpenFile.TabIndex = 6;
+            this.btnOpenFile.Text = "Open";
+            this.btnOpenFile.UseVisualStyleBackColor = false;
+            this.btnOpenFile.Click += new System.EventHandler(this.btnOpenFile_Click);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(818, 532);
+            this.Controls.Add(this.btnOpenFile);
+            this.Controls.Add(this.btnSaveFile);
             this.Controls.Add(this.tabControl);
             this.Controls.Add(this.tabSelector);
             this.Name = "MainForm";
@@ -156,6 +193,7 @@
             this.tabPage2.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridViewAttrs)).EndInit();
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
@@ -169,6 +207,8 @@
         private System.Windows.Forms.TabPage tabPage2;
         private MaterialSkin.Controls.MaterialRaisedButton btnAddAttr;
         private System.Windows.Forms.DataGridView dataGridViewAttrs;
+        private MaterialSkin.Controls.MaterialRaisedButton btnSaveFile;
+        private MaterialSkin.Controls.MaterialRaisedButton btnOpenFile;
     }
 }
 
