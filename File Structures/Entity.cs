@@ -28,11 +28,11 @@ namespace File_Structures
 
         public Entity(string name)
         {
-            this.Name = name;
-            this.FileAddress = 8;
-            this.attrsAddress = -1;
-            this.dataAddress = -1;
-            this.nextEntityAddress = -1;
+            Name = name;
+            FileAddress = 8;
+            attrsAddress = -1;
+            dataAddress = -1;
+            nextEntityAddress = -1;
         }
 
         /**

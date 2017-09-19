@@ -83,46 +83,6 @@ namespace File_Structures
         }
 
         /**
-         * Capture cell click and decide if is edit or delete click
-         * */
-        private void dataGridView_CellClick(object sender, DataGridViewCellEventArgs e)
-        {
-            if(e.RowIndex != -1) {
-                var entity = entities.ElementAt(e.RowIndex);
-
-                switch (e.ColumnIndex)
-                {
-                    case 5: // Edit button
-                        break;
-                    case 6: // Delete button
-                        DeleteEntity(entity.Value);
-                        break;
-                }
-            }
-        }
-
-        /**
-         * Capture cell click and decide if is edit or delete click.
-         * TODO: Validate empty row
-         * */
-        private void dataGridViewAttrs_CellContentClick(object sender, DataGridViewCellEventArgs e)
-        {
-            if (e.RowIndex != -1)
-            {
-                var attr = attributes.ElementAt(e.RowIndex);
-
-                switch (e.ColumnIndex)
-                {
-                    case 8: // Edit button
-                        break;
-                    case 9: // Delete button
-                        DeleteAttribute(attr);
-                        break;
-                }
-            }
-        }
-
-        /**
          * Delete entity from memoery list and file
          * */
         private void DeleteAttribute(Attribute attr)
@@ -170,33 +130,6 @@ namespace File_Structures
         }
 
         /**
-         * Show dialog to create entity.
-         * */
-        private void BtnAddEntity_Click(object sender, EventArgs e)
-        {
-            FormCreateEntity f = new FormCreateEntity(this);
-            f.ShowDialog(this);
-        }
-
-        /**
-         * Show dialog to create attribute.
-         * */
-        private void BtnAddAttr_Click(object sender, EventArgs e)
-        {
-            if (entities.Count == 0)
-                MessageBox.Show("Please create some entity :)");
-            else {
-                FormCreateAttribute f = new FormCreateAttribute(this, entities);
-                f.ShowDialog(this);
-            }
-        }
-
-        private void btnOpenFile_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        /**
          * Clear Rows of dataGridViewEntities and fill with entities list.
          * */
         private void ReloadEntitiesGridView()
@@ -217,7 +150,7 @@ namespace File_Structures
             dataGridViewAttrs.Rows.Clear();
 
             foreach (var a in attributes)
-                dataGridViewAttrs.Rows.Add(a.EntityName, a.Name, a.FileAddress, a.Type, a.Length, a.IndexTypeV, a.IndexAddress, a.NexAttributeAddress);
+                dataGridViewAttrs.Rows.Add(a.EntityName.Trim(), a.Name.Trim(), a.FileAddress, a.Type, a.Length, a.IndexTypeV, a.IndexAddress, a.NexAttributeAddress);
         }
 
 
@@ -296,6 +229,80 @@ namespace File_Structures
             } else {
                 MessageBox.Show(attr.Name + " already exists in file.");
             }
+        }
+
+        /************************************************************************
+         *                          E  V  E  N  T  S                            *
+         ************************************************************************/
+        /**
+        * Show dialog to create entity.
+        * */
+        private void BtnAddEntity_Click(object sender, EventArgs e)
+        {
+            FormCreateEntity f = new FormCreateEntity(this);
+            f.ShowDialog(this);
+        }
+
+        /**
+         * Show dialog to create attribute.
+         * */
+        private void BtnAddAttr_Click(object sender, EventArgs e)
+        {
+            if (entities.Count == 0)
+                MessageBox.Show("Please create some entity :)");
+            else
+            {
+                FormCreateAttribute f = new FormCreateAttribute(this, entities);
+                f.ShowDialog(this);
+            }
+        }
+
+        /**
+         * Capture cell click and decide if is edit or delete click
+         * */
+        private void dataGridView_CellClick(object sender, DataGridViewCellEventArgs e)
+        {
+            if (e.RowIndex != -1)
+            {
+                var entity = entities.ElementAt(e.RowIndex);
+
+                switch (e.ColumnIndex)
+                {
+                    case 5: // Edit button
+                        break;
+                    case 6: // Delete button
+                        DeleteEntity(entity.Value);
+                        break;
+                }
+            }
+        }
+
+        /**
+         * Capture cell click and decide if is edit or delete click.
+         * TODO: Validate empty row
+         * */
+        private void dataGridViewAttrs_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        {
+            if (e.RowIndex != -1)
+            {
+                var attr = attributes.ElementAt(e.RowIndex);
+
+                switch (e.ColumnIndex)
+                {
+                    case 8: // Edit button
+                        f.WriteAttribute(attr);
+                        MessageBox.Show("Attribute edited");
+                        break;
+                    case 9: // Delete button
+                        DeleteAttribute(attr);
+                        break;
+                }
+            }
+        }
+
+        private void btnOpenFile_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }
