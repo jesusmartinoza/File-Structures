@@ -33,6 +33,8 @@ namespace File_Structures
             InitDataGridView(dataGridViewEntities, entityHeaders);
             InitDataGridView(dataGridViewAttrs, attrHeaders);
             CenterToScreen();
+            ReloadEntitiesGridView();
+            ReloadAttrsGridView();
 
             // Config material skin
             var materialSkinManager = MaterialSkinManager.Instance;
@@ -169,8 +171,7 @@ namespace File_Structures
                 // Get previous item and modify it
                 int prevIndex = entities.IndexOfKey(name) - 1;
 
-                if (prevIndex != -1)
-                {
+                if (prevIndex != -1) {
                     Entity prevEntity = entities.Values[prevIndex];
 
                     newEntity.FileAddress = size;
@@ -179,12 +180,14 @@ namespace File_Structures
 
                     f.WriteEntity(prevEntity);
                 }
-                else
-                {
-                    newEntity.FileAddress = entities.Count == 1 ? size + 1 : size;
+                else {
+                    newEntity.FileAddress = size;
                     newEntity.NextEntityAddress = f.GetHeader();
                     f.SetHeader(newEntity.FileAddress);
                 }
+
+                entities.Remove(name);
+                entities.Add(name, newEntity);
 
                 // Write new entity in file and reload grid view
                 f.WriteEntity(newEntity);

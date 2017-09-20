@@ -45,22 +45,71 @@ namespace File_Structures
             br.Close();
         }
 
+        /**
+         * Read entities from file
+         * */
         public SortedList<string, Entity> GetEntities()
         {
             var list = new SortedList<string, Entity>();
 
             Open();
 
+            long nextEntityPtr = br.ReadInt64(); // Init with file header
+
+            while (nextEntityPtr != -1)
+            {
+                br.BaseStream.Seek(nextEntityPtr, SeekOrigin.Begin);
+
+                string name = br.ReadString().Trim();
+                long fileAddress = br.ReadInt64();
+                long attrsAddress = br.ReadInt64();
+                long dataAddress = br.ReadInt64();
+                nextEntityPtr = br.ReadInt64();
+
+                list.Add(name, new Entity(name, fileAddress, attrsAddress, dataAddress, nextEntityPtr));
+            }
+
             Close();
 
             return list;
         }
 
+        /**
+         * Go to every entity and the read the attributes
+         * */
         public List<Attribute> GetAttributes()
         {
             var list = new List<Attribute>();
 
             Open();
+
+            long nextEntityPtr = br.ReadInt64(); // Init with file header
+
+            while (nextEntityPtr != -1)
+            {
+                br.BaseStream.Seek(nextEntityPtr, SeekOrigin.Begin);
+
+                string name = br.ReadString().Trim();
+                long fileAddress = br.ReadInt64();
+                long attrsAddress = br.ReadInt64();
+                long dataAddress = br.ReadInt64();
+                nextEntityPtr = br.ReadInt64();
+
+                // Go to attributes
+                while(attrsAddress != -1)
+                {
+                    br.BaseStream.Seek(attrsAddress, SeekOrigin.Begin);
+                    string attrName = br.ReadString().Trim();
+                    long attrAddress = br.ReadInt64();
+                    char type = br.ReadChar();
+                    int length = br.ReadInt32();
+                    long indexAddress = br.ReadInt64();
+                    int indexType = br.ReadInt32();
+                    attrsAddress = br.ReadInt64();
+
+                    list.Add(new Attribute(attrName, attrAddress, type, length, indexAddress, (Attribute.IndexType)indexType, attrsAddress, name));
+                }
+            }
 
             Close();
 
@@ -138,7 +187,7 @@ namespace File_Structures
             long size = fs.Length;
             Close();
 
-            return size - 1;
+            return size;
         }
     }
 }

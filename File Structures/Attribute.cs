@@ -53,5 +53,20 @@ namespace File_Structures
             IndexAddress = -1;
             NexAttributeAddress = -1;
         }
+
+        /**
+         * Constructor used when read from file
+         * */
+        public Attribute(string name, long fileAddress, char type, int length, long indexAddress, IndexType indexType, long nexAttributeAddress, string entityName)
+        {
+            this.name = name;
+            this.fileAddress = fileAddress;
+            this.type = type;
+            this.length = length;
+            this.indexAddress = indexAddress;
+            this.indexType = indexType;
+            this.nexAttributeAddress = nexAttributeAddress;
+            this.entityName = entityName;
+        }
     }
 }

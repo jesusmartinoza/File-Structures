@@ -35,6 +35,15 @@ namespace File_Structures
             nextEntityAddress = -1;
         }
 
+        public Entity(string name, long fileAddress, long attrsAddress, long dataAddress, long nextEntityAddress) : this(name)
+        {
+            this.fileAddress = fileAddress;
+            this.attrsAddress = attrsAddress;
+            this.dataAddress = dataAddress;
+            this.nextEntityAddress = nextEntityAddress;
+        }
+
+
         /**
          * The name is the only attribute that can't be repeated.
          * */
