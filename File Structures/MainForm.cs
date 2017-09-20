@@ -12,7 +12,7 @@ using MaterialSkin.Controls;
 
 namespace File_Structures
 {
-    public partial class MainForm : MaterialForm, CreateEntityListener, CreateAttributeListener
+    public partial class MainForm : MaterialForm, CreateEntityListener, CreateAttributeListener, ModifyEntityListener, ModifyAttributeListener
     {
         SortedList<string, Entity> entities;
         List<Attribute> attributes;
@@ -233,6 +233,52 @@ namespace File_Structures
                 MessageBox.Show(attr.Name + " already exists in file.");
             }
         }
+        
+        public void OnModifyAttribute(Attribute attribute)
+        {
+            f.WriteAttribute(attribute);
+            ReloadAttrsGridView();
+        }
+
+        public void OnModifyEntity(Entity entity)
+        {
+            if(!entities.ContainsKey(entity.Name.Trim())) {
+                // Find entity by fileAddress and delete it
+                foreach (KeyValuePair<string, Entity> kvp in entities)
+                {
+                    Entity e = kvp.Value;
+
+                    if (e.FileAddress == entity.FileAddress)
+                    {
+                        entities.Remove(kvp.Key);
+                        break;
+                    }
+                }
+
+                entities.Add(entity.Name.Trim(), entity);
+
+                int address = 8;
+                int i = entities.Count;
+                foreach (KeyValuePair<string, Entity> kvp in entities)
+                {
+                    Entity e = kvp.Value;
+                    e.FileAddress = address;
+
+                    address += 63;
+                    e.NextEntityAddress = address;
+
+                    if(--i == 0)
+                        e.NextEntityAddress = -1;
+
+                    f.WriteEntity(e);
+                }
+
+                ReloadEntitiesGridView();
+                ReloadAttrsGridView();
+            } else {
+                MessageBox.Show(entity.Name + " already exists in file.");
+            }
+        }
 
         /************************************************************************
          *                          E  V  E  N  T  S                            *
@@ -272,6 +318,8 @@ namespace File_Structures
                 switch (e.ColumnIndex)
                 {
                     case 5: // Edit button
+                        FormModifyEntity formModifyEntity = new FormModifyEntity(this, entity.Value);
+                        formModifyEntity.Show(this);
                         break;
                     case 6: // Delete button
                         DeleteEntity(entity.Value);
@@ -293,8 +341,8 @@ namespace File_Structures
                 switch (e.ColumnIndex)
                 {
                     case 8: // Edit button
-                        f.WriteAttribute(attr);
-                        MessageBox.Show("Attribute edited");
+                        FormModifyAttribute formModifyAttr = new FormModifyAttribute(attr, this);
+                        formModifyAttr.Show(this);
                         break;
                     case 9: // Delete button
                         DeleteAttribute(attr);
