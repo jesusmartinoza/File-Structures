@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Collections.Generic;
 using System.IO;
-using System.Threading.Tasks;
 
 namespace File_Structures
 {
@@ -14,12 +10,14 @@ namespace File_Structures
         private BinaryWriter bw;
         private BinaryReader br;
 
+        public FileStream Fs { get => fs; set => fs = value; }
+
         public File(string fileName)
         {
             this.fileName = fileName;
             Open();
 
-            if (fs.Length == 0) {
+            if (Fs.Length == 0) {
                 bw.Write((long)-1);
             }
             Close();
@@ -30,9 +28,9 @@ namespace File_Structures
          * */
         public void Open()
         {
-            fs = new FileStream(fileName, FileMode.OpenOrCreate, FileAccess.ReadWrite);
-            bw = new BinaryWriter(fs);
-            br = new BinaryReader(fs);
+            Fs = new FileStream(fileName, FileMode.OpenOrCreate, FileAccess.ReadWrite);
+            bw = new BinaryWriter(Fs);
+            br = new BinaryReader(Fs);
         }
 
          /**
@@ -40,7 +38,7 @@ namespace File_Structures
          * */
         public void Close()
         {
-            fs.Close();
+            Fs.Close();
             bw.Close();
             br.Close();
         }
@@ -184,7 +182,7 @@ namespace File_Structures
         public long GetSize()
         {
             Open();
-            long size = fs.Length;
+            long size = Fs.Length;
             Close();
 
             return size;

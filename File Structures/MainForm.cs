@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using MaterialSkin;
 using MaterialSkin.Controls;
+using System.IO;
 
 namespace File_Structures
 {
@@ -23,11 +24,10 @@ namespace File_Structures
          * */
         public MainForm()
         {
-            f = new File("file-structures.dat");
+            entities = new SortedList<string, Entity>();
+            attributes = new List<Attribute>();
             string[] entityHeaders = {"Name", "Address", "Attributes Address", "Data Address", "Next Entity Address" };
             string[] attrHeaders = {"Entity", "Name", "Address", "Type", "Length", "Index Type", "Index Address", "Next Attribute Address" };
-            entities = f.GetEntities();
-            attributes = f.GetAttributes();
 
             InitializeComponent();
             InitDataGridView(dataGridViewEntities, entityHeaders);
@@ -288,8 +288,12 @@ namespace File_Structures
         * */
         private void BtnAddEntity_Click(object sender, EventArgs e)
         {
-            FormCreateEntity f = new FormCreateEntity(this);
-            f.ShowDialog(this);
+            if (f == null) {
+                btnSaveFile.PerformClick();
+            } else { 
+                FormCreateEntity f = new FormCreateEntity(this);
+                f.ShowDialog(this);
+            }
         }
 
         /**
@@ -297,10 +301,11 @@ namespace File_Structures
          * */
         private void BtnAddAttr_Click(object sender, EventArgs e)
         {
-            if (entities.Count == 0)
+            if(f == null) {
+                btnSaveFile.PerformClick();
+            } else if (entities.Count == 0)
                 MessageBox.Show("Please create some entity :)");
-            else
-            {
+            else {
                 FormCreateAttribute f = new FormCreateAttribute(this, entities);
                 f.ShowDialog(this);
             }
@@ -353,7 +358,26 @@ namespace File_Structures
 
         private void btnOpenFile_Click(object sender, EventArgs e)
         {
+            if (openFileDialog.ShowDialog() == DialogResult.OK)
+            {
+                f = new File(openFileDialog.FileName);
+                entities = f.GetEntities();
+                attributes = f.GetAttributes();
 
+                ReloadEntitiesGridView();
+                ReloadAttrsGridView();
+            }
+        }
+
+        private void btnSaveFile_Click(object sender, EventArgs e)
+        {
+            if (saveFileDialog.ShowDialog() == DialogResult.OK) {
+                if(f == null) {
+                    f = new File(saveFileDialog.FileName);
+                } else { 
+                    System.IO.File.Copy(f.Fs.Name, saveFileDialog.FileName);
+                }
+            }
         }
     }
 }

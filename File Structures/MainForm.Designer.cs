@@ -38,6 +38,8 @@
             this.dataGridViewAttrs = new System.Windows.Forms.DataGridView();
             this.btnSaveFile = new MaterialSkin.Controls.MaterialRaisedButton();
             this.btnOpenFile = new MaterialSkin.Controls.MaterialRaisedButton();
+            this.openFileDialog = new System.Windows.Forms.OpenFileDialog();
+            this.saveFileDialog = new System.Windows.Forms.SaveFileDialog();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridViewEntities)).BeginInit();
             this.tabControl.SuspendLayout();
             this.tabPage1.SuspendLayout();
@@ -157,6 +159,7 @@
             this.btnSaveFile.TabIndex = 5;
             this.btnSaveFile.Text = "Save File As...";
             this.btnSaveFile.UseVisualStyleBackColor = false;
+            this.btnSaveFile.Click += new System.EventHandler(this.btnSaveFile_Click);
             // 
             // btnOpenFile
             // 
@@ -174,6 +177,14 @@
             this.btnOpenFile.Text = "Open";
             this.btnOpenFile.UseVisualStyleBackColor = false;
             this.btnOpenFile.Click += new System.EventHandler(this.btnOpenFile_Click);
+            // 
+            // openFileDialog
+            // 
+            this.openFileDialog.Filter = "Data dictionary | *.dic";
+            // 
+            // saveFileDialog
+            // 
+            this.saveFileDialog.Filter = "Data dictionary | *.dic";
             // 
             // MainForm
             // 
@@ -210,6 +221,8 @@
         private System.Windows.Forms.DataGridView dataGridViewAttrs;
         private MaterialSkin.Controls.MaterialRaisedButton btnSaveFile;
         private MaterialSkin.Controls.MaterialRaisedButton btnOpenFile;
+        private System.Windows.Forms.OpenFileDialog openFileDialog;
+        private System.Windows.Forms.SaveFileDialog saveFileDialog;
     }
 }
 
