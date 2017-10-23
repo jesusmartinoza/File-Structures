@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 
 namespace File_Structures
@@ -66,7 +67,6 @@ namespace File_Structures
 
                 list.Add(name, new Entity(name, fileAddress, attrsAddress, dataAddress, nextEntityPtr));
             }
-
             Close();
 
             return list;
@@ -108,10 +108,54 @@ namespace File_Structures
                     list.Add(new Attribute(attrName, attrAddress, type, length, indexAddress, (Attribute.IndexType)indexType, attrsAddress, name));
                 }
             }
-
             Close();
 
             return list;
+        }
+
+        /**
+         * Go to entity and the read data
+         * */
+        public Dictionary<string, Entry> GetEntriesFrom(Entity entity, List<Attribute> attributes)
+        {
+            var dic = new Dictionary<string, Entry>();
+
+            Open();
+
+            long dataPtr = entity.DataAddress;
+
+            while (dataPtr != -1)
+            {
+                br.BaseStream.Seek(dataPtr, SeekOrigin.Begin);
+                Entry entry = new Entry(attributes.Count);
+                entry.FileAddress = br.ReadInt64();
+
+                for(int i = 0; i < attributes.Count; i++)
+                {
+                    if (attributes[i].Type == 'S')
+                        entry.Data[i + 1] = br.ReadString();
+                    else
+                        entry.Data[i + 1] = br.ReadInt32();
+
+                    switch (attributes[i].IndexTypeV)
+                    {
+                        case Attribute.IndexType.primaryKey:
+                            entry.PrimaryValue = entry.Data[i + 1].ToString();
+                            break;
+                        case Attribute.IndexType.searchKey:
+                            entry.SearchValue = entry.Data[i + 1].ToString();
+                            break;
+                    }
+                }
+
+                entry.NextEntryAddress = br.ReadInt64();
+                dataPtr = entry.NextEntryAddress;
+
+                dic.Add(entry.PrimaryValue, entry);
+            }
+            Close();
+
+            return dic;
         }
 
         /**
@@ -133,6 +177,25 @@ namespace File_Structures
             Close();
         }
 
+        /**
+         * Write given entry in file
+         * */
+        public void WriteEntry(Entry entry)
+        {
+            Open();
+
+            bw.BaseStream.Seek(entry.FileAddress, SeekOrigin.Begin);
+
+            foreach (object d in entry.Data)
+                if (d is string)
+                    bw.Write(d.ToString());
+                else if (d is int)
+                    bw.Write((int)d);
+                else
+                    bw.Write((long)d);
+
+            Close();
+        }
 
         /**
          * Write given entity in file

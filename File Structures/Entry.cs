@@ -15,10 +15,12 @@ namespace File_Structures
         public string PrimaryValue { get => primaryValue; set => primaryValue = value; }
         public string SearchValue { get => searchValue; set => searchValue = value; }
         public object[] Data { get => data; set => data = value; }
+        public long NextEntryAddress { get => (long)Data[Data.Length - 1]; set => Data[Data.Length - 1] = value; }
+        public long FileAddress { get => (long)Data[0]; set => Data[0] = value; }
 
         public Entry(int dataLength)
         {
-            Data = new object[dataLength];
+            Data = new object[dataLength + 2]; // File Address and Next Entry Address
         }
     }
 }

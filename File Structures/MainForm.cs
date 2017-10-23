@@ -272,33 +272,34 @@ namespace File_Structures
             {
                 AddEntryToList(entry);
                 ReloadEntriesList();
+                List<Entry> sorted = entries.Values.ToList();
                 long size = f.GetSize();
 
                 // Get previous item and modify it
-               /* int prevIndex = entities.IndexOfKey(name) - 1;
+                int prevIndex = sorted.IndexOf(entry) - 1;
 
+                entry.FileAddress = size;
                 if (prevIndex != -1)
                 {
-                    Entity prevEntity = entities.Values[prevIndex];
+                    Entry prevEntry = sorted[prevIndex];
 
-                    newEntity.FileAddress = size;
-                    newEntity.NextEntityAddress = prevEntity.NextEntityAddress;
-                    prevEntity.NextEntityAddress = size; // Address where would be located the new entity.
+                    entry.NextEntryAddress = prevEntry.NextEntryAddress;
+                    prevEntry.NextEntryAddress = size; // Address where would be located the new entity.
 
-                    f.WriteEntity(prevEntity);
+                    f.WriteEntry(prevEntry);
                 }
                 else
                 {
-                    newEntity.FileAddress = size;
-                    newEntity.NextEntityAddress = f.GetHeader();
+                    Entity entityFather = entities.First(enti => enti.Key.Equals(listViewEntities.FocusedItem.Text)).Value;
+                    entry.NextEntryAddress = entityFather.DataAddress;
+                    entityFather.DataAddress = size;
+
+                    f.WriteEntity(entityFather);
                 }
 
-                entities.Remove(name);
-                entities.Add(name, newEntity);
-
-                // Write new entity in file and reload grid view
-                f.WriteEntity(newEntity);
-                ReloadEntitiesGridView();*/
+                // Write new entry in file and reload grid view
+                f.WriteEntry(entry);
+                ReloadEntriesList();
             }
         }
 
@@ -476,11 +477,17 @@ namespace File_Structures
             var list = (MaterialListView)sender;
             listViewEntries.Clear();
 
-            foreach(var attr in attributes)
+            listViewEntries.Columns.Add("File Address");
+            foreach (var attr in attributes)
             {
                 if (attr.EntityName.Equals(list.FocusedItem.Text))
                     listViewEntries.Columns.Add(attr.Name);
             }
+            listViewEntries.Columns.Add("Next");
+            entries = f.GetEntriesFrom(
+                entities.First(enti => enti.Key.Equals(list.FocusedItem.Text)).Value,
+                attributes.Where(a => a.EntityName.Equals(list.FocusedItem.Text)).ToList());
+            ReloadEntriesList();
 
             listViewEntries.AutoResizeColumns(ColumnHeaderAutoResizeStyle.ColumnContent);
             listViewEntries.AutoResizeColumns(ColumnHeaderAutoResizeStyle.HeaderSize);

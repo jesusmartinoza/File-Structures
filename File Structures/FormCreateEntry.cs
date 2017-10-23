@@ -74,12 +74,12 @@ namespace File_Structures
                     entry.SearchValue = cell.Value.ToString();
 
                 if (attributes[i].Type == 'S')
-                    entry.Data[i] = cell.Value.ToString();
+                    entry.Data[i+1] = cell.Value.ToString();
                 else
                 {
                     int num = 0;
                     if(Int32.TryParse(cell.Value.ToString(), out num))
-                        entry.Data[i] = num;
+                        entry.Data[i+1] = num;
                     else
                     {
                         MessageBox.Show(attributes[i].Name + " must be integer");
@@ -90,7 +90,11 @@ namespace File_Structures
             }
 
             if(valid)
+            {
+                entry.FileAddress = -1;
+                entry.NextEntryAddress = -1;
                 listener.OnCreateEntry(entry);
+            }
         }
     }
 
