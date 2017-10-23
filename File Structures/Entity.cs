@@ -43,7 +43,6 @@ namespace File_Structures
             this.nextEntityAddress = nextEntityAddress;
         }
 
-
         /**
          * The name is the only attribute that can't be repeated.
          * */

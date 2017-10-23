@@ -15,6 +15,7 @@ namespace File_Structures
             this.listener = listener;
             this.attribute = attribute;
             InitializeComponent();
+            CenterToScreen();
 
             textFieldName.Text = attribute.Name;
             comboBoxType.SelectedItem = attribute.Type;

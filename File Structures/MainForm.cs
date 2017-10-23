@@ -13,10 +13,12 @@ using System.IO;
 
 namespace File_Structures
 {
-    public partial class MainForm : MaterialForm, CreateEntityListener, CreateAttributeListener, ModifyEntityListener, ModifyAttributeListener
+    public partial class MainForm : MaterialForm, CreateEntityListener, CreateAttributeListener, CreateEntryListener,
+        ModifyEntityListener, ModifyAttributeListener
     {
         SortedList<string, Entity> entities;
         List<Attribute> attributes;
+        Dictionary<string, Entry> entries;
         File f;
 
         /**
@@ -26,6 +28,7 @@ namespace File_Structures
         {
             entities = new SortedList<string, Entity>();
             attributes = new List<Attribute>();
+            entries = new Dictionary<string, Entry>();
             string[] entityHeaders = {"Name", "Address", "Attributes Address", "Data Address", "Next Entity Address" };
             string[] attrHeaders = {"Entity", "Name", "Address", "Type", "Length", "Index Type", "Index Address", "Next Attribute Address" };
 
@@ -137,10 +140,25 @@ namespace File_Structures
         private void ReloadEntitiesGridView()
         {
             dataGridViewEntities.Rows.Clear();
+            listViewEntities.Items.Clear();
 
             foreach (KeyValuePair<string, Entity> kvp in entities) {
                 Entity e = kvp.Value;
                 dataGridViewEntities.Rows.Add(kvp.Key, e.FileAddress, e.AttrsAddress, e.DataAddress, e.NextEntityAddress);
+                listViewEntities.Items.Add(kvp.Key);
+            }
+        }
+
+        /**
+         * Clear Rows of dataGridViewEntities and fill with entities list.
+         * */
+        private void ReloadEntriesList()
+        {
+            listViewEntries.Items.Clear();
+            foreach(Entry e in entries.Values)
+            {
+                var listViewItem = new ListViewItem(Array.ConvertAll(e.Data, d => d.ToString()));
+                listViewEntries.Items.Add(listViewItem);
             }
         }
 
@@ -155,6 +173,17 @@ namespace File_Structures
                 dataGridViewAttrs.Rows.Add(a.EntityName.Trim(), a.Name.Trim(), a.FileAddress, a.Type, a.Length, a.IndexTypeV, a.IndexAddress, a.NexAttributeAddress);
         }
 
+        /**
+         * Cast every entry data to string and add to actual entries list
+         */
+        private void AddEntryToList(Entry entry)
+        {
+            var listViewItem = new ListViewItem(Array.ConvertAll(entry.Data, d => d.ToString()));
+            listViewEntries.Items.Add(listViewItem);
+            entries.Add(entry.PrimaryValue, entry);
+
+            entries = entries.OrderBy(e => e.Value.SearchValue).ToDictionary(pair => pair.Key, pair => pair.Value);
+        }
 
         /************************************************************************
          *                I  N  T  E  R  F  A  C  E  S                          *
@@ -233,7 +262,46 @@ namespace File_Structures
                 MessageBox.Show(attr.Name + " already exists in file.");
             }
         }
-        
+
+        public void OnCreateEntry(Entry entry)
+        {
+            if(entries.ContainsKey(entry.PrimaryValue))
+            {
+                MessageBox.Show("A entry with value " + entry.PrimaryValue + " already exists in file.");
+            } else
+            {
+                AddEntryToList(entry);
+                ReloadEntriesList();
+                long size = f.GetSize();
+
+                // Get previous item and modify it
+               /* int prevIndex = entities.IndexOfKey(name) - 1;
+
+                if (prevIndex != -1)
+                {
+                    Entity prevEntity = entities.Values[prevIndex];
+
+                    newEntity.FileAddress = size;
+                    newEntity.NextEntityAddress = prevEntity.NextEntityAddress;
+                    prevEntity.NextEntityAddress = size; // Address where would be located the new entity.
+
+                    f.WriteEntity(prevEntity);
+                }
+                else
+                {
+                    newEntity.FileAddress = size;
+                    newEntity.NextEntityAddress = f.GetHeader();
+                }
+
+                entities.Remove(name);
+                entities.Add(name, newEntity);
+
+                // Write new entity in file and reload grid view
+                f.WriteEntity(newEntity);
+                ReloadEntitiesGridView();*/
+            }
+        }
+
         public void OnModifyAttribute(Attribute attribute)
         {
             f.WriteAttribute(attribute);
@@ -259,6 +327,8 @@ namespace File_Structures
 
                 int address = 8;
                 int i = entities.Count;
+
+                // Recalculate all file address :P
                 foreach (KeyValuePair<string, Entity> kvp in entities)
                 {
                     Entity e = kvp.Value;
@@ -307,6 +377,24 @@ namespace File_Structures
                 MessageBox.Show("Please create some entity :)");
             else {
                 FormCreateAttribute f = new FormCreateAttribute(this, entities);
+                f.ShowDialog(this);
+            }
+        }
+
+        /**
+         * Show dialog to create entry.
+         * */
+        private void btnAddEntry_Click(object sender, EventArgs e)
+        {
+            if (f == null)
+            {
+                btnSaveFile.PerformClick();
+            }
+            else if (entities.Count == 0  || listViewEntities.Items.Count == 0)
+                MessageBox.Show("Please create some entity with attributes :)");
+            else
+            {
+                FormCreateEntry f = new FormCreateEntry(this, listViewEntities.FocusedItem.Text, attributes);
                 f.ShowDialog(this);
             }
         }
@@ -374,10 +462,28 @@ namespace File_Structures
             if (saveFileDialog.ShowDialog() == DialogResult.OK) {
                 if(f == null) {
                     f = new File(saveFileDialog.FileName);
-                } else { 
-                    System.IO.File.Copy(f.Fs.Name, saveFileDialog.FileName);
+                } else if(!saveFileDialog.FileName.Equals(f.Fs.Name)) {
+                    System.IO.File.Copy(f.Fs.Name, saveFileDialog.FileName, true);
                 }
             }
+        }
+
+        /**
+         * Change attributes list using selected entity.
+         */
+        private void listViewEntities_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            var list = (MaterialListView)sender;
+            listViewEntries.Clear();
+
+            foreach(var attr in attributes)
+            {
+                if (attr.EntityName.Equals(list.FocusedItem.Text))
+                    listViewEntries.Columns.Add(attr.Name);
+            }
+
+            listViewEntries.AutoResizeColumns(ColumnHeaderAutoResizeStyle.ColumnContent);
+            listViewEntries.AutoResizeColumns(ColumnHeaderAutoResizeStyle.HeaderSize);
         }
     }
 }
