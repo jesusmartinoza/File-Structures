@@ -23,21 +23,12 @@ namespace File_Structures
             CenterToScreen();
             Text = "Create entry for " + entityName;
             this.listener = listener;
-            this.attributes = attributes;
+            this.attributes = attributes.Where(a => a.EntityName == entityName).ToList();
 
             // Add headers
-            foreach(var attr in attributes)
+            foreach(var attr in this.attributes)
             {
-                if (attr.EntityName.Equals(entityName))
-                    gridViewAttrs.Columns.Add(attr.Name, attr.Name);
-            }
-
-            // Delete invalid attributes
-            for (int i = attributes.Count() - 1; i >= 0; i--)
-            {
-                var attr = attributes[i];
-                if (!attr.EntityName.Equals(entityName))
-                    attributes.RemoveAt(i);
+                gridViewAttrs.Columns.Add(attr.Name, attr.Name);
             }
 
             foreach (DataGridViewColumn c in gridViewAttrs.Columns)

@@ -19,6 +19,7 @@ namespace File_Structures
         SortedList<string, Entity> entities;
         List<Attribute> attributes;
         Dictionary<string, Entry> entries;
+        Entity selectedEntity;
         File f;
 
         /**
@@ -185,6 +186,66 @@ namespace File_Structures
             entries = entries.OrderBy(e => e.Value.SearchValue).ToDictionary(pair => pair.Key, pair => pair.Value);
         }
 
+        /**
+         * Reserve memory in file to store index.
+         * Iterate throught attributes and reserve for PrimaryKey and ForeignKey
+         */
+        private void ReserveIndexSpace()
+        {
+            foreach(Attribute a in attributes.Where(a => a.EntityName.Equals(selectedEntity.Name.Trim())).ToList())
+            {
+                switch (a.IndexTypeV)
+                {
+                    case Attribute.IndexType.primaryKey:
+                        f.ReserveDenseIndexSpace(a);
+                        break;
+                    case Attribute.IndexType.searchKey:
+                        f.ReserveSparseIndexSpace(a);
+                        break;
+                }
+            }
+        }
+
+        private void WriteIndexValue(Entry entry)
+        {
+            foreach (Attribute a in attributes.Where(a => a.EntityName.Equals(selectedEntity.Name.Trim())).ToList())
+            {
+                switch (a.IndexTypeV)
+                {
+                    case Attribute.IndexType.primaryKey:
+                        a.IndexData.Add(Int32.Parse(entry.PrimaryValue), entry.FileAddress);
+                        f.WriteIndexData(a);
+                        break;
+                    case Attribute.IndexType.searchKey:
+                        // Nothing for now
+                        break;
+                }
+            }
+        }
+
+        private void ReloadIndexList()
+        {
+            listViewIndexAttr.Items.Clear();
+            ListViewGroup pk = new ListViewGroup("Primary key");
+            ListViewGroup fk = new ListViewGroup("Foreign key");
+
+            listViewIndexAttr.Groups.Add(pk);
+            listViewIndexAttr.Groups.Add(fk);
+
+            foreach (Attribute a in attributes)
+            {
+                switch(a.IndexTypeV)
+                {
+                    case Attribute.IndexType.primaryKey:
+                        listViewIndexAttr.Items.Add(a.Name).Group = pk;
+                        break;
+                    case Attribute.IndexType.foreignKey:
+                        listViewIndexAttr.Items.Add(a.Name).Group = fk;
+                        break;
+                }
+            }
+        }
+
         /************************************************************************
          *                I  N  T  E  R  F  A  C  E  S                          *
          ************************************************************************/
@@ -258,11 +319,16 @@ namespace File_Structures
                 // Write new attribute in file and reload grid view
                 f.WriteAttribute(attr);
                 ReloadAttrsGridView();
+                attributes = f.GetAttributes();
             } else {
                 MessageBox.Show(attr.Name + " already exists in file.");
             }
         }
 
+        /**
+         * Verify if primary key already exists.
+         * Add Entry to entries list and write in file.
+         */
         public void OnCreateEntry(Entry entry)
         {
             if(entries.ContainsKey(entry.PrimaryValue))
@@ -270,6 +336,10 @@ namespace File_Structures
                 MessageBox.Show("A entry with value " + entry.PrimaryValue + " already exists in file.");
             } else
             {
+                // if first entry, reserve index space in file
+                if (selectedEntity.DataAddress == -1)
+                    ReserveIndexSpace();
+
                 AddEntryToList(entry);
                 ReloadEntriesList();
                 List<Entry> sorted = entries.Values.ToList();
@@ -284,21 +354,21 @@ namespace File_Structures
                     Entry prevEntry = sorted[prevIndex];
 
                     entry.NextEntryAddress = prevEntry.NextEntryAddress;
-                    prevEntry.NextEntryAddress = size; // Address where would be located the new entity.
+                    prevEntry.NextEntryAddress = size; // Address where would be located the new entry.
 
                     f.WriteEntry(prevEntry);
                 }
                 else
                 {
-                    Entity entityFather = entities.First(enti => enti.Key.Equals(listViewEntities.FocusedItem.Text)).Value;
-                    entry.NextEntryAddress = entityFather.DataAddress;
-                    entityFather.DataAddress = size;
+                    entry.NextEntryAddress = selectedEntity.DataAddress;
+                    selectedEntity.DataAddress = size;
 
-                    f.WriteEntity(entityFather);
+                    f.WriteEntity(selectedEntity);
                 }
 
-                // Write new entry in file and reload grid view
+                // Write new entry in file and reload listview
                 f.WriteEntry(entry);
+                WriteIndexValue(entry);
                 ReloadEntriesList();
             }
         }
@@ -372,9 +442,9 @@ namespace File_Structures
          * */
         private void BtnAddAttr_Click(object sender, EventArgs e)
         {
-            if(f == null) {
+            if(f == null)
                 btnSaveFile.PerformClick();
-            } else if (entities.Count == 0)
+            else if (entities.Count == 0)
                 MessageBox.Show("Please create some entity :)");
             else {
                 FormCreateAttribute f = new FormCreateAttribute(this, entities);
@@ -432,15 +502,20 @@ namespace File_Structures
             {
                 var attr = attributes.ElementAt(e.RowIndex);
 
-                switch (e.ColumnIndex)
+                if (entities.First(ent => ent.Key == attr.EntityName).Value.DataAddress != -1)
+                    MessageBox.Show("This entity already have entries. Cannot modify :/");
+                else
                 {
-                    case 8: // Edit button
-                        FormModifyAttribute formModifyAttr = new FormModifyAttribute(attr, this);
-                        formModifyAttr.Show(this);
-                        break;
-                    case 9: // Delete button
-                        DeleteAttribute(attr);
-                        break;
+                    switch (e.ColumnIndex)
+                    {
+                        case 8: // Edit button
+                            FormModifyAttribute formModifyAttr = new FormModifyAttribute(attr, this);
+                            formModifyAttr.Show(this);
+                            break;
+                        case 9: // Delete button
+                            DeleteAttribute(attr);
+                            break;
+                    }
                 }
             }
         }
@@ -475,22 +550,45 @@ namespace File_Structures
         private void listViewEntities_SelectedIndexChanged(object sender, EventArgs e)
         {
             var list = (MaterialListView)sender;
+            selectedEntity = entities.First(enti => enti.Key.Equals(list.FocusedItem.Text)).Value;
             listViewEntries.Clear();
 
-            listViewEntries.Columns.Add("File Address");
+            listViewEntries.Columns.Add("File Address", 110);
             foreach (var attr in attributes)
             {
                 if (attr.EntityName.Equals(list.FocusedItem.Text))
-                    listViewEntries.Columns.Add(attr.Name);
+                    listViewEntries.Columns.Add(attr.Name, attr.Length * 4 + attr.Name.Length * 10);
             }
             listViewEntries.Columns.Add("Next");
-            entries = f.GetEntriesFrom(
-                entities.First(enti => enti.Key.Equals(list.FocusedItem.Text)).Value,
+            entries = f.GetEntriesFrom(selectedEntity,
                 attributes.Where(a => a.EntityName.Equals(list.FocusedItem.Text)).ToList());
             ReloadEntriesList();
+        }
 
-            listViewEntries.AutoResizeColumns(ColumnHeaderAutoResizeStyle.ColumnContent);
-            listViewEntries.AutoResizeColumns(ColumnHeaderAutoResizeStyle.HeaderSize);
+        private void tabControl_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            var index = ((MaterialTabControl)sender).SelectedIndex;
+            switch (index)
+            {
+                case 3: ReloadIndexList(); break;
+            }
+        }
+
+        private void listViewIndexAttr_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            var list = (MaterialListView)sender;
+
+            if (list.FocusedItem.Group.Header == "Primary key")
+            {
+                listViewIndexRep.Items.Clear();
+                var sorted = f.GetIndexData(attributes.First(a => a.Name == list.FocusedItem.Text));
+
+                foreach (KeyValuePair<object, object> kvp in sorted)
+                {
+                    string[] row = new string[] { kvp.Key.ToString(), kvp.Value.ToString() };
+                    listViewIndexRep.Items.Add(new ListViewItem(row));
+                }
+            }
         }
     }
 }

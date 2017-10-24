@@ -6,6 +6,7 @@ namespace File_Structures
 {
     class File
     {
+        public const int DENSE_INDEX_COUNT = 50;
         private string fileName;
         private FileStream fs;
         private BinaryWriter bw;
@@ -45,6 +46,35 @@ namespace File_Structures
         }
 
         /**
+         * Reserve space in file for 50 entries.
+         * Update attribute IndexAddress field
+         */
+        public void ReserveDenseIndexSpace(Attribute attribute)
+        {
+            long address = GetSize();
+            int size = attribute.Length + 8;
+            attribute.IndexAddress = address;
+            WriteAttribute(attribute);
+
+            Open();
+            for(int i = 0; i < DENSE_INDEX_COUNT; i++)
+            {
+                bw.BaseStream.Seek(address + (size * i), SeekOrigin.Begin);
+                bw.Write(BitConverter.GetBytes(-1), 0, attribute.Length);
+                bw.Write((long) -1);
+            }
+            Close();
+        }
+
+        /**
+         * Reserve space in file for 20 entries with 20 blocks each one.
+         * Update attribute IndexAddress field
+         */
+        public void ReserveSparseIndexSpace(Attribute attribute)
+        {
+        }
+
+        /**
          * Read entities from file
          * */
         public SortedList<string, Entity> GetEntities()
@@ -71,7 +101,7 @@ namespace File_Structures
 
             return list;
         }
-
+        
         /**
          * Go to every entity and the read the attributes
          * */
@@ -104,12 +134,40 @@ namespace File_Structures
                     long indexAddress = br.ReadInt64();
                     int indexType = br.ReadInt32();
                     attrsAddress = br.ReadInt64();
-
+                    
                     list.Add(new Attribute(attrName, attrAddress, type, length, indexAddress, (Attribute.IndexType)indexType, attrsAddress, name));
                 }
             }
             Close();
 
+            // Get indexData of every attribute
+            foreach (Attribute a in list)
+                a.IndexData = GetIndexData(a);
+
+            return list;
+        }
+
+        public SortedList<object, object> GetIndexData(Attribute attr)
+        {
+            var list = new SortedList<object, object>();
+
+            Open();
+            long ptr = attr.IndexAddress;
+            int size = attr.Length + 8;
+
+            for (int i = 0; i < DENSE_INDEX_COUNT && ptr != -1; i++)
+            {
+                bw.BaseStream.Seek(attr.IndexAddress + (size * i), SeekOrigin.Begin);
+                var key = br.ReadInt32();
+                var value = br.ReadInt64();
+
+                ptr = key;
+                if(key != -1)
+                    list.Add(key, value);
+            }
+     
+
+            Close();
             return list;
         }
 
@@ -210,6 +268,26 @@ namespace File_Structures
             bw.Write(entity.AttrsAddress);
             bw.Write(entity.DataAddress);
             bw.Write(entity.NextEntityAddress);
+
+            Close();
+        }
+
+        /**
+         * Write sorted list in file
+         */
+        public void WriteIndexData(Attribute attr)
+        {
+            Open();
+
+            int i = 0;
+            int size = attr.Length + 8;
+            foreach (KeyValuePair<object, object> kvp in attr.IndexData)
+            {
+                bw.BaseStream.Seek(attr.IndexAddress + (size * i++), SeekOrigin.Begin);
+
+                bw.Write(BitConverter.GetBytes(Int32.Parse(kvp.Key.ToString())), 0, attr.Length);
+                bw.Write((long)kvp.Value);
+            }
 
             Close();
         }
