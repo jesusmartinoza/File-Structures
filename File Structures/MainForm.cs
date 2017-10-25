@@ -20,6 +20,7 @@ namespace File_Structures
         List<Attribute> attributes;
         Dictionary<string, Entry> entries;
         Entity selectedEntity;
+        Entry selectedEntry;
         File f;
 
         /**
@@ -89,7 +90,7 @@ namespace File_Structures
         }
 
         /**
-         * Delete entity from memoery list and file
+         * Delete entity from memory list and file
          * */
         private void DeleteAttribute(Attribute attr)
         {
@@ -114,8 +115,32 @@ namespace File_Structures
             ReloadAttrsGridView();
         }
 
+        private void DeleteEntry(Entry entry)
+        {
+            var keyList = entries.Keys.ToList();
+            var index = keyList.IndexOf(selectedEntry.PrimaryValue);
+
+            if (index == 0)
+            {
+                selectedEntity.DataAddress = entry.NextEntryAddress;
+                f.WriteEntity(selectedEntity);
+            }
+            else
+            {
+                var prevEntryKey = keyList.ElementAt(index - 1);
+                var prevEntry = entries[prevEntryKey];
+
+                prevEntry.NextEntryAddress = entry.NextEntryAddress;
+
+                f.WriteEntry(prevEntry);
+            }
+            entries.Remove(entry.PrimaryValue);
+            WriteIndexValue(entry);
+            ReloadEntriesList();
+        }
+
         /**
-         * Delete entity from memoery list and file
+         * Delete entity from memory list and file
          * */
         private void DeleteEntity(Entity entity)
         {
@@ -151,7 +176,7 @@ namespace File_Structures
         }
 
         /**
-         * Clear Rows of dataGridViewEntities and fill with entities list.
+         * Clear Rows of listViewEntries and fill with entries dictionary.
          * */
         private void ReloadEntriesList()
         {
@@ -159,6 +184,7 @@ namespace File_Structures
             foreach(Entry e in entries.Values)
             {
                 var listViewItem = new ListViewItem(Array.ConvertAll(e.Data, d => d.ToString()));
+                listViewItem.Name = e.PrimaryValue;
                 listViewEntries.Items.Add(listViewItem);
             }
         }
@@ -213,14 +239,19 @@ namespace File_Structures
                 switch (a.IndexTypeV)
                 {
                     case Attribute.IndexType.primaryKey:
-                        a.IndexData.Add(entry.PrimaryValue, entry.FileAddress.ToString());
+                        if (a.IndexData.ContainsKey(entry.PrimaryValue))
+                            a.IndexData.Remove(entry.PrimaryValue);
+                        else
+                           a.IndexData.Add(entry.PrimaryValue, entry.FileAddress.ToString());
                         f.WriteIndexData(a);
                         break;
                     case Attribute.IndexType.foreignKey:
                         // Find repeated key value and append it
                         var repeated = a.IndexData.Where(k => k.Key.ToString() == entry.ForeignValue);
 
-                        if(repeated.Count() > 0)
+                        if (a.IndexData.ContainsKey(entry.ForeignValue))
+                            a.IndexData.Remove(entry.ForeignValue);
+                        else if (repeated.Count() > 0)
                         {
                             var value = repeated.First().Value + "," + entry.FileAddress.ToString();
                             a.IndexData[entry.ForeignValue] = value;
@@ -595,6 +626,28 @@ namespace File_Structures
             {
                 string[] row = new string[] { kvp.Key.ToString(), kvp.Value };
                 listViewIndexRep.Items.Add(new ListViewItem(row));
+            }
+        }
+
+        private void listViewEntries_MouseClick(object sender, MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Right)
+            {
+                ListViewItem item = listViewEntries.FocusedItem;
+                if (item.Bounds.Contains(e.Location))
+                {
+                    selectedEntry = entries.First(entry => entry.Key.Equals(item.Name)).Value;
+                    contextMenuEntry.Show(Cursor.Position);
+                }
+            }
+        }
+
+        private void contextMenuEntry_ItemClicked(object sender, ToolStripItemClickedEventArgs e)
+        {
+            switch(e.ClickedItem.Text)
+            {
+                case "Edit": break;
+                case "Delete": DeleteEntry(selectedEntry); break;
             }
         }
     }

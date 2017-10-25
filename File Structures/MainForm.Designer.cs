@@ -28,7 +28,8 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.ListViewGroup listViewGroup1 = new System.Windows.Forms.ListViewGroup("ListViewGroup", System.Windows.Forms.HorizontalAlignment.Left);
+            this.components = new System.ComponentModel.Container();
+            System.Windows.Forms.ListViewGroup listViewGroup2 = new System.Windows.Forms.ListViewGroup("ListViewGroup", System.Windows.Forms.HorizontalAlignment.Left);
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
             this.dataGridViewEntities = new System.Windows.Forms.DataGridView();
             this.btnAddEntity = new MaterialSkin.Controls.MaterialRaisedButton();
@@ -57,6 +58,9 @@
             this.btnOpenFile = new MaterialSkin.Controls.MaterialRaisedButton();
             this.openFileDialog = new System.Windows.Forms.OpenFileDialog();
             this.saveFileDialog = new System.Windows.Forms.SaveFileDialog();
+            this.contextMenuEntry = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripMenuItem2 = new System.Windows.Forms.ToolStripMenuItem();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridViewEntities)).BeginInit();
             this.tabControl.SuspendLayout();
             this.tabPage1.SuspendLayout();
@@ -68,6 +72,7 @@
             this.tabPage4.SuspendLayout();
             this.groupBox3.SuspendLayout();
             this.groupBox2.SuspendLayout();
+            this.contextMenuEntry.SuspendLayout();
             this.SuspendLayout();
             // 
             // dataGridViewEntities
@@ -217,6 +222,7 @@
             this.listViewEntries.TabIndex = 1;
             this.listViewEntries.UseCompatibleStateImageBehavior = false;
             this.listViewEntries.View = System.Windows.Forms.View.Details;
+            this.listViewEntries.MouseClick += new System.Windows.Forms.MouseEventHandler(this.listViewEntries_MouseClick);
             // 
             // groupBox1
             // 
@@ -343,10 +349,10 @@
             this.listViewIndexAttr.Depth = 0;
             this.listViewIndexAttr.Font = new System.Drawing.Font("Microsoft Sans Serif", 24F);
             this.listViewIndexAttr.FullRowSelect = true;
-            listViewGroup1.Header = "ListViewGroup";
-            listViewGroup1.Name = "listViewGroup1";
+            listViewGroup2.Header = "ListViewGroup";
+            listViewGroup2.Name = "listViewGroup1";
             this.listViewIndexAttr.Groups.AddRange(new System.Windows.Forms.ListViewGroup[] {
-            listViewGroup1});
+            listViewGroup2});
             this.listViewIndexAttr.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.None;
             this.listViewIndexAttr.Location = new System.Drawing.Point(6, 17);
             this.listViewIndexAttr.MouseLocation = new System.Drawing.Point(-1, -1);
@@ -407,6 +413,27 @@
             // 
             this.saveFileDialog.Filter = "Data dictionary | *.dic";
             // 
+            // contextMenuEntry
+            // 
+            this.contextMenuEntry.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.toolStripMenuItem1,
+            this.toolStripMenuItem2});
+            this.contextMenuEntry.Name = "contextMenuEntry";
+            this.contextMenuEntry.Size = new System.Drawing.Size(153, 70);
+            this.contextMenuEntry.ItemClicked += new System.Windows.Forms.ToolStripItemClickedEventHandler(this.contextMenuEntry_ItemClicked);
+            // 
+            // toolStripMenuItem1
+            // 
+            this.toolStripMenuItem1.Name = "toolStripMenuItem1";
+            this.toolStripMenuItem1.Size = new System.Drawing.Size(107, 22);
+            this.toolStripMenuItem1.Text = "Edit";
+            // 
+            // toolStripMenuItem2
+            // 
+            this.toolStripMenuItem2.Name = "toolStripMenuItem2";
+            this.toolStripMenuItem2.Size = new System.Drawing.Size(107, 22);
+            this.toolStripMenuItem2.Text = "Delete";
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -433,6 +460,7 @@
             this.tabPage4.ResumeLayout(false);
             this.groupBox3.ResumeLayout(false);
             this.groupBox2.ResumeLayout(false);
+            this.contextMenuEntry.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -467,6 +495,9 @@
         private System.Windows.Forms.ColumnHeader columnHeader2;
         private System.Windows.Forms.ColumnHeader columnHeader3;
         private System.Windows.Forms.GroupBox groupBox4;
+        private System.Windows.Forms.ContextMenuStrip contextMenuEntry;
+        private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem1;
+        private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem2;
     }
 }
 

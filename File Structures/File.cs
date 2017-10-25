@@ -227,6 +227,9 @@ namespace File_Structures
                         case Attribute.IndexType.searchKey:
                             entry.SearchValue = entry.Data[i + 1].ToString();
                             break;
+                        case Attribute.IndexType.foreignKey:
+                            entry.ForeignValue = entry.Data[i + 1].ToString();
+                            break;
                     }
                 }
 
@@ -301,14 +304,19 @@ namespace File_Structures
          */
         public void WriteIndexData(Attribute attr)
         {
-            Open();
-
             int i = 0;
             int size = attr.Length + 8;
 
             if (attr.IndexTypeV == Attribute.IndexType.foreignKey)
+            {
+                ReserveSparseIndexSpace(attr);
                 size = attr.Length + SPARSE_INDEX_COUNT * 8;
+            }else
+            {
+                ReserveDenseIndexSpace(attr);
+            }
 
+            Open();
             if (attr.IndexTypeV == Attribute.IndexType.primaryKey || attr.IndexTypeV == Attribute.IndexType.foreignKey)
             {
                 foreach (KeyValuePair<object, string> kvp in attr.IndexData)
