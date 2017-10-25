@@ -32,7 +32,7 @@ namespace File_Structures
         IndexType indexType;
         long nexAttributeAddress;
         string entityName;
-        SortedList<object, object> indexData; //TODO: Eventually it wpuld to be <object, object>
+        SortedList<object, string> indexData;
 
         public string Name { get => name; set => name = value.PadRight(30); }
         public long FileAddress { get => fileAddress; set => fileAddress = value; }
@@ -42,7 +42,7 @@ namespace File_Structures
         public IndexType IndexTypeV { get => indexType; set => indexType = value; }
         public long NexAttributeAddress { get => nexAttributeAddress; set => nexAttributeAddress = value; }
         public string EntityName { get => entityName; set => entityName = value; }
-        public SortedList<object, object> IndexData { get => indexData; set => indexData = value; }
+        public SortedList<object, string> IndexData { get => indexData; set => indexData = value; }
 
         public Attribute(string name, char type, int length, IndexType indexType, string entityName)
         {
@@ -54,7 +54,7 @@ namespace File_Structures
             FileAddress = -1;
             IndexAddress = -1;
             NexAttributeAddress = -1;
-            IndexData = new SortedList<object, object>();
+            IndexData = new SortedList<object, string>();
         }
 
         /**
@@ -70,7 +70,7 @@ namespace File_Structures
             this.indexType = indexType;
             this.nexAttributeAddress = nexAttributeAddress;
             this.entityName = entityName;
-            this.IndexData = new SortedList<object, object>();
+            this.IndexData = new SortedList<object, string>();
         }
     }
 }

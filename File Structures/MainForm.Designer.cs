@@ -39,12 +39,17 @@
             this.btnAddAttr = new MaterialSkin.Controls.MaterialRaisedButton();
             this.dataGridViewAttrs = new System.Windows.Forms.DataGridView();
             this.tabPage3 = new System.Windows.Forms.TabPage();
+            this.groupBox4 = new System.Windows.Forms.GroupBox();
+            this.listViewEntries = new MaterialSkin.Controls.MaterialListView();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.listViewEntities = new MaterialSkin.Controls.MaterialListView();
             this.Entity = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.btnAddEntry = new MaterialSkin.Controls.MaterialRaisedButton();
-            this.listViewEntries = new MaterialSkin.Controls.MaterialListView();
             this.tabPage4 = new System.Windows.Forms.TabPage();
+            this.groupBox3 = new System.Windows.Forms.GroupBox();
+            this.listViewIndexRep = new MaterialSkin.Controls.MaterialListView();
+            this.columnHeader2 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.columnHeader3 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.listViewIndexAttr = new MaterialSkin.Controls.MaterialListView();
             this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
@@ -52,22 +57,17 @@
             this.btnOpenFile = new MaterialSkin.Controls.MaterialRaisedButton();
             this.openFileDialog = new System.Windows.Forms.OpenFileDialog();
             this.saveFileDialog = new System.Windows.Forms.SaveFileDialog();
-            this.groupBox3 = new System.Windows.Forms.GroupBox();
-            this.listViewIndexRep = new MaterialSkin.Controls.MaterialListView();
-            this.columnHeader2 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.columnHeader3 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.groupBox4 = new System.Windows.Forms.GroupBox();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridViewEntities)).BeginInit();
             this.tabControl.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.tabPage2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridViewAttrs)).BeginInit();
             this.tabPage3.SuspendLayout();
+            this.groupBox4.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.tabPage4.SuspendLayout();
-            this.groupBox2.SuspendLayout();
             this.groupBox3.SuspendLayout();
-            this.groupBox4.SuspendLayout();
+            this.groupBox2.SuspendLayout();
             this.SuspendLayout();
             // 
             // dataGridViewEntities
@@ -190,6 +190,34 @@
             this.tabPage3.Text = "Entries";
             this.tabPage3.UseVisualStyleBackColor = true;
             // 
+            // groupBox4
+            // 
+            this.groupBox4.Controls.Add(this.listViewEntries);
+            this.groupBox4.Location = new System.Drawing.Point(151, 3);
+            this.groupBox4.Name = "groupBox4";
+            this.groupBox4.Size = new System.Drawing.Size(652, 358);
+            this.groupBox4.TabIndex = 5;
+            this.groupBox4.TabStop = false;
+            this.groupBox4.Text = "Entries";
+            // 
+            // listViewEntries
+            // 
+            this.listViewEntries.AllowColumnReorder = true;
+            this.listViewEntries.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.listViewEntries.Depth = 0;
+            this.listViewEntries.Font = new System.Drawing.Font("Microsoft Sans Serif", 24F);
+            this.listViewEntries.FullRowSelect = true;
+            this.listViewEntries.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.Nonclickable;
+            this.listViewEntries.Location = new System.Drawing.Point(5, 14);
+            this.listViewEntries.MouseLocation = new System.Drawing.Point(-1, -1);
+            this.listViewEntries.MouseState = MaterialSkin.MouseState.OUT;
+            this.listViewEntries.Name = "listViewEntries";
+            this.listViewEntries.OwnerDraw = true;
+            this.listViewEntries.Size = new System.Drawing.Size(640, 338);
+            this.listViewEntries.TabIndex = 1;
+            this.listViewEntries.UseCompatibleStateImageBehavior = false;
+            this.listViewEntries.View = System.Windows.Forms.View.Details;
+            // 
             // groupBox1
             // 
             this.groupBox1.Controls.Add(this.listViewEntities);
@@ -243,24 +271,6 @@
             this.btnAddEntry.UseVisualStyleBackColor = true;
             this.btnAddEntry.Click += new System.EventHandler(this.btnAddEntry_Click);
             // 
-            // listViewEntries
-            // 
-            this.listViewEntries.AllowColumnReorder = true;
-            this.listViewEntries.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.listViewEntries.Depth = 0;
-            this.listViewEntries.Font = new System.Drawing.Font("Microsoft Sans Serif", 24F);
-            this.listViewEntries.FullRowSelect = true;
-            this.listViewEntries.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.Nonclickable;
-            this.listViewEntries.Location = new System.Drawing.Point(5, 14);
-            this.listViewEntries.MouseLocation = new System.Drawing.Point(-1, -1);
-            this.listViewEntries.MouseState = MaterialSkin.MouseState.OUT;
-            this.listViewEntries.Name = "listViewEntries";
-            this.listViewEntries.OwnerDraw = true;
-            this.listViewEntries.Size = new System.Drawing.Size(640, 338);
-            this.listViewEntries.TabIndex = 1;
-            this.listViewEntries.UseCompatibleStateImageBehavior = false;
-            this.listViewEntries.View = System.Windows.Forms.View.Details;
-            // 
             // tabPage4
             // 
             this.tabPage4.Controls.Add(this.groupBox3);
@@ -271,6 +281,48 @@
             this.tabPage4.TabIndex = 3;
             this.tabPage4.Text = "Index";
             this.tabPage4.UseVisualStyleBackColor = true;
+            // 
+            // groupBox3
+            // 
+            this.groupBox3.Controls.Add(this.listViewIndexRep);
+            this.groupBox3.Location = new System.Drawing.Point(151, 4);
+            this.groupBox3.Name = "groupBox3";
+            this.groupBox3.Size = new System.Drawing.Size(652, 369);
+            this.groupBox3.TabIndex = 6;
+            this.groupBox3.TabStop = false;
+            this.groupBox3.Text = "Index representation";
+            // 
+            // listViewIndexRep
+            // 
+            this.listViewIndexRep.BackColor = System.Drawing.SystemColors.Menu;
+            this.listViewIndexRep.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.listViewIndexRep.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.columnHeader2,
+            this.columnHeader3});
+            this.listViewIndexRep.Depth = 0;
+            this.listViewIndexRep.Font = new System.Drawing.Font("Microsoft Sans Serif", 24F);
+            this.listViewIndexRep.FullRowSelect = true;
+            this.listViewIndexRep.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.Nonclickable;
+            this.listViewIndexRep.Location = new System.Drawing.Point(6, 17);
+            this.listViewIndexRep.MouseLocation = new System.Drawing.Point(-1, -1);
+            this.listViewIndexRep.MouseState = MaterialSkin.MouseState.OUT;
+            this.listViewIndexRep.Name = "listViewIndexRep";
+            this.listViewIndexRep.OwnerDraw = true;
+            this.listViewIndexRep.Size = new System.Drawing.Size(640, 344);
+            this.listViewIndexRep.TabIndex = 0;
+            this.listViewIndexRep.UseCompatibleStateImageBehavior = false;
+            this.listViewIndexRep.View = System.Windows.Forms.View.Details;
+            // 
+            // columnHeader2
+            // 
+            this.columnHeader2.Tag = "Entity";
+            this.columnHeader2.Text = "KEY";
+            this.columnHeader2.Width = 110;
+            // 
+            // columnHeader3
+            // 
+            this.columnHeader3.Text = "VALUE";
+            this.columnHeader3.Width = 530;
             // 
             // groupBox2
             // 
@@ -355,58 +407,6 @@
             // 
             this.saveFileDialog.Filter = "Data dictionary | *.dic";
             // 
-            // groupBox3
-            // 
-            this.groupBox3.Controls.Add(this.listViewIndexRep);
-            this.groupBox3.Location = new System.Drawing.Point(151, 4);
-            this.groupBox3.Name = "groupBox3";
-            this.groupBox3.Size = new System.Drawing.Size(652, 369);
-            this.groupBox3.TabIndex = 6;
-            this.groupBox3.TabStop = false;
-            this.groupBox3.Text = "Index representation";
-            // 
-            // listViewIndexRep
-            // 
-            this.listViewIndexRep.BackColor = System.Drawing.SystemColors.Menu;
-            this.listViewIndexRep.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.listViewIndexRep.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
-            this.columnHeader2,
-            this.columnHeader3});
-            this.listViewIndexRep.Depth = 0;
-            this.listViewIndexRep.Font = new System.Drawing.Font("Microsoft Sans Serif", 24F);
-            this.listViewIndexRep.FullRowSelect = true;
-            this.listViewIndexRep.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.Nonclickable;
-            this.listViewIndexRep.Location = new System.Drawing.Point(6, 17);
-            this.listViewIndexRep.MouseLocation = new System.Drawing.Point(-1, -1);
-            this.listViewIndexRep.MouseState = MaterialSkin.MouseState.OUT;
-            this.listViewIndexRep.Name = "listViewIndexRep";
-            this.listViewIndexRep.OwnerDraw = true;
-            this.listViewIndexRep.Size = new System.Drawing.Size(640, 344);
-            this.listViewIndexRep.TabIndex = 0;
-            this.listViewIndexRep.UseCompatibleStateImageBehavior = false;
-            this.listViewIndexRep.View = System.Windows.Forms.View.Details;
-            // 
-            // columnHeader2
-            // 
-            this.columnHeader2.Tag = "Entity";
-            this.columnHeader2.Text = "KEY";
-            this.columnHeader2.Width = 110;
-            // 
-            // columnHeader3
-            // 
-            this.columnHeader3.Text = "VALUE";
-            this.columnHeader3.Width = 540;
-            // 
-            // groupBox4
-            // 
-            this.groupBox4.Controls.Add(this.listViewEntries);
-            this.groupBox4.Location = new System.Drawing.Point(151, 3);
-            this.groupBox4.Name = "groupBox4";
-            this.groupBox4.Size = new System.Drawing.Size(652, 358);
-            this.groupBox4.TabIndex = 5;
-            this.groupBox4.TabStop = false;
-            this.groupBox4.Text = "Entries";
-            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -428,11 +428,11 @@
             ((System.ComponentModel.ISupportInitialize)(this.dataGridViewAttrs)).EndInit();
             this.tabPage3.ResumeLayout(false);
             this.tabPage3.PerformLayout();
+            this.groupBox4.ResumeLayout(false);
             this.groupBox1.ResumeLayout(false);
             this.tabPage4.ResumeLayout(false);
-            this.groupBox2.ResumeLayout(false);
             this.groupBox3.ResumeLayout(false);
-            this.groupBox4.ResumeLayout(false);
+            this.groupBox2.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 

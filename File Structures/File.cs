@@ -7,6 +7,7 @@ namespace File_Structures
     class File
     {
         public const int DENSE_INDEX_COUNT = 50;
+        public const int SPARSE_INDEX_COUNT = 20;
         private string fileName;
         private FileStream fs;
         private BinaryWriter bw;
@@ -60,8 +61,8 @@ namespace File_Structures
             for(int i = 0; i < DENSE_INDEX_COUNT; i++)
             {
                 bw.BaseStream.Seek(address + (size * i), SeekOrigin.Begin);
-                bw.Write(BitConverter.GetBytes(-1), 0, attribute.Length);
-                bw.Write((long) -1);
+                bw.Write("-1".PadRight(attribute.Length)); // key
+                bw.Write("".PadRight(8)); // value
             }
             Close();
         }
@@ -72,6 +73,19 @@ namespace File_Structures
          */
         public void ReserveSparseIndexSpace(Attribute attribute)
         {
+            long address = GetSize();
+            int size = attribute.Length + SPARSE_INDEX_COUNT * 8;
+            attribute.IndexAddress = address;
+            WriteAttribute(attribute);
+
+            Open();
+            for (int i = 0; i < SPARSE_INDEX_COUNT; i++)
+            {
+                bw.BaseStream.Seek(address + (size * i), SeekOrigin.Begin);
+                bw.Write("-1".PadRight(attribute.Length)); // key
+                bw.Write("".PadRight(8 * SPARSE_INDEX_COUNT)); // value 
+            }
+            Close();
         }
 
         /**
@@ -147,25 +161,35 @@ namespace File_Structures
             return list;
         }
 
-        public SortedList<object, object> GetIndexData(Attribute attr)
+        public SortedList<object, string> GetIndexData(Attribute attr)
         {
-            var list = new SortedList<object, object>();
+            var list = new SortedList<object, string>();
 
             Open();
             long ptr = attr.IndexAddress;
             int size = attr.Length + 8;
+            int limit = DENSE_INDEX_COUNT;
 
-            for (int i = 0; i < DENSE_INDEX_COUNT && ptr != -1; i++)
+            if(attr.IndexTypeV == Attribute.IndexType.foreignKey)
             {
-                bw.BaseStream.Seek(attr.IndexAddress + (size * i), SeekOrigin.Begin);
-                var key = br.ReadInt32();
-                var value = br.ReadInt64();
-
-                ptr = key;
-                if(key != -1)
-                    list.Add(key, value);
+                size = attr.Length + SPARSE_INDEX_COUNT * 8;
+                limit = SPARSE_INDEX_COUNT;
             }
-     
+
+            if (attr.IndexTypeV == Attribute.IndexType.primaryKey || attr.IndexTypeV == Attribute.IndexType.foreignKey)
+            {
+                for (int i = 0; i < limit && ptr != -1; i++)
+                {
+                    br.BaseStream.Seek(attr.IndexAddress + (size * i), SeekOrigin.Begin);
+                    var key = br.ReadString().Trim();
+                    var value = br.ReadString().Trim();
+
+                    if (key == "-1" || value == String.Empty)
+                        ptr = -1;
+                    else
+                        list.Add(key, value);
+                }
+            }
 
             Close();
             return list;
@@ -281,12 +305,22 @@ namespace File_Structures
 
             int i = 0;
             int size = attr.Length + 8;
-            foreach (KeyValuePair<object, object> kvp in attr.IndexData)
-            {
-                bw.BaseStream.Seek(attr.IndexAddress + (size * i++), SeekOrigin.Begin);
 
-                bw.Write(BitConverter.GetBytes(Int32.Parse(kvp.Key.ToString())), 0, attr.Length);
-                bw.Write((long)kvp.Value);
+            if (attr.IndexTypeV == Attribute.IndexType.foreignKey)
+                size = attr.Length + SPARSE_INDEX_COUNT * 8;
+
+            if (attr.IndexTypeV == Attribute.IndexType.primaryKey || attr.IndexTypeV == Attribute.IndexType.foreignKey)
+            {
+                foreach (KeyValuePair<object, string> kvp in attr.IndexData)
+                {
+                    bw.BaseStream.Seek(attr.IndexAddress + (size * i++), SeekOrigin.Begin);
+
+                    bw.Write(kvp.Key.ToString().PadRight(attr.Length));
+                    if(attr.IndexTypeV == Attribute.IndexType.foreignKey)
+                        bw.Write(kvp.Value.PadRight(8 * SPARSE_INDEX_COUNT));
+                    else
+                        bw.Write(kvp.Value);
+                }
             }
 
             Close();

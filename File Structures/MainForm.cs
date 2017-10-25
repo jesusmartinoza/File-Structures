@@ -199,7 +199,7 @@ namespace File_Structures
                     case Attribute.IndexType.primaryKey:
                         f.ReserveDenseIndexSpace(a);
                         break;
-                    case Attribute.IndexType.searchKey:
+                    case Attribute.IndexType.foreignKey:
                         f.ReserveSparseIndexSpace(a);
                         break;
                 }
@@ -213,11 +213,21 @@ namespace File_Structures
                 switch (a.IndexTypeV)
                 {
                     case Attribute.IndexType.primaryKey:
-                        a.IndexData.Add(Int32.Parse(entry.PrimaryValue), entry.FileAddress);
+                        a.IndexData.Add(entry.PrimaryValue, entry.FileAddress.ToString());
                         f.WriteIndexData(a);
                         break;
-                    case Attribute.IndexType.searchKey:
-                        // Nothing for now
+                    case Attribute.IndexType.foreignKey:
+                        // Find repeated key value and append it
+                        var repeated = a.IndexData.Where(k => k.Key.ToString() == entry.ForeignValue);
+
+                        if(repeated.Count() > 0)
+                        {
+                            var value = repeated.First().Value + "," + entry.FileAddress.ToString();
+                            a.IndexData[entry.ForeignValue] = value;
+                        } else {
+                            a.IndexData.Add(entry.ForeignValue, entry.FileAddress.ToString());
+                        }
+                        f.WriteIndexData(a);
                         break;
                 }
             }
@@ -458,11 +468,11 @@ namespace File_Structures
         private void btnAddEntry_Click(object sender, EventArgs e)
         {
             if (f == null)
-            {
                 btnSaveFile.PerformClick();
-            }
-            else if (entities.Count == 0  || listViewEntities.Items.Count == 0)
+            else if (entities.Count == 0)
                 MessageBox.Show("Please create some entity with attributes :)");
+            else if (selectedEntity == null)
+                MessageBox.Show("Select entity");
             else
             {
                 FormCreateEntry f = new FormCreateEntry(this, listViewEntities.FocusedItem.Text, attributes);
@@ -577,17 +587,14 @@ namespace File_Structures
         private void listViewIndexAttr_SelectedIndexChanged(object sender, EventArgs e)
         {
             var list = (MaterialListView)sender;
+            var sorted = f.GetIndexData(attributes.First(a => a.Name == list.FocusedItem.Text));
 
-            if (list.FocusedItem.Group.Header == "Primary key")
+            listViewIndexRep.Items.Clear();
+
+            foreach (KeyValuePair<object, string> kvp in sorted)
             {
-                listViewIndexRep.Items.Clear();
-                var sorted = f.GetIndexData(attributes.First(a => a.Name == list.FocusedItem.Text));
-
-                foreach (KeyValuePair<object, object> kvp in sorted)
-                {
-                    string[] row = new string[] { kvp.Key.ToString(), kvp.Value.ToString() };
-                    listViewIndexRep.Items.Add(new ListViewItem(row));
-                }
+                string[] row = new string[] { kvp.Key.ToString(), kvp.Value };
+                listViewIndexRep.Items.Add(new ListViewItem(row));
             }
         }
     }

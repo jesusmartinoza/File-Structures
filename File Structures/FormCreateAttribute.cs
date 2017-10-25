@@ -55,6 +55,8 @@ namespace File_Structures
 
             if (textFieldName.Text == String.Empty)
                 MessageBox.Show("Name is required");
+            else if (entities.First(ent => ent.Key == entity.Name.Trim()).Value.DataAddress != -1)
+                MessageBox.Show("This entity already have entries. Cannot add new attributes :/");
             else if(length <= 0)
                 MessageBox.Show("Positive length is required");
             else {
