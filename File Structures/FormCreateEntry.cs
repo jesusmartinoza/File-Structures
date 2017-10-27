@@ -16,26 +16,64 @@ namespace File_Structures
     {
         List<Attribute> attributes;
         CreateEntryListener listener;
+        Entry entry;
 
         public FormCreateEntry(CreateEntryListener listener, String entityName, List<Attribute> attributes)
         {
-            InitializeComponent();
-            CenterToScreen();
+            Init();
             Text = "Create entry for " + entityName;
             this.listener = listener;
             this.attributes = attributes.Where(a => a.EntityName == entityName).ToList();
 
             // Add headers
             foreach(var attr in this.attributes)
-            {
                 gridViewAttrs.Columns.Add(attr.Name, attr.Name);
-            }
 
             foreach (DataGridViewColumn c in gridViewAttrs.Columns)
                 c.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
 
             // Add item to edit
             gridViewAttrs.Rows.Add();
+        }
+
+        /**
+         * Constructor for modify the given entry
+         */
+        public FormCreateEntry(CreateEntryListener listener, Entry entry, Entity entity, List<Attribute> attributes)
+        {
+            Init();
+            Text = "Modify entry " + entry.PrimaryValue + " of " + entity.Name.Trim();
+            btnCreate.Text = "Modify";
+            this.listener = listener;
+            this.attributes = attributes.Where(a => a.EntityName == entity.Name.Trim()).ToList();
+            this.entry = entry;
+
+            // Add headers
+            foreach (var attr in this.attributes)
+                if (attr.IndexTypeV == Attribute.IndexType.primaryKey)
+                {
+                    DataGridViewColumn col = new DataGridViewColumn();
+                    col.CellTemplate = new DataGridViewTextBoxCell();
+                    col.DefaultCellStyle.BackColor = Color.LightGray;
+                    col.Name = attr.Name;
+                    col.HeaderText = attr.Name;
+                    col.ReadOnly = true;
+                    gridViewAttrs.Columns.Add(col);
+                }
+                else
+                    gridViewAttrs.Columns.Add(attr.Name, attr.Name);
+
+            foreach (DataGridViewColumn c in gridViewAttrs.Columns)
+                c.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+
+            // Add item to edit without fileAddress and NextEntryAddress
+            gridViewAttrs.Rows.Add(entry.Data.Where((val, idx) => idx != 0 && idx != entry.Data.Length - 1).ToArray());
+        }
+
+        public void Init()
+        {
+            InitializeComponent();
+            CenterToScreen();
 
             // Config material skin
             var materialSkinManager = MaterialSkinManager.Instance;
@@ -46,8 +84,14 @@ namespace File_Structures
 
         private void btnCreate_Click(object sender, EventArgs e)
         {
-            Entry entry = new Entry(attributes.Count());
             Boolean valid = true;
+            Boolean isNew = false;
+
+            if (entry == null)
+            {
+                entry = new Entry(attributes.Count());
+                isNew = true;
+            }
 
             int i = 0;
             foreach(DataGridViewTextBoxCell cell in gridViewAttrs.Rows[0].Cells)
@@ -84,15 +128,14 @@ namespace File_Structures
 
             if(valid)
             {
-                entry.FileAddress = -1;
-                entry.NextEntryAddress = -1;
-                listener.OnCreateEntry(entry);
+                listener.OnCreateEntry(entry, isNew);
+                entry = null;
             }
         }
     }
 
     public interface CreateEntryListener
     {
-        void OnCreateEntry(Entry entry);
+        void OnCreateEntry(Entry entry, bool isNew);
     }
 }

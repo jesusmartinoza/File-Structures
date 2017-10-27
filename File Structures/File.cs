@@ -52,9 +52,14 @@ namespace File_Structures
          */
         public void ReserveDenseIndexSpace(Attribute attribute)
         {
-            long address = GetSize();
             int size = attribute.Length + 8;
-            attribute.IndexAddress = address;
+            long address = attribute.IndexAddress;
+
+            if (address == -1)
+            {
+                address = GetSize();
+                attribute.IndexAddress = address;
+            }
             WriteAttribute(attribute);
 
             Open();
@@ -73,9 +78,15 @@ namespace File_Structures
          */
         public void ReserveSparseIndexSpace(Attribute attribute)
         {
-            long address = GetSize();
+            long address = attribute.IndexAddress;
             int size = attribute.Length + SPARSE_INDEX_COUNT * 8;
-            attribute.IndexAddress = address;
+            
+            if (address == -1)
+            {
+                address = GetSize();
+                attribute.IndexAddress = address;
+            }
+            
             WriteAttribute(attribute);
 
             Open();
@@ -184,14 +195,14 @@ namespace File_Structures
                     var key = br.ReadString().Trim();
                     var value = br.ReadString().Trim();
 
-                    if (key == "-1" || value == String.Empty)
+                    if (key == "-1" || value.Contains("-1") || value == String.Empty)
                         ptr = -1;
                     else
                         list.Add(key, value);
                 }
             }
-
             Close();
+
             return list;
         }
 
@@ -311,7 +322,7 @@ namespace File_Structures
             {
                 ReserveSparseIndexSpace(attr);
                 size = attr.Length + SPARSE_INDEX_COUNT * 8;
-            }else
+            } else
             {
                 ReserveDenseIndexSpace(attr);
             }

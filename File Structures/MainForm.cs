@@ -135,7 +135,7 @@ namespace File_Structures
                 f.WriteEntry(prevEntry);
             }
             entries.Remove(entry.PrimaryValue);
-            WriteIndexValue(entry);
+            WriteIndexValue(entry, false);
             ReloadEntriesList();
         }
 
@@ -232,25 +232,29 @@ namespace File_Structures
             }
         }
 
-        private void WriteIndexValue(Entry entry)
+        private void WriteIndexValue(Entry entry, bool isNew = true)
         {
             foreach (Attribute a in attributes.Where(a => a.EntityName.Equals(selectedEntity.Name.Trim())).ToList())
             {
                 switch (a.IndexTypeV)
                 {
                     case Attribute.IndexType.primaryKey:
-                        if (a.IndexData.ContainsKey(entry.PrimaryValue))
-                            a.IndexData.Remove(entry.PrimaryValue);
+                        if (isNew)
+                            a.IndexData.Add(entry.PrimaryValue, entry.FileAddress.ToString());
                         else
-                           a.IndexData.Add(entry.PrimaryValue, entry.FileAddress.ToString());
+                            a.IndexData.Remove(entry.PrimaryValue);
                         f.WriteIndexData(a);
                         break;
                     case Attribute.IndexType.foreignKey:
                         // Find repeated key value and append it
                         var repeated = a.IndexData.Where(k => k.Key.ToString() == entry.ForeignValue);
 
-                        if (a.IndexData.ContainsKey(entry.ForeignValue))
-                            a.IndexData.Remove(entry.ForeignValue);
+                        if (!isNew)
+                        {
+                            var val = a.IndexData[entry.ForeignValue];
+                            val = val.Replace(entry.FileAddress.ToString(), "").Replace(",,", ",");
+                            a.IndexData[entry.ForeignValue] = val;
+                        }
                         else if (repeated.Count() > 0)
                         {
                             var value = repeated.First().Value + "," + entry.FileAddress.ToString();
@@ -370,46 +374,53 @@ namespace File_Structures
          * Verify if primary key already exists.
          * Add Entry to entries list and write in file.
          */
-        public void OnCreateEntry(Entry entry)
+        public void OnCreateEntry(Entry entry, Boolean isNew)
         {
-            if(entries.ContainsKey(entry.PrimaryValue))
+            if(entries.ContainsKey(entry.PrimaryValue) && isNew)
             {
                 MessageBox.Show("A entry with value " + entry.PrimaryValue + " already exists in file.");
             } else
             {
+                List<Entry> sorted;
+
                 // if first entry, reserve index space in file
                 if (selectedEntity.DataAddress == -1)
                     ReserveIndexSpace();
 
-                AddEntryToList(entry);
+                if(isNew)
+                {
+                    entry.FileAddress = f.GetSize();
+                    AddEntryToList(entry);
+                }
+                else
+                    entries[entry.PrimaryValue] = entry;
+
                 ReloadEntriesList();
-                List<Entry> sorted = entries.Values.ToList();
-                long size = f.GetSize();
+                sorted = entries.Values.ToList();
 
                 // Get previous item and modify it
                 int prevIndex = sorted.IndexOf(entry) - 1;
 
-                entry.FileAddress = size;
                 if (prevIndex != -1)
                 {
                     Entry prevEntry = sorted[prevIndex];
 
                     entry.NextEntryAddress = prevEntry.NextEntryAddress;
-                    prevEntry.NextEntryAddress = size; // Address where would be located the new entry.
+                    prevEntry.NextEntryAddress = entry.FileAddress; // Address where would be located the new entry.
 
                     f.WriteEntry(prevEntry);
                 }
                 else
                 {
                     entry.NextEntryAddress = selectedEntity.DataAddress;
-                    selectedEntity.DataAddress = size;
+                    selectedEntity.DataAddress = entry.FileAddress;
 
                     f.WriteEntity(selectedEntity);
                 }
 
                 // Write new entry in file and reload listview
                 f.WriteEntry(entry);
-                WriteIndexValue(entry);
+                WriteIndexValue(entry, isNew);
                 ReloadEntriesList();
             }
         }
@@ -618,6 +629,10 @@ namespace File_Structures
         private void listViewIndexAttr_SelectedIndexChanged(object sender, EventArgs e)
         {
             var list = (MaterialListView)sender;
+
+            if (list.FocusedItem == null) // Click on list group header
+                return;
+
             var sorted = f.GetIndexData(attributes.First(a => a.Name == list.FocusedItem.Text));
 
             listViewIndexRep.Items.Clear();
@@ -646,7 +661,10 @@ namespace File_Structures
         {
             switch(e.ClickedItem.Text)
             {
-                case "Edit": break;
+                case "Edit":
+                    FormCreateEntry f = new FormCreateEntry(this, selectedEntry, selectedEntity, attributes);
+                    f.ShowDialog(this);
+                    break;
                 case "Delete": DeleteEntry(selectedEntry); break;
             }
         }

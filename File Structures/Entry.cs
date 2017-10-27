@@ -23,6 +23,8 @@ namespace File_Structures
         public Entry(int dataLength)
         {
             Data = new object[dataLength + 2]; // File Address and Next Entry Address
+            FileAddress = -1;
+            NextEntryAddress = -1;
         }
         
     }
