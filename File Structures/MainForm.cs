@@ -10,6 +10,12 @@ using System.Windows.Forms;
 using MaterialSkin;
 using MaterialSkin.Controls;
 using System.IO;
+using Shields.GraphViz.Models;
+using Shields.GraphViz.Services;
+using Shields.GraphViz.Components;
+using System.Threading;
+using CSharpTest.Net.Collections;
+using CSharpTest.Net.Serialization;
 
 namespace File_Structures
 {
@@ -22,6 +28,11 @@ namespace File_Structures
         Entity selectedEntity;
         Entry selectedEntry;
         File f;
+        IRenderer renderer;
+
+        // Tree
+        BPlusTree<int, int>.Options optionsTree;
+        BPlusTree<int, int> map;
 
         /**
          * Initialize components and MaterialForm
@@ -31,6 +42,13 @@ namespace File_Structures
             entities = new SortedList<string, Entity>();
             attributes = new List<Attribute>();
             entries = new Dictionary<string, Entry>();
+            BPlusTree<int, int>.Options optionsTree = new BPlusTree<int, int>.Options(
+                                PrimitiveSerializer.Int32, PrimitiveSerializer.Int32, Comparer<int>.Default)
+                                {
+                                    CreateFile = CreatePolicy.IfNeeded,
+                                    FileName = @"C:\Users\hongo\Documents\File-Structures\File Structures\bin\Debug\Tree.dat"
+                                };
+        
             string[] entityHeaders = {"Name", "Address", "Attributes Address", "Data Address", "Next Entity Address" };
             string[] attrHeaders = {"Entity", "Name", "Address", "Type", "Length", "Index Type", "Index Address", "Next Attribute Address" };
 
@@ -40,6 +58,10 @@ namespace File_Structures
             CenterToScreen();
             ReloadEntitiesGridView();
             ReloadAttrsGridView();
+
+            renderer = new Renderer(@"C:\Program Files (x86)\Graphviz2.38\bin");
+            optionsTree.BTreeOrder = 4;
+            map = new BPlusTree<int, int>(optionsTree);
 
             // Config material skin
             var materialSkinManager = MaterialSkinManager.Instance;
@@ -623,6 +645,49 @@ namespace File_Structures
             switch (index)
             {
                 case 3: ReloadIndexList(); break;
+                case 4:
+                    //GenerateBPlusTree();
+
+                    /*using (TextWriter writer = System.IO.File.CreateText(@"C:\Users\hongo\Documents\File-Structures\File Structures\bin\Debug\Debug.txt"))
+                    {
+                        map.DebugSetOutput(writer);
+                        map.Print(writer, BPlusTree<int, int>.DebugFormat.Compact);
+                        writer.Close();
+                    }*/
+
+
+                    using (var writer = Console.Out)
+                    {
+                        writer.Write("Hola prro");
+                        map.Print(writer, BPlusTree<int, int>.DebugFormat.Compact);
+                    }
+
+                    map.EnableCount();
+                    map.TryAdd(10, 2143);
+                    map.TryAdd(27, 2143);
+                    map.TryAdd(29, 2143);
+                    map.TryAdd(17, 2143);
+                    map.TryAdd(25, 2143);
+                    map.TryAdd(21, 2143);
+                    map.TryAdd(15, 2143);
+                    map.DebugSetValidateOnCheckpoint(true);
+                    map.Validate();
+                    map.TryAdd(31, 2143);
+
+                    var i = 0;
+                    foreach (var item in map)
+                    {
+                        i++;
+                        Console.WriteLine("Node {0} valor {1}", i, item.ToString());
+
+                    }
+
+                    using (var writer = Console.Out)
+                    {
+                        writer.Write("Hola prro");
+                        map.Print(writer, BPlusTree<int, int>.DebugFormat.Compact);
+                    }
+                    break;
             }
         }
 
@@ -666,6 +731,27 @@ namespace File_Structures
                     f.ShowDialog(this);
                     break;
                 case "Delete": DeleteEntry(selectedEntry); break;
+            }
+        }
+
+        private async Task GenerateBPlusTree()
+        {
+            Graph graph = Graph.Directed
+                    .Add(AttributeStatement.Graph.Set("labelloc", "t"))
+                    .Add(AttributeStatement.Node.Set("style", "filled"))
+                    .Add(AttributeStatement.Node.Set("shape", "box"))
+                    .Add(AttributeStatement.Node.Set("fillcolor", "#ECECEC"))
+                    .Add(EdgeStatement.For("2", map[2].ToString()));
+
+            using (Stream file = System.IO.File.Create("Tree.png"))
+            {
+                await renderer.RunAsync(
+                    graph, file,
+                    RendererLayouts.Dot,
+                    RendererFormats.Png,
+                    CancellationToken.None);
+
+                pictureBoxTree.Image = Image.FromStream(file);
             }
         }
     }
