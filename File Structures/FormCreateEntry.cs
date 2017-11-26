@@ -50,18 +50,7 @@ namespace File_Structures
 
             // Add headers
             foreach (var attr in this.attributes)
-                if (attr.IndexTypeV == Attribute.IndexType.primaryKey)
-                {
-                    DataGridViewColumn col = new DataGridViewColumn();
-                    col.CellTemplate = new DataGridViewTextBoxCell();
-                    col.DefaultCellStyle.BackColor = Color.LightGray;
-                    col.Name = attr.Name;
-                    col.HeaderText = attr.Name;
-                    col.ReadOnly = true;
-                    gridViewAttrs.Columns.Add(col);
-                }
-                else
-                    gridViewAttrs.Columns.Add(attr.Name, attr.Name);
+                gridViewAttrs.Columns.Add(attr.Name, attr.Name);
 
             foreach (DataGridViewColumn c in gridViewAttrs.Columns)
                 c.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
@@ -109,6 +98,8 @@ namespace File_Structures
                     entry.SearchValue = cell.Value.ToString();
                 else if (attributes[i].IndexTypeV == Attribute.IndexType.foreignKey)
                     entry.ForeignValue = cell.Value.ToString();
+                else if (attributes[i].IndexTypeV == Attribute.IndexType.bPlusTree)
+                    entry.BPlusValue = cell.Value.ToString();
 
                 if (attributes[i].Type == 'S')
                     entry.Data[i+1] = cell.Value.ToString();
@@ -124,6 +115,12 @@ namespace File_Structures
                     }
                 }
                 i++;
+            }
+
+            if (entry.PrimaryValue == null)
+            {
+                MessageBox.Show("Every entry needs a primary key");
+                valid = false;
             }
 
             if(valid)

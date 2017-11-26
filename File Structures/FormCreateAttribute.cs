@@ -49,14 +49,14 @@ namespace File_Structures
         private void btnCreate_Click(object sender, EventArgs e)
         {
             var type = comboBoxType.GetItemText(comboBoxType.SelectedItem) == "String" ? 'S' : 'I';
-            var length = Convert.ToInt32(textFieldLength.Text);
+            var length = Convert.ToInt32(textFieldLength.Text.Length == 0 ? "0" : textFieldLength.Text);
             var indexType = (Attribute.IndexType) comboBoxIndex.SelectedIndex;
             var entity = entities[comboBoxEntity.GetItemText(comboBoxEntity.SelectedItem)];
 
             if (textFieldName.Text == String.Empty)
                 MessageBox.Show("Name is required");
             else if (entities.First(ent => ent.Key == entity.Name.Trim()).Value.DataAddress != -1)
-                MessageBox.Show("This entity already have entries. Cannot add new attributes :/");
+                MessageBox.Show(entity.Name.Trim() +  " already has entries. Cannot add new attributes :/");
             else if(length <= 0)
                 MessageBox.Show("Positive length is required");
             else {

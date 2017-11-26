@@ -11,6 +11,7 @@ namespace File_Structures
         string primaryValue;
         string foreignValue;
         string searchValue;
+        string bPlusValue;
         object[] data;
 
         public string PrimaryValue { get => primaryValue; set => primaryValue = value; }
@@ -19,6 +20,7 @@ namespace File_Structures
         public object[] Data { get => data; set => data = value; }
         public long NextEntryAddress { get => (long)Data[Data.Length - 1]; set => Data[Data.Length - 1] = value; }
         public long FileAddress { get => (long)Data[0]; set => Data[0] = value; }
+        public string BPlusValue { get => bPlusValue; set => bPlusValue = value; }
 
         public Entry(int dataLength)
         {

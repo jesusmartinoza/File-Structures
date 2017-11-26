@@ -54,7 +54,6 @@
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.listViewIndexAttr = new MaterialSkin.Controls.MaterialListView();
             this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.tabPage5 = new System.Windows.Forms.TabPage();
             this.btnSaveFile = new MaterialSkin.Controls.MaterialRaisedButton();
             this.btnOpenFile = new MaterialSkin.Controls.MaterialRaisedButton();
             this.openFileDialog = new System.Windows.Forms.OpenFileDialog();
@@ -62,6 +61,7 @@
             this.contextMenuEntry = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem2 = new System.Windows.Forms.ToolStripMenuItem();
+            this.textBoxTreeLog = new System.Windows.Forms.TextBox();
             this.pictureBoxTree = new System.Windows.Forms.PictureBox();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridViewEntities)).BeginInit();
             this.tabControl.SuspendLayout();
@@ -74,7 +74,6 @@
             this.tabPage4.SuspendLayout();
             this.groupBox3.SuspendLayout();
             this.groupBox2.SuspendLayout();
-            this.tabPage5.SuspendLayout();
             this.contextMenuEntry.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxTree)).BeginInit();
             this.SuspendLayout();
@@ -125,7 +124,6 @@
             this.tabControl.Controls.Add(this.tabPage2);
             this.tabControl.Controls.Add(this.tabPage3);
             this.tabControl.Controls.Add(this.tabPage4);
-            this.tabControl.Controls.Add(this.tabPage5);
             this.tabControl.Depth = 0;
             this.tabControl.Location = new System.Drawing.Point(-1, 116);
             this.tabControl.MouseState = MaterialSkin.MouseState.HOVER;
@@ -295,6 +293,8 @@
             // 
             // groupBox3
             // 
+            this.groupBox3.Controls.Add(this.pictureBoxTree);
+            this.groupBox3.Controls.Add(this.textBoxTreeLog);
             this.groupBox3.Controls.Add(this.listViewIndexRep);
             this.groupBox3.Location = new System.Drawing.Point(151, 4);
             this.groupBox3.Name = "groupBox3";
@@ -327,12 +327,12 @@
             // columnHeader2
             // 
             this.columnHeader2.Tag = "Entity";
-            this.columnHeader2.Text = "KEY";
-            this.columnHeader2.Width = 110;
+            this.columnHeader2.Text = "VALUE";
+            this.columnHeader2.Width = 106;
             // 
             // columnHeader3
             // 
-            this.columnHeader3.Text = "VALUE";
+            this.columnHeader3.Text = "ADDRESS";
             this.columnHeader3.Width = 530;
             // 
             // groupBox2
@@ -375,16 +375,6 @@
             this.columnHeader1.Tag = "Entity";
             this.columnHeader1.Text = "";
             this.columnHeader1.Width = 110;
-            // 
-            // tabPage5
-            // 
-            this.tabPage5.Controls.Add(this.pictureBoxTree);
-            this.tabPage5.Location = new System.Drawing.Point(4, 22);
-            this.tabPage5.Name = "tabPage5";
-            this.tabPage5.Size = new System.Drawing.Size(812, 389);
-            this.tabPage5.TabIndex = 4;
-            this.tabPage5.Text = "B+ Tree";
-            this.tabPage5.UseVisualStyleBackColor = true;
             // 
             // btnSaveFile
             // 
@@ -449,13 +439,27 @@
             this.toolStripMenuItem2.Size = new System.Drawing.Size(107, 22);
             this.toolStripMenuItem2.Text = "Delete";
             // 
+            // textBoxTreeLog
+            // 
+            this.textBoxTreeLog.BackColor = System.Drawing.SystemColors.ControlLightLight;
+            this.textBoxTreeLog.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.textBoxTreeLog.Location = new System.Drawing.Point(6, 169);
+            this.textBoxTreeLog.Multiline = true;
+            this.textBoxTreeLog.Name = "textBoxTreeLog";
+            this.textBoxTreeLog.ReadOnly = true;
+            this.textBoxTreeLog.Size = new System.Drawing.Size(635, 192);
+            this.textBoxTreeLog.TabIndex = 1;
+            this.textBoxTreeLog.Visible = false;
+            // 
             // pictureBoxTree
             // 
-            this.pictureBoxTree.Location = new System.Drawing.Point(3, 3);
+            this.pictureBoxTree.Location = new System.Drawing.Point(6, 19);
             this.pictureBoxTree.Name = "pictureBoxTree";
-            this.pictureBoxTree.Size = new System.Drawing.Size(800, 379);
-            this.pictureBoxTree.TabIndex = 0;
+            this.pictureBoxTree.Size = new System.Drawing.Size(640, 144);
+            this.pictureBoxTree.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.pictureBoxTree.TabIndex = 2;
             this.pictureBoxTree.TabStop = false;
+            this.pictureBoxTree.Visible = false;
             // 
             // MainForm
             // 
@@ -482,8 +486,8 @@
             this.groupBox1.ResumeLayout(false);
             this.tabPage4.ResumeLayout(false);
             this.groupBox3.ResumeLayout(false);
+            this.groupBox3.PerformLayout();
             this.groupBox2.ResumeLayout(false);
-            this.tabPage5.ResumeLayout(false);
             this.contextMenuEntry.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxTree)).EndInit();
             this.ResumeLayout(false);
@@ -523,7 +527,7 @@
         private System.Windows.Forms.ContextMenuStrip contextMenuEntry;
         private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem1;
         private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem2;
-        private System.Windows.Forms.TabPage tabPage5;
+        private System.Windows.Forms.TextBox textBoxTreeLog;
         private System.Windows.Forms.PictureBox pictureBoxTree;
     }
 }
