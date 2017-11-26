@@ -113,6 +113,20 @@ namespace File_Structures
         }
 
         /**
+         * Find in tree a matching entry by File Address and merge them
+         */
+        private void MergeEntriesAndTree()
+        {
+            foreach(var t in tree)
+            {
+                var entry = entries.Where(e => e.Value.FileAddress == t.Value);
+
+                if(entry.Count() > 0)
+                    entry.First().Value.BPlusValue = t.Key.ToString();
+            }
+        }
+
+        /**
          * Delete entity from memory list and file
          * */
         private void DeleteAttribute(Attribute attr)
@@ -650,6 +664,7 @@ namespace File_Structures
             listViewEntries.Columns.Add("Next");
             entries = f.GetEntriesFrom(selectedEntity,
                 attributes.Where(a => a.EntityName.Equals(list.FocusedItem.Text)).ToList());
+            MergeEntriesAndTree();
             ReloadEntriesList();
         }
 
