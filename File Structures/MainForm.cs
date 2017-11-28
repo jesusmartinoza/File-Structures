@@ -27,11 +27,9 @@ namespace File_Structures
         SortedList<string, Entity> entities;
         List<Attribute> attributes;
         Dictionary<string, Entry> entries;
-        BPlusTree<int, long> tree;
         Entity selectedEntity;
         Entry selectedEntry;
         File f;
-        IRenderer renderer;
 
         /**
          * Initialize components and MaterialForm
@@ -41,16 +39,6 @@ namespace File_Structures
             entities = new SortedList<string, Entity>();
             attributes = new List<Attribute>();
             entries = new Dictionary<string, Entry>();
-            BPlusTree<int, long>.Options optionsTree = new BPlusTree<int, long>.Options(
-                                PrimitiveSerializer.Int32, PrimitiveSerializer.Int64, Comparer<int>.Default)
-                                {
-                                    CreateFile = CreatePolicy.IfNeeded,
-                                    FileName = @"C:\Users\hongo\Documents\File-Structures\File Structures\bin\Debug\Tree.dat"
-                                };
-            
-            //optionsTree.BTreeOrder = 5;
-            optionsTree.MaximumValueNodes = 4;
-            tree = new BPlusTree<int, long>(optionsTree);
 
             string[] entityHeaders = {"Name", "Address", "Attributes Address", "Data Address", "Next Entity Address" };
             string[] attrHeaders = {"Entity", "Name", "Address", "Type", "Length", "Index Type", "Index Address", "Next Attribute Address" };
@@ -61,8 +49,6 @@ namespace File_Structures
             CenterToScreen();
             ReloadEntitiesGridView();
             ReloadAttrsGridView();
-
-            renderer = new Renderer(@"C:\Program Files (x86)\Graphviz2.38\bin");
 
             // Config material skin
             var materialSkinManager = MaterialSkinManager.Instance;
@@ -117,13 +103,13 @@ namespace File_Structures
          */
         private void MergeEntriesAndTree()
         {
-            foreach(var t in tree)
+            /*foreach(var t in tree)
             {
                 var entry = entries.Where(e => e.Value.FileAddress == t.Value);
 
                 if(entry.Count() > 0)
                     entry.First().Value.BPlusValue = t.Key.ToString();
-            }
+            }*/
         }
 
         /**
@@ -172,8 +158,7 @@ namespace File_Structures
                 f.WriteEntry(prevEntry);
             }
             entries.Remove(entry.PrimaryValue);
-            WriteIndexValue(entry, false);
-            tree.Remove(Int32.Parse(entry.BPlusValue));
+            WriteIndexValue(entry, false, true);
             ReloadEntriesList();
         }
 
@@ -274,7 +259,7 @@ namespace File_Structures
          * Iterate over attributes that correspond on the selected entity 
          * and update Index Data
          */
-        private void WriteIndexValue(Entry entry, bool isNew = true)
+        private void WriteIndexValue(Entry entry, bool isNew = true, bool delete = false)
         {
             foreach (Attribute a in attributes.Where(a => a.EntityName.Equals(selectedEntity.Name.Trim())).ToList())
             {
@@ -307,7 +292,10 @@ namespace File_Structures
                         f.WriteIndexData(a);
                         break;
                     case Attribute.IndexType.bPlusTree:
-                        tree.TryAdd(Int32.Parse(entry.BPlusValue), entry.FileAddress);
+                        if(delete)
+                            a.Tree.Remove(Int32.Parse(entry.BPlusValue));
+                        else
+                            a.Tree.TryAdd(Int32.Parse(entry.BPlusValue), entry.FileAddress);
                         break;
                 }
             }
@@ -699,66 +687,13 @@ namespace File_Structures
             {
                 textBoxTreeLog.Visible = true;
                 pictureBoxTree.Visible = true;
-                SetBPlusTreeLog();
+                var attr = attributes.Find(a => a.Name.Trim() == list.FocusedItem.Text);
+                attr.SetBPlusTreeLog(textBoxTreeLog, pictureBoxTree);
             } else
             {
                 textBoxTreeLog.Visible = false;
                 pictureBoxTree.Visible = false;
             }
-        }
-
-        private void SetBPlusTreeLog()
-        {
-            var path = @"C:\Users\hongo\Documents\File-Structures\File Structures\bin\Debug\TreeLog.txt";
-            String log = "";
-            String root = "[   ";
-            List<String> nodes = new List<String>();
-
-            // Write log in file
-            using (var writer = System.IO.File.CreateText(path))
-            {
-                tree.Print(writer, BPlusTree<int, long>.DebugFormat.Formatted);
-                writer.Close();
-            }
-
-            // Remove duplicated info
-            var newNode = false;
-            var node = "[   ";
-            foreach(var str in System.IO.File.ReadAllLines(path))
-            {
-                log += "\r\n";
-                if (str.Contains("="))
-                {
-                    log += str.Substring(0, str.LastIndexOf("="));
-                    node += str.Substring(0, str.LastIndexOf("=")).Trim() + "   ";
-                    newNode = false;
-                }
-                else
-                {
-                    log += str;
-                    newNode = true;
-                }
-
-                if (newNode && node.Length > 8)
-                {
-                    nodes.Add(node + "]");
-                    node = "[   ";
-                }
-            }
-            textBoxTreeLog.Text = log;
-
-            // Extract Root
-            Regex reg = new Regex(@"}.*?{");
-            MatchCollection matches = reg.Matches(log.Replace("\r\n", ""));
-
-            textBoxTreeLog.Text += "\r\n\r\n ROOT: ";
-
-            foreach (Match m in matches)
-                root += Regex.Match(m.Value, @"\d+").Value + "   ";
-            root += "]";
-            textBoxTreeLog.Text += root;
-
-            GenerateBPlusTree(root, nodes);
         }
 
         private void listViewEntries_MouseClick(object sender, MouseEventArgs e)
@@ -783,55 +718,6 @@ namespace File_Structures
                     f.ShowDialog(this);
                     break;
                 case "Delete": DeleteEntry(selectedEntry); break;
-            }
-        }
-
-        private async Task GenerateBPlusTree(String root, List<String> nodes)
-        {
-            Graph graph;
-            List<EdgeStatement> edges = new List<EdgeStatement>();
-
-            foreach (String node in nodes)
-            {
-                var label = ImmutableDictionary.CreateBuilder<Id, Id>();
-                label.Add("label", "");
-                
-                edges.Add(new EdgeStatement(root, node, label.ToImmutable()));
-            }
-
-            // Note: Double assign because Shields.Graphviz doesn't 
-            //       allow to add Statements after instance creation.
-            if(nodes.Count == 1)
-            {
-                graph = Graph.Directed
-                        .Add(AttributeStatement.Graph.Set("labelloc", "t"))
-                        .Add(AttributeStatement.Node.Set("style", "filled"))
-                        .Add(AttributeStatement.Node.Set("shape", "box"))
-                        .Add(AttributeStatement.Node.Set("fillcolor", "#ECECEC"))
-                        .Add(AttributeStatement.Edge.Set("color", "#0097A7"))
-                        .Add(AttributeStatement.Node.Set("color", "#0097A7"))
-                        .Add(NodeStatement.For(nodes[0]));
-            } else
-            {
-                graph = Graph.Directed
-                        .Add(AttributeStatement.Graph.Set("labelloc", "t"))
-                        .Add(AttributeStatement.Node.Set("style", "filled"))
-                        .Add(AttributeStatement.Node.Set("shape", "box"))
-                        .Add(AttributeStatement.Node.Set("fillcolor", "#ECECEC"))
-                        .Add(AttributeStatement.Edge.Set("color", "#0097A7"))
-                        .Add(AttributeStatement.Node.Set("color", "#0097A7"))
-                        .AddRange(edges);
-            }
-            
-            using (Stream file = System.IO.File.Create("Tree.png"))
-            {
-                await renderer.RunAsync(
-                    graph, file,
-                    RendererLayouts.Dot,
-                    RendererFormats.Png,
-                    CancellationToken.None);
-
-                pictureBoxTree.Image = Image.FromStream(file);
             }
         }
     }
