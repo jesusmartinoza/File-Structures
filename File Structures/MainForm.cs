@@ -632,6 +632,7 @@ namespace File_Structures
 
                 ReloadEntitiesGridView();
                 ReloadAttrsGridView();
+                emptyState.Visible = false;
             }
         }
 

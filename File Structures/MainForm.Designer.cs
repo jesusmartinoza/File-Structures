@@ -48,6 +48,8 @@
             this.btnAddEntry = new MaterialSkin.Controls.MaterialRaisedButton();
             this.tabPage4 = new System.Windows.Forms.TabPage();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
+            this.pictureBoxTree = new System.Windows.Forms.PictureBox();
+            this.textBoxTreeLog = new System.Windows.Forms.TextBox();
             this.listViewIndexRep = new MaterialSkin.Controls.MaterialListView();
             this.columnHeader2 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader3 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
@@ -61,8 +63,7 @@
             this.contextMenuEntry = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem2 = new System.Windows.Forms.ToolStripMenuItem();
-            this.textBoxTreeLog = new System.Windows.Forms.TextBox();
-            this.pictureBoxTree = new System.Windows.Forms.PictureBox();
+            this.emptyState = new System.Windows.Forms.PictureBox();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridViewEntities)).BeginInit();
             this.tabControl.SuspendLayout();
             this.tabPage1.SuspendLayout();
@@ -73,9 +74,10 @@
             this.groupBox1.SuspendLayout();
             this.tabPage4.SuspendLayout();
             this.groupBox3.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBoxTree)).BeginInit();
             this.groupBox2.SuspendLayout();
             this.contextMenuEntry.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBoxTree)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.emptyState)).BeginInit();
             this.SuspendLayout();
             // 
             // dataGridViewEntities
@@ -135,6 +137,7 @@
             // 
             // tabPage1
             // 
+            this.tabPage1.Controls.Add(this.emptyState);
             this.tabPage1.Controls.Add(this.dataGridViewEntities);
             this.tabPage1.Controls.Add(this.btnAddEntity);
             this.tabPage1.Location = new System.Drawing.Point(4, 22);
@@ -303,6 +306,28 @@
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "Index representation";
             // 
+            // pictureBoxTree
+            // 
+            this.pictureBoxTree.Location = new System.Drawing.Point(6, 19);
+            this.pictureBoxTree.Name = "pictureBoxTree";
+            this.pictureBoxTree.Size = new System.Drawing.Size(640, 144);
+            this.pictureBoxTree.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.pictureBoxTree.TabIndex = 2;
+            this.pictureBoxTree.TabStop = false;
+            this.pictureBoxTree.Visible = false;
+            // 
+            // textBoxTreeLog
+            // 
+            this.textBoxTreeLog.BackColor = System.Drawing.SystemColors.ControlLightLight;
+            this.textBoxTreeLog.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.textBoxTreeLog.Location = new System.Drawing.Point(6, 169);
+            this.textBoxTreeLog.Multiline = true;
+            this.textBoxTreeLog.Name = "textBoxTreeLog";
+            this.textBoxTreeLog.ReadOnly = true;
+            this.textBoxTreeLog.Size = new System.Drawing.Size(635, 192);
+            this.textBoxTreeLog.TabIndex = 1;
+            this.textBoxTreeLog.Visible = false;
+            // 
             // listViewIndexRep
             // 
             this.listViewIndexRep.BackColor = System.Drawing.SystemColors.Menu;
@@ -439,27 +464,15 @@
             this.toolStripMenuItem2.Size = new System.Drawing.Size(107, 22);
             this.toolStripMenuItem2.Text = "Delete";
             // 
-            // textBoxTreeLog
+            // emptyState
             // 
-            this.textBoxTreeLog.BackColor = System.Drawing.SystemColors.ControlLightLight;
-            this.textBoxTreeLog.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.textBoxTreeLog.Location = new System.Drawing.Point(6, 169);
-            this.textBoxTreeLog.Multiline = true;
-            this.textBoxTreeLog.Name = "textBoxTreeLog";
-            this.textBoxTreeLog.ReadOnly = true;
-            this.textBoxTreeLog.Size = new System.Drawing.Size(635, 192);
-            this.textBoxTreeLog.TabIndex = 1;
-            this.textBoxTreeLog.Visible = false;
-            // 
-            // pictureBoxTree
-            // 
-            this.pictureBoxTree.Location = new System.Drawing.Point(6, 19);
-            this.pictureBoxTree.Name = "pictureBoxTree";
-            this.pictureBoxTree.Size = new System.Drawing.Size(640, 144);
-            this.pictureBoxTree.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
-            this.pictureBoxTree.TabIndex = 2;
-            this.pictureBoxTree.TabStop = false;
-            this.pictureBoxTree.Visible = false;
+            this.emptyState.ImageLocation = "C:\\Users\\hongo\\Documents\\File-Structures\\File Structures\\empty_state.png";
+            this.emptyState.Location = new System.Drawing.Point(127, 32);
+            this.emptyState.Name = "emptyState";
+            this.emptyState.Size = new System.Drawing.Size(610, 252);
+            this.emptyState.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.emptyState.TabIndex = 3;
+            this.emptyState.TabStop = false;
             // 
             // MainForm
             // 
@@ -487,9 +500,10 @@
             this.tabPage4.ResumeLayout(false);
             this.groupBox3.ResumeLayout(false);
             this.groupBox3.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBoxTree)).EndInit();
             this.groupBox2.ResumeLayout(false);
             this.contextMenuEntry.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBoxTree)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.emptyState)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -529,6 +543,7 @@
         private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem2;
         private System.Windows.Forms.TextBox textBoxTreeLog;
         private System.Windows.Forms.PictureBox pictureBoxTree;
+        private System.Windows.Forms.PictureBox emptyState;
     }
 }
 
