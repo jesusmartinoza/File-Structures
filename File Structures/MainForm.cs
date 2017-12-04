@@ -204,7 +204,7 @@ namespace File_Structures
         private void ReloadEntriesList()
         {
             listViewEntries.Items.Clear();
-            foreach(Entry e in entries.Values)
+            foreach(Entry e in entries.Values.OrderBy(e => e.SearchValue))
             {
                 var listViewItem = new ListViewItem(Array.ConvertAll(e.Data, d => d.ToString()));
                 listViewItem.Name = e.PrimaryValue;
@@ -421,12 +421,11 @@ namespace File_Structures
             {
                 List<Entry> sorted;
 
-                // if first entry, reserve index space in file
-                if (selectedEntity.DataAddress == -1)
-                    ReserveIndexSpace();
-
                 if(isNew)
                 {
+                    // if first entry, reserve index space in file
+                    if (selectedEntity.DataAddress == -1)
+                        ReserveIndexSpace();
                     entry.FileAddress = f.GetSize();
                     AddEntryToList(entry);
                 }
@@ -434,23 +433,40 @@ namespace File_Structures
                     entries[entry.PrimaryValue] = entry;
 
                 ReloadEntriesList();
-                sorted = entries.Values.ToList();
+                sorted = entries.Values.OrderBy(e => e.SearchValue).ToList();
 
                 // Get previous item and modify it
                 int prevIndex = sorted.IndexOf(entry) - 1;
+                int nextIndex = sorted.IndexOf(entry) + 1;
+
+
+                if (nextIndex < sorted.Count)
+                {
+                    Entry nextEntry = sorted[nextIndex];
+
+                    // Just update when is not the same
+                    if (nextEntry.FileAddress != entry.NextEntryAddress)
+                        nextEntry.NextEntryAddress = entry.NextEntryAddress;
+
+                    entry.NextEntryAddress = nextEntry.FileAddress;
+
+                    f.WriteEntry(nextEntry);
+                }
 
                 if (prevIndex != -1)
                 {
                     Entry prevEntry = sorted[prevIndex];
 
-                    entry.NextEntryAddress = prevEntry.NextEntryAddress;
+                    if(isNew)
+                        entry.NextEntryAddress = prevEntry.NextEntryAddress;
                     prevEntry.NextEntryAddress = entry.FileAddress; // Address where would be located the new entry.
 
                     f.WriteEntry(prevEntry);
                 }
                 else
                 {
-                    entry.NextEntryAddress = selectedEntity.DataAddress;
+                    if(entry.FileAddress != selectedEntity.DataAddress)
+                        entry.NextEntryAddress = selectedEntity.DataAddress;
                     selectedEntity.DataAddress = entry.FileAddress;
 
                     f.WriteEntity(selectedEntity);

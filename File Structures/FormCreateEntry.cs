@@ -17,10 +17,12 @@ namespace File_Structures
         List<Attribute> attributes;
         CreateEntryListener listener;
         Entry entry;
+        Boolean isNew;
 
         public FormCreateEntry(CreateEntryListener listener, String entityName, List<Attribute> attributes)
         {
             Init();
+            isNew = true;
             Text = "Create entry for " + entityName;
             this.listener = listener;
             this.attributes = attributes.Where(a => a.EntityName == entityName).ToList();
@@ -42,6 +44,7 @@ namespace File_Structures
         public FormCreateEntry(CreateEntryListener listener, Entry entry, Entity entity, List<Attribute> attributes)
         {
             Init();
+            isNew = false;
             Text = "Modify entry " + entry.PrimaryValue + " of " + entity.Name.Trim();
             btnCreate.Text = "Modify";
             this.listener = listener;
@@ -74,13 +77,9 @@ namespace File_Structures
         private void btnCreate_Click(object sender, EventArgs e)
         {
             Boolean valid = true;
-            Boolean isNew = false;
 
             if (entry == null)
-            {
                 entry = new Entry(attributes.Count());
-                isNew = true;
-            }
 
             int i = 0;
             foreach(DataGridViewTextBoxCell cell in gridViewAttrs.Rows[0].Cells)
@@ -117,16 +116,18 @@ namespace File_Structures
                 i++;
             }
 
-            if (entry.PrimaryValue == null)
+            /*if (entry.PrimaryValue == null)
             {
                 MessageBox.Show("Every entry needs a primary key");
                 valid = false;
-            }
+            }*/
+            if (entry.PrimaryValue == null)
+                entry.PrimaryValue = entry.GetHashCode().ToString();
 
             if(valid)
             {
                 listener.OnCreateEntry(entry, isNew);
-                entry = null;
+                Close();
             }
         }
     }

@@ -60,6 +60,10 @@ namespace File_Structures
         public SortedList<object, string> IndexData { get => indexData; set => indexData = value; }
         public BPlusTree<int, long> Tree { get => tree; set => tree = value; }
 
+        /**
+         *  Constructor used to create an attribute in memory.
+         *  By default all addresses are -1
+         */
         public Attribute(string name, char type, int length, IndexType indexType, string entityName)
         {
             Name = name;
@@ -105,6 +109,11 @@ namespace File_Structures
             }
         }
 
+        /**
+         * Generate B+ Tree Log and print on a TextBox
+         * @param textBoxTreeLog - TextBox to print log.
+         * @param pictureBox - PictureBox to show de graph
+         */
         public void SetBPlusTreeLog(TextBox textBoxTreeLog, PictureBox pictureBox)
         {
             var path = @"C:\Users\hongo\Documents\File-Structures\File Structures\bin\Debug\Tree\TreeLog.txt";
@@ -159,6 +168,12 @@ namespace File_Structures
             GenerateBPlusTreeImage(root, nodes, pictureBox);
         }
 
+        /**
+         * Iterate over nodes list and create Graph representation using GraphViz
+         * @param root - String that shows root nodes
+         * @param nodes - Leafs of the tree
+         * @param pictureBox - PictureBox instance to show the generated image
+         */
         private async Task GenerateBPlusTreeImage(String root, List<String> nodes, PictureBox pictureBox)
         {
             Graph graph;

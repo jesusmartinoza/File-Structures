@@ -75,6 +75,7 @@ namespace File_Structures
         /**
          * Reserve space in file for 20 entries with 20 blocks each one.
          * Update attribute IndexAddress field
+         * @param attribute - Attribute to update
          */
         public void ReserveSparseIndexSpace(Attribute attribute)
         {
@@ -227,9 +228,11 @@ namespace File_Structures
                 {
                     if (attributes[i].Type == 'S')
                         entry.Data[i + 1] = br.ReadString();
-                    else
+                    else if(attributes[i].Length == 4)
                         entry.Data[i + 1] = br.ReadInt32();
-
+                    else if (attributes[i].Length == 8)
+                        entry.Data[i + 1] = br.ReadInt64();
+                    
                     switch (attributes[i].IndexTypeV)
                     {
                         case Attribute.IndexType.primaryKey:
@@ -247,7 +250,8 @@ namespace File_Structures
                 entry.NextEntryAddress = br.ReadInt64();
                 dataPtr = entry.NextEntryAddress;
 
-                dic.Add(entry.PrimaryValue, entry);
+                if(entry.PrimaryValue != null && !dic.ContainsKey(entry.PrimaryValue))
+                    dic.Add(entry.PrimaryValue, entry);
             }
             Close();
 
@@ -312,6 +316,7 @@ namespace File_Structures
 
         /**
          * Write sorted list in file
+         * @param attr - Attribute to write index data.
          */
         public void WriteIndexData(Attribute attr)
         {
@@ -341,7 +346,6 @@ namespace File_Structures
                         bw.Write(kvp.Value);
                 }
             }
-            
             Close();
         }
 
