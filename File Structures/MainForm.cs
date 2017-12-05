@@ -267,9 +267,9 @@ namespace File_Structures
                 {
                     case Attribute.IndexType.primaryKey:
                         if (isNew)
-                            a.IndexData.Add(entry.PrimaryValue, entry.FileAddress.ToString());
+                            a.IndexData.Add(int.Parse(entry.PrimaryValue), entry.FileAddress.ToString());
                         else
-                            a.IndexData.Remove(entry.PrimaryValue);
+                            a.IndexData.Remove(int.Parse(entry.PrimaryValue));
                         f.WriteIndexData(a);
                         break;
                     case Attribute.IndexType.foreignKey:
@@ -287,7 +287,7 @@ namespace File_Structures
                             var value = repeated.First().Value + "," + entry.FileAddress.ToString();
                             a.IndexData[entry.ForeignValue] = value;
                         } else {
-                            a.IndexData.Add(entry.ForeignValue, entry.FileAddress.ToString());
+                            a.IndexData.Add(int.Parse(entry.ForeignValue), entry.FileAddress.ToString());
                         }
                         f.WriteIndexData(a);
                         break;
@@ -412,7 +412,7 @@ namespace File_Structures
          * Verify if primary key already exists.
          * Add Entry to entries list and write in file.
          */
-        public void OnCreateEntry(Entry entry, Boolean isNew)
+        public void OnCreateEntry(Entry entry, Boolean isNew, Entry originalEntry)
         {
             if(entries.ContainsKey(entry.PrimaryValue) && isNew)
             {
@@ -430,7 +430,11 @@ namespace File_Structures
                     AddEntryToList(entry);
                 }
                 else
-                    entries[entry.PrimaryValue] = entry;
+                {
+                    WriteIndexValue(originalEntry, isNew, true);
+                    entries.Remove(originalEntry.PrimaryValue);
+                    entries.Add(entry.PrimaryValue, entry);
+                }
 
                 ReloadEntriesList();
                 sorted = entries.Values.OrderBy(e => e.SearchValue).ToList();
@@ -439,13 +443,12 @@ namespace File_Structures
                 int prevIndex = sorted.IndexOf(entry) - 1;
                 int nextIndex = sorted.IndexOf(entry) + 1;
 
-
                 if (nextIndex < sorted.Count)
                 {
                     Entry nextEntry = sorted[nextIndex];
 
                     // Just update when is not the same
-                    if (nextEntry.FileAddress != entry.NextEntryAddress)
+                    if (nextEntry.FileAddress != entry.NextEntryAddress && isNew)
                         nextEntry.NextEntryAddress = entry.NextEntryAddress;
 
                     entry.NextEntryAddress = nextEntry.FileAddress;
@@ -474,7 +477,7 @@ namespace File_Structures
 
                 // Write new entry in file and reload listview
                 f.WriteEntry(entry);
-                WriteIndexValue(entry, isNew);
+                WriteIndexValue(entry, true);
                 ReloadEntriesList();
             }
         }
@@ -571,7 +574,7 @@ namespace File_Structures
                 MessageBox.Show("Select entity");
             else
             {
-                FormCreateEntry f = new FormCreateEntry(this, listViewEntities.FocusedItem.Text, attributes);
+                FormCreateEntry f = new FormCreateEntry(this, selectedEntity.Name.Trim(), attributes);
                 f.ShowDialog(this);
             }
         }

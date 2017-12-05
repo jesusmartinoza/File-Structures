@@ -199,7 +199,7 @@ namespace File_Structures
                     if (key == "-1" || value.Contains("-1") || value == String.Empty)
                         ptr = -1;
                     else
-                        list.Add(key, value);
+                        list.Add(int.Parse(key), value);
                 }
             }
             Close();

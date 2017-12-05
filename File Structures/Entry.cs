@@ -28,6 +28,21 @@ namespace File_Structures
             FileAddress = -1;
             NextEntryAddress = -1;
         }
-        
+
+        /**
+         * Copy constructor
+         * 
+         */
+        public Entry(Entry entry)
+        {
+            Data = new object[entry.Data.Length];
+            entry.Data.CopyTo(Data, 0);
+            FileAddress = entry.FileAddress;
+            PrimaryValue = entry.PrimaryValue;
+            ForeignValue = entry.ForeignValue;
+            SearchValue = entry.SearchValue;
+            NextEntryAddress = entry.NextEntryAddress;
+            BPlusValue = entry.BPlusValue;
+        }
     }
 }
