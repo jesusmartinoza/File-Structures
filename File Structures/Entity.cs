@@ -49,8 +49,7 @@ namespace File_Structures
         public override bool Equals(object obj)
         {
             var entity = obj as Entity;
-            return entity != null &&
-                   Name == entity.Name;
+            return entity != null && Name == entity.Name;
         }
     }
 }

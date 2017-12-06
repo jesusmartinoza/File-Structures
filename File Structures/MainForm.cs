@@ -266,7 +266,7 @@ namespace File_Structures
                 switch (a.IndexTypeV)
                 {
                     case Attribute.IndexType.primaryKey:
-                        if (isNew)
+                        if (isNew && !a.IndexData.ContainsKey(int.Parse(entry.PrimaryValue)))
                             a.IndexData.Add(int.Parse(entry.PrimaryValue), entry.FileAddress.ToString());
                         else
                             a.IndexData.Remove(int.Parse(entry.PrimaryValue));
@@ -419,65 +419,65 @@ namespace File_Structures
                 MessageBox.Show("An entry with value " + entry.PrimaryValue + " already exists in file.");
             } else
             {
-                List<Entry> sorted;
+                List<Entry> items = entries.Values.OrderBy(e => e.SearchValue).ToList();
+                int position = 0;
+
+                // Find position of the element in the list
+                for (; position < items.Count; position++)
+                    if (entry.CompareTo(items[position]) < 0)
+                        break;
+
+                // If first entry, reserve index space in file
+                if (selectedEntity.DataAddress == -1)
+                    ReserveIndexSpace();
+
+                if(isNew)
+                    entry.FileAddress = f.GetSize();
+
+                // If first position, update header
+                if (position == 0)
+                {
+                    entry.NextEntryAddress = selectedEntity.DataAddress;
+                    selectedEntity.DataAddress = entry.FileAddress;
+                    f.WriteEntity(selectedEntity);
+                } else
+                {
+                    long aux = entry.NextEntryAddress;
+                    // Update prev item
+                    Entry prevEntry = items[position - 1];
+
+                    entry.NextEntryAddress = prevEntry.NextEntryAddress;
+                    prevEntry.NextEntryAddress = entry.FileAddress; // Address where would be located the new entry.
+
+                    f.WriteEntry(prevEntry);
+
+                    // Update next item
+                    if(position < items.Count - 1 && !isNew)
+                    {
+                        Entry nextEntry = items[position];
+                        nextEntry.NextEntryAddress = aux;
+                        f.WriteEntry(nextEntry);
+                    }
+                }
 
                 if(isNew)
                 {
-                    // if first entry, reserve index space in file
-                    if (selectedEntity.DataAddress == -1)
-                        ReserveIndexSpace();
-                    entry.FileAddress = f.GetSize();
                     AddEntryToList(entry);
-                }
-                else
+                } else
                 {
                     WriteIndexValue(originalEntry, isNew, true);
                     entries.Remove(originalEntry.PrimaryValue);
                     entries.Add(entry.PrimaryValue, entry);
                 }
 
-                ReloadEntriesList();
-                sorted = entries.Values.OrderBy(e => e.SearchValue).ToList();
-
-                // Get previous item and modify it
-                int prevIndex = sorted.IndexOf(entry) - 1;
-                int nextIndex = sorted.IndexOf(entry) + 1;
-
-                if (nextIndex < sorted.Count)
-                {
-                    Entry nextEntry = sorted[nextIndex];
-
-                    // Just update when is not the same
-                    if (nextEntry.FileAddress != entry.NextEntryAddress && isNew)
-                        nextEntry.NextEntryAddress = entry.NextEntryAddress;
-
-                    entry.NextEntryAddress = nextEntry.FileAddress;
-
-                    f.WriteEntry(nextEntry);
-                }
-
-                if (prevIndex != -1)
-                {
-                    Entry prevEntry = sorted[prevIndex];
-
-                    if(isNew)
-                        entry.NextEntryAddress = prevEntry.NextEntryAddress;
-                    prevEntry.NextEntryAddress = entry.FileAddress; // Address where would be located the new entry.
-
-                    f.WriteEntry(prevEntry);
-                }
-                else
-                {
-                    if(isNew)
-                        entry.NextEntryAddress = selectedEntity.DataAddress;
-                    selectedEntity.DataAddress = entry.FileAddress;
-
-                    f.WriteEntity(selectedEntity);
-                }
-
-                // Write new entry in file and reload listview
                 f.WriteEntry(entry);
                 WriteIndexValue(entry, true);
+                
+                List<Entry> sorted = entries.Values.OrderBy(e => e.SearchValue).ToList();
+                Entry last = sorted.Last();
+
+                last.NextEntryAddress = -1;
+                f.WriteEntry(last);
                 ReloadEntriesList();
             }
         }

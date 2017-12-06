@@ -44,5 +44,16 @@ namespace File_Structures
             NextEntryAddress = entry.NextEntryAddress;
             BPlusValue = entry.BPlusValue;
         }
+
+        /**
+         * Compare entry using searchValue
+         */
+        public int CompareTo(Entry entry)
+        {
+            if (SearchValue == null || entry.SearchValue == null)
+                return 1;
+            else
+                return String.Compare(SearchValue, entry.SearchValue, StringComparison.InvariantCultureIgnoreCase);
+        }
     }
 }
