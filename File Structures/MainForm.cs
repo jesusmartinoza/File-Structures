@@ -468,7 +468,7 @@ namespace File_Structures
                 }
                 else
                 {
-                    if(entry.FileAddress != selectedEntity.DataAddress)
+                    if(isNew)
                         entry.NextEntryAddress = selectedEntity.DataAddress;
                     selectedEntity.DataAddress = entry.FileAddress;
 
