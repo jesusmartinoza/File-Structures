@@ -278,14 +278,14 @@ namespace File_Structures
 
                         if (!isNew)
                         {
-                            var val = a.IndexData[entry.ForeignValue];
+                            var val = a.IndexData[int.Parse(entry.ForeignValue)];
                             val = val.Replace(entry.FileAddress.ToString(), "").Replace(",,", ",");
-                            a.IndexData[entry.ForeignValue] = val;
+                            a.IndexData[int.Parse(entry.ForeignValue)] = val;
                         }
                         else if (repeated.Count() > 0)
                         {
                             var value = repeated.First().Value + "," + entry.FileAddress.ToString();
-                            a.IndexData[entry.ForeignValue] = value;
+                            a.IndexData[int.Parse(entry.ForeignValue)] = value;
                         } else {
                             a.IndexData.Add(int.Parse(entry.ForeignValue), entry.FileAddress.ToString());
                         }
@@ -651,6 +651,7 @@ namespace File_Structures
                 } else if(!saveFileDialog.FileName.Equals(f.Fs.Name)) {
                     System.IO.File.Copy(f.Fs.Name, saveFileDialog.FileName, true);
                 }
+                emptyState.Visible = false;
             }
         }
 
@@ -685,6 +686,9 @@ namespace File_Structures
             }
         }
 
+        /**
+         * Fill Index info table
+         */
         private void listViewIndexAttr_SelectedIndexChanged(object sender, EventArgs e)
         {
             var list = (MaterialListView)sender;
@@ -698,7 +702,7 @@ namespace File_Structures
 
             foreach (KeyValuePair<object, string> kvp in sorted)
             {
-                string[] row = new string[] { kvp.Key.ToString(), kvp.Value };
+                string[] row = new string[] { kvp.Key.ToString(), kvp.Value};
                 listViewIndexRep.Items.Add(new ListViewItem(row));
             }
 

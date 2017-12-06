@@ -130,7 +130,11 @@ namespace File_Structures
             if(valid)
             {
                 listener.OnCreateEntry(entry, isNew, originalEntry);
-                Close();
+                entry = null;
+                originalEntry = null;
+
+                foreach (DataGridViewTextBoxCell cell in gridViewAttrs.Rows[0].Cells)
+                    cell.Value = "";
             }
         }
     }
