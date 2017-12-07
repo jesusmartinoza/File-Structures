@@ -75,6 +75,22 @@ namespace File_Structures
             IndexAddress = -1;
             NexAttributeAddress = -1;
             IndexData = new SortedList<object, string>();
+
+            if (indexType == IndexType.bPlusTree)
+            {
+                BPlusTree<int, long>.Options optionsTree = new BPlusTree<int, long>.Options(
+                                    PrimitiveSerializer.Int32, PrimitiveSerializer.Int64, Comparer<int>.Default)
+                {
+                    CreateFile = CreatePolicy.IfNeeded,
+                    FileName = @"C:\Users\hongo\Documents\File-Structures\File Structures\bin\Debug\Tree\" + name.Trim() + ".dat"
+                };
+
+                renderer = new Renderer(@"C:\Program Files (x86)\Graphviz2.38\bin");
+
+                //optionsTree.BTreeOrder = 5;
+                optionsTree.MaximumValueNodes = 4;
+                Tree = new BPlusTree<int, long>(optionsTree);
+            }
         }
 
         /**
@@ -118,7 +134,6 @@ namespace File_Structures
         {
             var path = @"C:\Users\hongo\Documents\File-Structures\File Structures\bin\Debug\Tree\TreeLog.txt";
             String log = "";
-            String root = "[   ";
             List<String> nodes = new List<String>();
 
             // Write log in file
@@ -155,36 +170,68 @@ namespace File_Structures
             textBoxTreeLog.Text = log;
 
             // Extract Root
+            String root = "[   ";
             Regex reg = new Regex(@"}.*?{");
             MatchCollection matches = reg.Matches(log.Replace("\r\n", ""));
+            List<Int64> rootInfo = new List<Int64>();
 
-            textBoxTreeLog.Text += "\r\n\r\n ROOT: ";
+            textBoxTreeLog.Text += "\r\n\r\n VALUES: ";
 
             foreach (Match m in matches)
-                root += Regex.Match(m.Value, @"\d+").Value + "   ";
+            {
+                int value = int.Parse(Regex.Match(m.Value, @"\d+").Value);
+                rootInfo.Add(value);
+                root += value + "   ";
+            }
+
             root += "]";
             textBoxTreeLog.Text += root;
 
-            GenerateBPlusTreeImage(root, nodes, pictureBox);
+            GenerateBPlusTreeImage(rootInfo, nodes, pictureBox);
         }
 
         /**
          * Iterate over nodes list and create Graph representation using GraphViz
-         * @param root - String that shows root nodes
+         * @param root - List that shows root nodes
          * @param nodes - Leafs of the tree
          * @param pictureBox - PictureBox instance to show the generated image
          */
-        private async Task GenerateBPlusTreeImage(String root, List<String> nodes, PictureBox pictureBox)
+        private async Task GenerateBPlusTreeImage(List<Int64> rootInfo, List<String> nodes, PictureBox pictureBox)
         {
             Graph graph;
+            String root = "[   ";
+            List<String> middleNodes = new List<String>();
             List<EdgeStatement> edges = new List<EdgeStatement>();
+            int midIndex = rootInfo.Count / 2;
 
-            foreach (String node in nodes)
+            if (rootInfo.Count > 4 && rootInfo.Count < 10)
+            {
+                root = "[   " + rootInfo[midIndex] + "   ]";
+                middleNodes.Add("[\t"); // Left
+                middleNodes.Add("[\t"); // Right
+
+                for (int i = 0; i < rootInfo.Count; i++)
+                    if(i != midIndex)
+                        middleNodes[i / 5] += rootInfo[i] + "  ";
+            }
+
+            // Generate relations between nodes
+            // Root to middles
+            foreach (var mNode in middleNodes)
             {
                 var label = ImmutableDictionary.CreateBuilder<Id, Id>();
                 label.Add("label", "");
 
-                edges.Add(new EdgeStatement(root, node, label.ToImmutable()));
+                edges.Add(new EdgeStatement(root, mNode, label.ToImmutable()));
+            }
+
+            // Middles to leafs
+            for(int i = 0; i < nodes.Count; i++)
+            {
+                var label = ImmutableDictionary.CreateBuilder<Id, Id>();
+                label.Add("label", "");
+
+                edges.Add(new EdgeStatement(middleNodes[i / 5], nodes[i], label.ToImmutable()));
             }
 
             // Note: Double assign because Shields.Graphviz doesn't 
@@ -223,5 +270,6 @@ namespace File_Structures
                 pictureBox.Image = Image.FromStream(file);
             }
         }
+
     }
 }

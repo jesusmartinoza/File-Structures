@@ -103,13 +103,15 @@ namespace File_Structures
          */
         private void MergeEntriesAndTree()
         {
-            /*foreach(var t in tree)
-            {
-                var entry = entries.Where(e => e.Value.FileAddress == t.Value);
+            foreach(var attr in attributes)
+                if(attr.Tree != null)
+                    foreach(var t in attr.Tree)
+                    {
+                        var entry = entries.Where(e => e.Value.FileAddress == t.Value);
 
-                if(entry.Count() > 0)
-                    entry.First().Value.BPlusValue = t.Key.ToString();
-            }*/
+                        if(entry.Count() > 0)
+                            entry.First().Value.BPlusValue = t.Key.ToString();
+                    }
         }
 
         /**
