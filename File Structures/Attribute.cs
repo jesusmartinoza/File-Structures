@@ -204,7 +204,14 @@ namespace File_Structures
             List<EdgeStatement> edges = new List<EdgeStatement>();
             int midIndex = rootInfo.Count / 2;
 
-            if (rootInfo.Count > 4 && rootInfo.Count < 10)
+            if(rootInfo.Count <= 4)
+            {
+                middleNodes.Add("[\t"); // Root
+                foreach (var item in rootInfo)
+                    middleNodes[0] += item + "  ";
+                middleNodes[0] += "\t]";
+
+            } else if (rootInfo.Count > 4 && rootInfo.Count < 10)
             {
                 root = "[   " + rootInfo[midIndex] + "   ]";
                 middleNodes.Add("[\t"); // Left
@@ -213,17 +220,21 @@ namespace File_Structures
                 for (int i = 0; i < rootInfo.Count; i++)
                     if(i != midIndex)
                         middleNodes[i / 5] += rootInfo[i] + "  ";
+
+                middleNodes[0] += "\t]";
+                middleNodes[1] += "\t]";
             }
 
             // Generate relations between nodes
             // Root to middles
-            foreach (var mNode in middleNodes)
-            {
-                var label = ImmutableDictionary.CreateBuilder<Id, Id>();
-                label.Add("label", "");
+            if(middleNodes.Count > 1)
+                foreach (var mNode in middleNodes)
+                {
+                    var label = ImmutableDictionary.CreateBuilder<Id, Id>();
+                    label.Add("label", "");
 
-                edges.Add(new EdgeStatement(root, mNode, label.ToImmutable()));
-            }
+                    edges.Add(new EdgeStatement(root, mNode, label.ToImmutable()));
+                }
 
             // Middles to leafs
             for(int i = 0; i < nodes.Count; i++)
@@ -266,8 +277,8 @@ namespace File_Structures
                     RendererLayouts.Dot,
                     RendererFormats.Png,
                     CancellationToken.None);
-
-                pictureBox.Image = Image.FromStream(file);
+                
+                pictureBox.ImageLocation = (file as FileStream).Name;
             }
         }
 

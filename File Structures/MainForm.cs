@@ -712,12 +712,14 @@ namespace File_Structures
             {
                 textBoxTreeLog.Visible = true;
                 pictureBoxTree.Visible = true;
+                iconEye.Visible = true;
                 var attr = attributes.Find(a => a.Name.Trim() == list.FocusedItem.Text);
                 attr.SetBPlusTreeLog(textBoxTreeLog, pictureBoxTree);
             } else
             {
                 textBoxTreeLog.Visible = false;
                 pictureBoxTree.Visible = false;
+                iconEye.Visible = false;
             }
         }
 
@@ -744,6 +746,11 @@ namespace File_Structures
                     break;
                 case "Delete": DeleteEntry(selectedEntry); break;
             }
+        }
+
+        private void iconEye_Click(object sender, EventArgs e)
+        {
+            System.Diagnostics.Process.Start(pictureBoxTree.ImageLocation);
         }
     }
 }

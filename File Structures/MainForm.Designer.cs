@@ -36,6 +36,7 @@
             this.tabSelector = new MaterialSkin.Controls.MaterialTabSelector();
             this.tabControl = new MaterialSkin.Controls.MaterialTabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
+            this.emptyState = new System.Windows.Forms.PictureBox();
             this.tabPage2 = new System.Windows.Forms.TabPage();
             this.btnAddAttr = new MaterialSkin.Controls.MaterialRaisedButton();
             this.dataGridViewAttrs = new System.Windows.Forms.DataGridView();
@@ -63,10 +64,11 @@
             this.contextMenuEntry = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem2 = new System.Windows.Forms.ToolStripMenuItem();
-            this.emptyState = new System.Windows.Forms.PictureBox();
+            this.iconEye = new System.Windows.Forms.PictureBox();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridViewEntities)).BeginInit();
             this.tabControl.SuspendLayout();
             this.tabPage1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.emptyState)).BeginInit();
             this.tabPage2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridViewAttrs)).BeginInit();
             this.tabPage3.SuspendLayout();
@@ -77,7 +79,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxTree)).BeginInit();
             this.groupBox2.SuspendLayout();
             this.contextMenuEntry.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.emptyState)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.iconEye)).BeginInit();
             this.SuspendLayout();
             // 
             // dataGridViewEntities
@@ -147,6 +149,16 @@
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "Entities";
             this.tabPage1.UseVisualStyleBackColor = true;
+            // 
+            // emptyState
+            // 
+            this.emptyState.ImageLocation = "C:\\Users\\hongo\\Documents\\File-Structures\\File Structures\\empty_state.png";
+            this.emptyState.Location = new System.Drawing.Point(127, 32);
+            this.emptyState.Name = "emptyState";
+            this.emptyState.Size = new System.Drawing.Size(610, 252);
+            this.emptyState.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.emptyState.TabIndex = 3;
+            this.emptyState.TabStop = false;
             // 
             // tabPage2
             // 
@@ -296,6 +308,7 @@
             // 
             // groupBox3
             // 
+            this.groupBox3.Controls.Add(this.iconEye);
             this.groupBox3.Controls.Add(this.pictureBoxTree);
             this.groupBox3.Controls.Add(this.textBoxTreeLog);
             this.groupBox3.Controls.Add(this.listViewIndexRep);
@@ -310,7 +323,7 @@
             // 
             this.pictureBoxTree.Location = new System.Drawing.Point(6, 19);
             this.pictureBoxTree.Name = "pictureBoxTree";
-            this.pictureBoxTree.Size = new System.Drawing.Size(640, 144);
+            this.pictureBoxTree.Size = new System.Drawing.Size(640, 182);
             this.pictureBoxTree.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.pictureBoxTree.TabIndex = 2;
             this.pictureBoxTree.TabStop = false;
@@ -320,11 +333,11 @@
             // 
             this.textBoxTreeLog.BackColor = System.Drawing.SystemColors.ControlLightLight;
             this.textBoxTreeLog.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.textBoxTreeLog.Location = new System.Drawing.Point(6, 169);
+            this.textBoxTreeLog.Location = new System.Drawing.Point(6, 207);
             this.textBoxTreeLog.Multiline = true;
             this.textBoxTreeLog.Name = "textBoxTreeLog";
             this.textBoxTreeLog.ReadOnly = true;
-            this.textBoxTreeLog.Size = new System.Drawing.Size(635, 192);
+            this.textBoxTreeLog.Size = new System.Drawing.Size(635, 154);
             this.textBoxTreeLog.TabIndex = 1;
             this.textBoxTreeLog.Visible = false;
             // 
@@ -464,15 +477,17 @@
             this.toolStripMenuItem2.Size = new System.Drawing.Size(107, 22);
             this.toolStripMenuItem2.Text = "Delete";
             // 
-            // emptyState
+            // iconEye
             // 
-            this.emptyState.ImageLocation = "C:\\Users\\hongo\\Documents\\File-Structures\\File Structures\\empty_state.png";
-            this.emptyState.Location = new System.Drawing.Point(127, 32);
-            this.emptyState.Name = "emptyState";
-            this.emptyState.Size = new System.Drawing.Size(610, 252);
-            this.emptyState.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
-            this.emptyState.TabIndex = 3;
-            this.emptyState.TabStop = false;
+            this.iconEye.ImageLocation = "C:\\Users\\hongo\\Documents\\File-Structures\\File Structures\\ic_eye.png";
+            this.iconEye.InitialImage = null;
+            this.iconEye.Location = new System.Drawing.Point(592, 19);
+            this.iconEye.Name = "iconEye";
+            this.iconEye.Size = new System.Drawing.Size(49, 44);
+            this.iconEye.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.iconEye.TabIndex = 3;
+            this.iconEye.TabStop = false;
+            this.iconEye.Click += new System.EventHandler(this.iconEye_Click);
             // 
             // MainForm
             // 
@@ -490,6 +505,7 @@
             this.tabControl.ResumeLayout(false);
             this.tabPage1.ResumeLayout(false);
             this.tabPage1.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.emptyState)).EndInit();
             this.tabPage2.ResumeLayout(false);
             this.tabPage2.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridViewAttrs)).EndInit();
@@ -503,7 +519,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxTree)).EndInit();
             this.groupBox2.ResumeLayout(false);
             this.contextMenuEntry.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.emptyState)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.iconEye)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -544,6 +560,7 @@
         private System.Windows.Forms.TextBox textBoxTreeLog;
         private System.Windows.Forms.PictureBox pictureBoxTree;
         private System.Windows.Forms.PictureBox emptyState;
+        private System.Windows.Forms.PictureBox iconEye;
     }
 }
 
