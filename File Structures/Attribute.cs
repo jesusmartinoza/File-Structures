@@ -204,22 +204,28 @@ namespace File_Structures
             List<EdgeStatement> edges = new List<EdgeStatement>();
             int midIndex = rootInfo.Count / 2;
 
-            if(rootInfo.Count <= 4)
+            if (nodes.Count == 1)
             {
                 middleNodes.Add("[\t"); // Root
                 foreach (var item in rootInfo)
                     middleNodes[0] += item + "  ";
                 middleNodes[0] += "\t]";
 
-            } else if (rootInfo.Count > 4 && rootInfo.Count < 10)
+            } else if (nodes.Count <= 5)
+            {
+                middleNodes.Add("[\t"); // Root
+                foreach (var item in rootInfo)
+                    middleNodes[0] += item + "  ";
+                middleNodes[0] += "\t]";
+            } else if (rootInfo.Count < 10)
             {
                 root = "[   " + rootInfo[midIndex] + "   ]";
                 middleNodes.Add("[\t"); // Left
                 middleNodes.Add("[\t"); // Right
 
                 for (int i = 0; i < rootInfo.Count; i++)
-                    if(i != midIndex)
-                        middleNodes[i / 5] += rootInfo[i] + "  ";
+                    if (i != midIndex)
+                        middleNodes[i / (midIndex + 1)] += rootInfo[i] + "  ";
 
                 middleNodes[0] += "\t]";
                 middleNodes[1] += "\t]";
@@ -242,7 +248,10 @@ namespace File_Structures
                 var label = ImmutableDictionary.CreateBuilder<Id, Id>();
                 label.Add("label", "");
 
-                edges.Add(new EdgeStatement(middleNodes[i / 5], nodes[i], label.ToImmutable()));
+                if(middleNodes.Count == 1)
+                    edges.Add(new EdgeStatement(middleNodes[0], nodes[i], label.ToImmutable()));
+                else
+                    edges.Add(new EdgeStatement(middleNodes[i / (midIndex + 1)], nodes[i], label.ToImmutable()));
             }
 
             // Note: Double assign because Shields.Graphviz doesn't 

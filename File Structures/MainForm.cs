@@ -295,7 +295,15 @@ namespace File_Structures
                         break;
                     case Attribute.IndexType.bPlusTree:
                         if(delete)
-                            a.Tree.Remove(Int32.Parse(entry.BPlusValue));
+                        {
+                            try
+                            {
+                                a.Tree.Remove(Int32.Parse(entry.BPlusValue));
+                            } catch(Exception e)
+                            {
+                                // Error on delete
+                            }
+                        }
                         else
                             a.Tree.TryAdd(Int32.Parse(entry.BPlusValue), entry.FileAddress);
                         break;
