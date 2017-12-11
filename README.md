@@ -37,3 +37,9 @@ The value of this index can be repeated multiple times as it groups the indexes 
 ### B+ tree
 The B+ tree index structure is the most widespread of the index structures that maintains its efficiency despite insertion and deletion of the data. A B+ tree index takes the form of a balanced tree where the root paths to each leaf of the tree are of the same length.
 ![](https://github.com/jesusmartinoza/File-Structures/blob/master/Wiki%20Assets/Bplus-tree.png?raw=true)
+
+## Credits
+Created by Jesús Alberto Martínez Mendoza
+
+Material Skin by Ignace Maes https://github.com/IgnaceMaes/MaterialSkin
+
