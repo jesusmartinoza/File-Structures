@@ -35,7 +35,7 @@ namespace File_Structures
         private void btnCreate_Click(object sender, EventArgs e)
         {
             if(textFieldName.Text != String.Empty) {
-                listener.OnCreateEntity(textFieldName.Text);//.PadRight(30));
+                listener.OnCreateEntity(textFieldName.Text);
             }
         }
     }

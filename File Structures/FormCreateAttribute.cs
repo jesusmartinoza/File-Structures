@@ -10,10 +10,10 @@ namespace File_Structures
     public partial class FormCreateAttribute: MaterialForm
     {
         CreateAttributeListener listener;
-        SortedList<string, Entity> entities;
+        Dictionary<string, Entity> entities;
         Dictionary<string, string> relationsData;
 
-        internal FormCreateAttribute(CreateAttributeListener listener, SortedList<string, Entity> entities)
+        internal FormCreateAttribute(CreateAttributeListener listener, Dictionary<string, Entity> entities)
         {
             InitializeComponent();
             CenterToScreen();
@@ -64,8 +64,8 @@ namespace File_Structures
             var entity = entities[comboBoxEntity.GetItemText(comboBoxEntity.SelectedItem)];
             if (textFieldName.Text == String.Empty)
                 MessageBox.Show("Name is required");
-            else if (entities.First(ent => ent.Key == entity.Name.Trim()).Value.DataAddress != -1)
-                MessageBox.Show(entity.Name.Trim() +  " already has entries. Cannot add new attributes :/");
+           /*else if (entities.First(ent => ent.Key == entity.Name.Trim()).Value.DataAddress != -1)
+                MessageBox.Show(entity.Name.Trim() +  " already has entries. Cannot add new attributes :/");*/
             else if(length <= 0)
                 MessageBox.Show("Positive length is required");
             else {

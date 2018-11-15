@@ -17,12 +17,7 @@ using System.Windows.Forms;
 
 namespace File_Structures
 {
-    /**
-    *  +--- Name ---+--- Type ---+--- Length ----+---- Address ----+--- Index Address ----+--- Index Type ----+--- Next Address ----+
-    *        30           1              4                8                  8                      4                  8            
-    *        
-    * 63 bytes in file per attribute
-    **/
+    [Serializable]
     public class Attribute
     {
         public enum IndexType
@@ -36,29 +31,16 @@ namespace File_Structures
         }
 
         string name;
-        long fileAddress;
-        char type;
-        int length;
-        long indexAddress;
         IndexType indexType;
-        long nexAttributeAddress;
         string entityName;
-        SortedList<object, string> indexData;
-
-        // Tree
-        BPlusTree<int, long> tree;
-        IRenderer renderer;
+        char type; // String or Int
+        int length;
 
         public string Name { get => name; set => name = value.PadRight(30); }
-        public long FileAddress { get => fileAddress; set => fileAddress = value; }
+        public IndexType IndexTypeV { get => indexType; set => indexType = value; }
+        public string EntityName { get => entityName; set => entityName = value; }
         public char Type { get => type; set => type = value; }
         public int Length { get => length; set => length = value; }
-        public long IndexAddress { get => indexAddress; set => indexAddress = value; }
-        public IndexType IndexTypeV { get => indexType; set => indexType = value; }
-        public long NexAttributeAddress { get => nexAttributeAddress; set => nexAttributeAddress = value; }
-        public string EntityName { get => entityName; set => entityName = value; }
-        public SortedList<object, string> IndexData { get => indexData; set => indexData = value; }
-        public BPlusTree<int, long> Tree { get => tree; set => tree = value; }
 
         /**
          *  Constructor used to create an attribute in memory.
@@ -71,225 +53,6 @@ namespace File_Structures
             Length = length;
             IndexTypeV = indexType;
             EntityName = entityName.Trim();
-            FileAddress = -1;
-            IndexAddress = -1;
-            NexAttributeAddress = -1;
-            IndexData = new SortedList<object, string>();
-
-            if (indexType == IndexType.bPlusTree)
-            {
-                BPlusTree<int, long>.Options optionsTree = new BPlusTree<int, long>.Options(
-                                    PrimitiveSerializer.Int32, PrimitiveSerializer.Int64, Comparer<int>.Default)
-                {
-                    CreateFile = CreatePolicy.IfNeeded,
-                    FileName = @"C:\Users\hongo\Documents\File-Structures\File Structures\bin\Debug\Tree\" + name.Trim() + ".dat"
-                };
-
-                renderer = new Renderer(@"C:\Program Files (x86)\Graphviz2.38\bin");
-
-                //optionsTree.BTreeOrder = 5;
-                optionsTree.MaximumValueNodes = 4;
-                Tree = new BPlusTree<int, long>(optionsTree);
-            }
         }
-
-        /**
-         * Constructor used when read from file
-         * */
-        public Attribute(string name, long fileAddress, char type, int length, long indexAddress, IndexType indexType, long nexAttributeAddress, string entityName)
-        {
-            this.name = name;
-            this.fileAddress = fileAddress;
-            this.type = type;
-            this.length = length;
-            this.indexAddress = indexAddress;
-            this.indexType = indexType;
-            this.nexAttributeAddress = nexAttributeAddress;
-            this.entityName = entityName;
-            this.IndexData = new SortedList<object, string>();
-
-            if(indexType == IndexType.bPlusTree)
-            {
-                BPlusTree<int, long>.Options optionsTree = new BPlusTree<int, long>.Options(
-                                    PrimitiveSerializer.Int32, PrimitiveSerializer.Int64, Comparer<int>.Default)
-                {
-                    CreateFile = CreatePolicy.IfNeeded,
-                    FileName = @"C:\Users\hongo\Documents\File-Structures\File Structures\bin\Debug\Tree\" + name.Trim() + ".dat"
-                };
-
-                renderer = new Renderer(@"C:\Program Files (x86)\Graphviz2.38\bin");
-
-                //optionsTree.BTreeOrder = 5;
-                optionsTree.MaximumValueNodes = 4;
-                Tree = new BPlusTree<int, long>(optionsTree);
-            }
-        }
-
-        /**
-         * Generate B+ Tree Log and print on a TextBox
-         * @param textBoxTreeLog - TextBox to print log.
-         * @param pictureBox - PictureBox to show de graph
-         */
-        public void SetBPlusTreeLog(TextBox textBoxTreeLog, PictureBox pictureBox)
-        {
-            var path = @"C:\Users\hongo\Documents\File-Structures\File Structures\bin\Debug\Tree\TreeLog.txt";
-            String log = "";
-            List<String> nodes = new List<String>();
-
-            // Write log in file
-            using (var writer = System.IO.File.CreateText(path))
-            {
-                tree.Print(writer, BPlusTree<int, long>.DebugFormat.Formatted);
-                writer.Close();
-            }
-
-            // Remove duplicated info
-            var newNode = false;
-            var node = "[   ";
-            foreach (var str in System.IO.File.ReadAllLines(path))
-            {
-                log += "\r\n";
-                if (str.Contains("="))
-                {
-                    log += str.Substring(0, str.LastIndexOf("="));
-                    node += str.Substring(0, str.LastIndexOf("=")).Trim() + "   ";
-                    newNode = false;
-                }
-                else
-                {
-                    log += str;
-                    newNode = true;
-                }
-
-                if (newNode && node.Length > 8)
-                {
-                    nodes.Add(node + "]");
-                    node = "[   ";
-                }
-            }
-            textBoxTreeLog.Text = log;
-
-            // Extract Root
-            String root = "[   ";
-            Regex reg = new Regex(@"}.*?{");
-            MatchCollection matches = reg.Matches(log.Replace("\r\n", ""));
-            List<Int64> rootInfo = new List<Int64>();
-
-            textBoxTreeLog.Text += "\r\n\r\n VALUES: ";
-
-            foreach (Match m in matches)
-            {
-                int value = int.Parse(Regex.Match(m.Value, @"\d+").Value);
-                rootInfo.Add(value);
-                root += value + "   ";
-            }
-
-            root += "]";
-            textBoxTreeLog.Text += root;
-
-            GenerateBPlusTreeImage(rootInfo, nodes, pictureBox);
-        }
-
-        /**
-         * Iterate over nodes list and create Graph representation using GraphViz
-         * @param root - List that shows root nodes
-         * @param nodes - Leafs of the tree
-         * @param pictureBox - PictureBox instance to show the generated image
-         */
-        private async Task GenerateBPlusTreeImage(List<Int64> rootInfo, List<String> nodes, PictureBox pictureBox)
-        {
-            Graph graph;
-            String root = "[   ";
-            List<String> middleNodes = new List<String>();
-            List<EdgeStatement> edges = new List<EdgeStatement>();
-            int midIndex = rootInfo.Count / 2;
-
-            if (nodes.Count == 1)
-            {
-                middleNodes.Add("[\t"); // Root
-                foreach (var item in rootInfo)
-                    middleNodes[0] += item + "  ";
-                middleNodes[0] += "\t]";
-
-            } else if (nodes.Count <= 5)
-            {
-                middleNodes.Add("[\t"); // Root
-                foreach (var item in rootInfo)
-                    middleNodes[0] += item + "  ";
-                middleNodes[0] += "\t]";
-            } else if (rootInfo.Count < 10)
-            {
-                root = "[   " + rootInfo[midIndex] + "   ]";
-                middleNodes.Add("[\t"); // Left
-                middleNodes.Add("[\t"); // Right
-
-                for (int i = 0; i < rootInfo.Count; i++)
-                    if (i != midIndex)
-                        middleNodes[i / (midIndex + 1)] += rootInfo[i] + "  ";
-
-                middleNodes[0] += "\t]";
-                middleNodes[1] += "\t]";
-            }
-
-            // Generate relations between nodes
-            // Root to middles
-            if(middleNodes.Count > 1)
-                foreach (var mNode in middleNodes)
-                {
-                    var label = ImmutableDictionary.CreateBuilder<Id, Id>();
-                    label.Add("label", "");
-
-                    edges.Add(new EdgeStatement(root, mNode, label.ToImmutable()));
-                }
-
-            // Middles to leafs
-            for(int i = 0; i < nodes.Count; i++)
-            {
-                var label = ImmutableDictionary.CreateBuilder<Id, Id>();
-                label.Add("label", "");
-
-                if(middleNodes.Count == 1)
-                    edges.Add(new EdgeStatement(middleNodes[0], nodes[i], label.ToImmutable()));
-                else
-                    edges.Add(new EdgeStatement(middleNodes[i / (midIndex + 1)], nodes[i], label.ToImmutable()));
-            }
-
-            // Note: Double assign because Shields.Graphviz doesn't 
-            //       allow to add Statements after instance creation.
-            if (nodes.Count == 1)
-            {
-                graph = Graph.Directed
-                        .Add(AttributeStatement.Graph.Set("labelloc", "t"))
-                        .Add(AttributeStatement.Node.Set("style", "filled"))
-                        .Add(AttributeStatement.Node.Set("shape", "box"))
-                        .Add(AttributeStatement.Node.Set("fillcolor", "#ECECEC"))
-                        .Add(AttributeStatement.Edge.Set("color", "#0097A7"))
-                        .Add(AttributeStatement.Node.Set("color", "#0097A7"))
-                        .Add(NodeStatement.For(nodes[0]));
-            }
-            else
-            {
-                graph = Graph.Directed
-                        .Add(AttributeStatement.Graph.Set("labelloc", "t"))
-                        .Add(AttributeStatement.Node.Set("style", "filled"))
-                        .Add(AttributeStatement.Node.Set("shape", "box"))
-                        .Add(AttributeStatement.Node.Set("fillcolor", "#ECECEC"))
-                        .Add(AttributeStatement.Edge.Set("color", "#0097A7"))
-                        .Add(AttributeStatement.Node.Set("color", "#0097A7"))
-                        .AddRange(edges);
-            }
-
-            using (Stream file = System.IO.File.Create(@"C:\Users\hongo\Documents\File-Structures\File Structures\bin\Debug\Tree\Tree_" + name.Trim() + ".png"))
-            {
-                await renderer.RunAsync(
-                    graph, file,
-                    RendererLayouts.Dot,
-                    RendererFormats.Png,
-                    CancellationToken.None);
-                
-                pictureBox.ImageLocation = (file as FileStream).Name;
-            }
-        }
-
     }
 }

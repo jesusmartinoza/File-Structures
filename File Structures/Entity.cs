@@ -6,41 +6,19 @@ using System.Threading.Tasks;
 
 namespace File_Structures
 {
-    /**
-     *  +--- Name ---+--- File Address ---+--- Attrs Address ----+---- Data Address ----+--- NextEntityAddress ----+
-     *        30               8                    8                      8                       8                = 62
-     *        
-     * 62 bytes in file per entity
-     **/
+    [Serializable]
     public class Entity
     {
-        string name;
-        long fileAddress;
-        long attrsAddress;
-        long dataAddress;
-        long nextEntityAddress;
+        private string name;
+        private Dictionary<String, Attribute> attributes;
 
-        public string Name { get => name; set => name = value.PadRight(30); }
-        public long FileAddress { get => fileAddress; set => fileAddress = value; }
-        public long AttrsAddress { get => attrsAddress; set => attrsAddress = value; }
-        public long DataAddress { get => dataAddress; set => dataAddress = value; }
-        public long NextEntityAddress { get => nextEntityAddress; set => nextEntityAddress = value; }
+        public string Name { get => name; set => name = value; }
+        public Dictionary<String, Attribute> Attributes { get => attributes; set => attributes = value; }
 
         public Entity(string name)
         {
             Name = name;
-            FileAddress = 8;
-            attrsAddress = -1;
-            dataAddress = -1;
-            nextEntityAddress = -1;
-        }
-
-        public Entity(string name, long fileAddress, long attrsAddress, long dataAddress, long nextEntityAddress) : this(name)
-        {
-            this.fileAddress = fileAddress;
-            this.attrsAddress = attrsAddress;
-            this.dataAddress = dataAddress;
-            this.nextEntityAddress = nextEntityAddress;
+            attributes = new Dictionary<String, Attribute>();
         }
 
         /**

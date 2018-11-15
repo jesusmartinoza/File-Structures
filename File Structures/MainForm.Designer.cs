@@ -138,7 +138,6 @@
             this.tabControl.SelectedIndex = 0;
             this.tabControl.Size = new System.Drawing.Size(820, 415);
             this.tabControl.TabIndex = 4;
-            this.tabControl.SelectedIndexChanged += new System.EventHandler(this.tabControl_SelectedIndexChanged);
             // 
             // tabPage1
             // 
@@ -422,7 +421,6 @@
             this.listViewIndexAttr.TabIndex = 0;
             this.listViewIndexAttr.UseCompatibleStateImageBehavior = false;
             this.listViewIndexAttr.View = System.Windows.Forms.View.Details;
-            this.listViewIndexAttr.SelectedIndexChanged += new System.EventHandler(this.listViewIndexAttr_SelectedIndexChanged);
             // 
             // columnHeader1
             // 
