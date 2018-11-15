@@ -98,15 +98,15 @@ namespace File_Structures
 
                 if(attributes[i].IndexTypeV == Attribute.IndexType.primaryKey)
                     entry.PrimaryValue = cell.Value.ToString();
-                else if (attributes[i].IndexTypeV == Attribute.IndexType.searchKey)
-                    entry.SearchValue = cell.Value.ToString();
+               /* else if (attributes[i].IndexTypeV == Attribute.IndexType.searchKey)
+                    entry.SearchValue = cell.Value.ToString();*/
                 else if (attributes[i].IndexTypeV == Attribute.IndexType.foreignKey)
                     entry.ForeignValue = cell.Value.ToString();
-                else if (attributes[i].IndexTypeV == Attribute.IndexType.bPlusTree)
-                    entry.BPlusValue = cell.Value.ToString();
+                /*else if (attributes[i].IndexTypeV == Attribute.IndexType.bPlusTree)
+                    entry.BPlusValue = cell.Value.ToString();*/
 
                 if (attributes[i].Type == 'S')
-                    entry.Data[i+1] = cell.Value.ToString();
+                    entry.Data[i+1] = cell.Value.ToString().PadRight(30);
                 else
                 {
                     int num = 0;

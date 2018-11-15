@@ -28,11 +28,11 @@ namespace File_Structures
         public enum IndexType
         {
             nonType = 0,
-            searchKey = 1,
-            primaryKey = 2,
-            foreignKey = 3,
-            bPlusTree = 4,
-            dynamicHash = 5
+            searchKey = 10,
+            primaryKey = 1,
+            foreignKey = 2,
+            bPlusTree = 40,
+            dynamicHash = 50
         }
 
         string name;

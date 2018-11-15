@@ -25,11 +25,13 @@ namespace File_Structures
         ModifyEntityListener, ModifyAttributeListener
     {
         SortedList<string, Entity> entities;
-        List<Attribute> attributes;
         Dictionary<string, Entry> entries;
         Entity selectedEntity;
         Entry selectedEntry;
         File f;
+
+        public static List<Attribute> attributes;
+        public static Dictionary<string, Entity> relations;
 
         /**
          * Initialize components and MaterialForm
@@ -39,9 +41,10 @@ namespace File_Structures
             entities = new SortedList<string, Entity>();
             attributes = new List<Attribute>();
             entries = new Dictionary<string, Entry>();
+            relations = new Dictionary<string, Entity>();
 
-            string[] entityHeaders = {"Name", "Address", "Attributes Address", "Data Address", "Next Entity Address" };
-            string[] attrHeaders = {"Entity", "Name", "Address", "Type", "Length", "Index Type", "Index Address", "Next Attribute Address" };
+            string[] entityHeaders = { "Name"};
+            string[] attrHeaders = {"Entity", "Name", /*"Address",*/ "Type", "Length", "Index Type"/*, "Index Address", "Next Attribute Address"*/ };
 
             InitializeComponent();
             InitDataGridView(dataGridViewEntities, entityHeaders);
@@ -54,7 +57,7 @@ namespace File_Structures
             var materialSkinManager = MaterialSkinManager.Instance;
             materialSkinManager.AddFormToManage(this);
             materialSkinManager.Theme = MaterialSkinManager.Themes.LIGHT;
-            materialSkinManager.ColorScheme = new ColorScheme(Primary.Cyan800, Primary.Cyan900, Primary.Cyan500, Accent.Orange400, TextShade.WHITE);
+            materialSkinManager.ColorScheme = new ColorScheme(Primary.Yellow800, Primary.Yellow900, Primary.Yellow500, Accent.Pink400, TextShade.BLACK);
         }
 
         /**
@@ -73,7 +76,7 @@ namespace File_Structures
             }
 
             // Add edit and delete cell column
-            AddDataGridViewButtonColumn(gridView, "EDIT", "Edit", "#1abc9c");
+            AddDataGridViewButtonColumn(gridView, "EDIT", "Edit", "#E91E63");
             AddDataGridViewButtonColumn(gridView, "X", "Delete", "#D91E18");
         }
 
@@ -195,7 +198,7 @@ namespace File_Structures
 
             foreach (KeyValuePair<string, Entity> kvp in entities) {
                 Entity e = kvp.Value;
-                dataGridViewEntities.Rows.Add(kvp.Key, e.FileAddress, e.AttrsAddress, e.DataAddress, e.NextEntityAddress);
+                dataGridViewEntities.Rows.Add(kvp.Key /*, e.FileAddress, e.AttrsAddress, e.DataAddress, e.NextEntityAddress*/);
                 listViewEntities.Items.Add(kvp.Key);
             }
         }
@@ -208,7 +211,9 @@ namespace File_Structures
             listViewEntries.Items.Clear();
             foreach(Entry e in entries.Values.OrderBy(e => e.SearchValue))
             {
-                var listViewItem = new ListViewItem(Array.ConvertAll(e.Data, d => d.ToString()));
+                var list = e.Data.ToList();
+                list.RemoveAt(0);
+                var listViewItem = new ListViewItem(Array.ConvertAll(list.ToArray(), d => d.ToString()));
                 listViewItem.Name = e.PrimaryValue;
                 listViewEntries.Items.Add(listViewItem);
             }
@@ -222,7 +227,7 @@ namespace File_Structures
             dataGridViewAttrs.Rows.Clear();
 
             foreach (var a in attributes)
-                dataGridViewAttrs.Rows.Add(a.EntityName.Trim(), a.Name.Trim(), a.FileAddress, a.Type, a.Length, a.IndexTypeV, a.IndexAddress, a.NexAttributeAddress);
+                dataGridViewAttrs.Rows.Add(a.EntityName.Trim(), a.Name.Trim(), /*a.FileAddress,*/ a.Type, a.Length, a.IndexTypeV/*, a.IndexAddress, a.NexAttributeAddress*/);
         }
 
         /**
@@ -230,7 +235,9 @@ namespace File_Structures
          */
         private void AddEntryToList(Entry entry)
         {
-            var listViewItem = new ListViewItem(Array.ConvertAll(entry.Data, d => d.ToString()));
+            var list = entry.Data.ToList();
+            list.RemoveAt(0);
+            var listViewItem = new ListViewItem(Array.ConvertAll(list.ToArray(), d => d.ToString()));
             listViewEntries.Items.Add(listViewItem);
             entries.Add(entry.PrimaryValue, entry);
 
@@ -600,11 +607,11 @@ namespace File_Structures
 
                 switch (e.ColumnIndex)
                 {
-                    case 5: // Edit button
+                    case 1: // Edit button
                         FormModifyEntity formModifyEntity = new FormModifyEntity(this, entity.Value);
                         formModifyEntity.Show(this);
                         break;
-                    case 6: // Delete button
+                    case 2: // Delete button
                         DeleteEntity(entity.Value);
                         break;
                 }
@@ -627,11 +634,11 @@ namespace File_Structures
                 {
                     switch (e.ColumnIndex)
                     {
-                        case 8: // Edit button
+                        case 5: // Edit button
                             FormModifyAttribute formModifyAttr = new FormModifyAttribute(attr, this);
                             formModifyAttr.Show(this);
                             break;
-                        case 9: // Delete button
+                        case 6: // Delete button
                             DeleteAttribute(attr);
                             break;
                     }
@@ -673,14 +680,11 @@ namespace File_Structures
             var list = (MaterialListView)sender;
             selectedEntity = entities.First(enti => enti.Key.Equals(list.FocusedItem.Text)).Value;
             listViewEntries.Clear();
-
-            listViewEntries.Columns.Add("File Address", 110);
             foreach (var attr in attributes)
             {
                 if (attr.EntityName.Equals(list.FocusedItem.Text))
                     listViewEntries.Columns.Add(attr.Name, attr.Length * 4 + attr.Name.Length * 10);
             }
-            listViewEntries.Columns.Add("Next");
             entries = f.GetEntriesFrom(selectedEntity,
                 attributes.Where(a => a.EntityName.Equals(list.FocusedItem.Text)).ToList());
             MergeEntriesAndTree();

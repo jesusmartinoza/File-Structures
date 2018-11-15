@@ -39,6 +39,8 @@
             this.materialLabel1 = new MaterialSkin.Controls.MaterialLabel();
             this.lblEntity = new MaterialSkin.Controls.MaterialLabel();
             this.comboBoxEntity = new System.Windows.Forms.ComboBox();
+            this.comboBoxRelation = new System.Windows.Forms.ComboBox();
+            this.lblRelation = new MaterialSkin.Controls.MaterialLabel();
             this.SuspendLayout();
             // 
             // btnCreate
@@ -47,7 +49,7 @@
             this.btnCreate.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.btnCreate.Depth = 0;
             this.btnCreate.Icon = null;
-            this.btnCreate.Location = new System.Drawing.Point(219, 237);
+            this.btnCreate.Location = new System.Drawing.Point(219, 282);
             this.btnCreate.MouseState = MaterialSkin.MouseState.HOVER;
             this.btnCreate.Name = "btnCreate";
             this.btnCreate.Primary = true;
@@ -78,7 +80,7 @@
             // 
             this.textFieldLength.Depth = 0;
             this.textFieldLength.Hint = "";
-            this.textFieldLength.Location = new System.Drawing.Point(70, 159);
+            this.textFieldLength.Location = new System.Drawing.Point(219, 162);
             this.textFieldLength.MaxLength = 32767;
             this.textFieldLength.MouseState = MaterialSkin.MouseState.HOVER;
             this.textFieldLength.Name = "textFieldLength";
@@ -86,9 +88,10 @@
             this.textFieldLength.SelectedText = "";
             this.textFieldLength.SelectionLength = 0;
             this.textFieldLength.SelectionStart = 0;
-            this.textFieldLength.Size = new System.Drawing.Size(219, 23);
+            this.textFieldLength.Size = new System.Drawing.Size(70, 23);
             this.textFieldLength.TabIndex = 2;
             this.textFieldLength.TabStop = false;
+            this.textFieldLength.Text = "8";
             this.textFieldLength.UseSystemPasswordChar = false;
             this.textFieldLength.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.textFieldLength_KeyPress);
             // 
@@ -98,7 +101,7 @@
             this.labelType.Depth = 0;
             this.labelType.Font = new System.Drawing.Font("Roboto", 11F);
             this.labelType.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(222)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
-            this.labelType.Location = new System.Drawing.Point(11, 197);
+            this.labelType.Location = new System.Drawing.Point(12, 163);
             this.labelType.MouseState = MaterialSkin.MouseState.HOVER;
             this.labelType.Name = "labelType";
             this.labelType.Size = new System.Drawing.Size(41, 19);
@@ -111,7 +114,7 @@
             this.labelIndex.Depth = 0;
             this.labelIndex.Font = new System.Drawing.Font("Roboto", 11F);
             this.labelIndex.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(222)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
-            this.labelIndex.Location = new System.Drawing.Point(153, 197);
+            this.labelIndex.Location = new System.Drawing.Point(12, 202);
             this.labelIndex.MouseState = MaterialSkin.MouseState.HOVER;
             this.labelIndex.Name = "labelIndex";
             this.labelIndex.Size = new System.Drawing.Size(44, 19);
@@ -124,25 +127,24 @@
             this.comboBoxType.Items.AddRange(new object[] {
             "Integer",
             "String"});
-            this.comboBoxType.Location = new System.Drawing.Point(58, 197);
+            this.comboBoxType.Location = new System.Drawing.Point(70, 164);
             this.comboBoxType.Name = "comboBoxType";
-            this.comboBoxType.Size = new System.Drawing.Size(89, 21);
+            this.comboBoxType.Size = new System.Drawing.Size(83, 21);
             this.comboBoxType.TabIndex = 5;
+            this.comboBoxType.SelectedValueChanged += new System.EventHandler(this.comboBoxType_SelectedValueChanged);
             // 
             // comboBoxIndex
             // 
             this.comboBoxIndex.FormattingEnabled = true;
             this.comboBoxIndex.Items.AddRange(new object[] {
             "No type",
-            "Search key",
             "Primary key",
-            "Foreign key",
-            "B+ Tree",
-            "Dynamic Hash"});
-            this.comboBoxIndex.Location = new System.Drawing.Point(200, 197);
+            "Foreign key"});
+            this.comboBoxIndex.Location = new System.Drawing.Point(70, 200);
             this.comboBoxIndex.Name = "comboBoxIndex";
-            this.comboBoxIndex.Size = new System.Drawing.Size(89, 21);
+            this.comboBoxIndex.Size = new System.Drawing.Size(83, 21);
             this.comboBoxIndex.TabIndex = 6;
+            this.comboBoxIndex.SelectedIndexChanged += new System.EventHandler(this.comboBoxIndex_SelectedIndexChanged);
             // 
             // labelName
             // 
@@ -163,7 +165,7 @@
             this.materialLabel1.Depth = 0;
             this.materialLabel1.Font = new System.Drawing.Font("Roboto", 11F);
             this.materialLabel1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(222)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
-            this.materialLabel1.Location = new System.Drawing.Point(10, 161);
+            this.materialLabel1.Location = new System.Drawing.Point(159, 163);
             this.materialLabel1.MouseState = MaterialSkin.MouseState.HOVER;
             this.materialLabel1.Name = "materialLabel1";
             this.materialLabel1.Size = new System.Drawing.Size(54, 19);
@@ -194,11 +196,35 @@
             this.comboBoxEntity.Size = new System.Drawing.Size(219, 21);
             this.comboBoxEntity.TabIndex = 11;
             // 
+            // comboBoxRelation
+            // 
+            this.comboBoxRelation.Enabled = false;
+            this.comboBoxRelation.FormattingEnabled = true;
+            this.comboBoxRelation.Location = new System.Drawing.Point(84, 237);
+            this.comboBoxRelation.Name = "comboBoxRelation";
+            this.comboBoxRelation.Size = new System.Drawing.Size(204, 21);
+            this.comboBoxRelation.TabIndex = 13;
+            // 
+            // lblRelation
+            // 
+            this.lblRelation.AutoSize = true;
+            this.lblRelation.Depth = 0;
+            this.lblRelation.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F);
+            this.lblRelation.ForeColor = System.Drawing.Color.DarkGray;
+            this.lblRelation.Location = new System.Drawing.Point(12, 239);
+            this.lblRelation.MouseState = MaterialSkin.MouseState.HOVER;
+            this.lblRelation.Name = "lblRelation";
+            this.lblRelation.Size = new System.Drawing.Size(53, 15);
+            this.lblRelation.TabIndex = 12;
+            this.lblRelation.Text = "Relation";
+            // 
             // FormCreateAttribute
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(300, 286);
+            this.ClientSize = new System.Drawing.Size(300, 330);
+            this.Controls.Add(this.comboBoxRelation);
+            this.Controls.Add(this.lblRelation);
             this.Controls.Add(this.comboBoxEntity);
             this.Controls.Add(this.lblEntity);
             this.Controls.Add(this.materialLabel1);
@@ -230,5 +256,7 @@
         private MaterialSkin.Controls.MaterialLabel materialLabel1;
         private MaterialSkin.Controls.MaterialLabel lblEntity;
         private System.Windows.Forms.ComboBox comboBoxEntity;
+        private System.Windows.Forms.ComboBox comboBoxRelation;
+        private MaterialSkin.Controls.MaterialLabel lblRelation;
     }
 }

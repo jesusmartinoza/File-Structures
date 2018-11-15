@@ -45,7 +45,7 @@
             this.materialLabel1.Depth = 0;
             this.materialLabel1.Font = new System.Drawing.Font("Roboto", 11F);
             this.materialLabel1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(222)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
-            this.materialLabel1.Location = new System.Drawing.Point(9, 124);
+            this.materialLabel1.Location = new System.Drawing.Point(158, 126);
             this.materialLabel1.MouseState = MaterialSkin.MouseState.HOVER;
             this.materialLabel1.Name = "materialLabel1";
             this.materialLabel1.Size = new System.Drawing.Size(54, 19);
@@ -70,14 +70,11 @@
             this.comboBoxIndex.FormattingEnabled = true;
             this.comboBoxIndex.Items.AddRange(new object[] {
             "No type",
-            "Search key",
             "Primary key",
-            "Foreign key",
-            "B+ Tree",
-            "Dynamic Hash"});
-            this.comboBoxIndex.Location = new System.Drawing.Point(199, 160);
+            "Foreign key"});
+            this.comboBoxIndex.Location = new System.Drawing.Point(72, 163);
             this.comboBoxIndex.Name = "comboBoxIndex";
-            this.comboBoxIndex.Size = new System.Drawing.Size(89, 21);
+            this.comboBoxIndex.Size = new System.Drawing.Size(76, 21);
             this.comboBoxIndex.TabIndex = 18;
             // 
             // comboBoxType
@@ -86,10 +83,11 @@
             this.comboBoxType.Items.AddRange(new object[] {
             "Integer",
             "String"});
-            this.comboBoxType.Location = new System.Drawing.Point(57, 160);
+            this.comboBoxType.Location = new System.Drawing.Point(72, 127);
             this.comboBoxType.Name = "comboBoxType";
-            this.comboBoxType.Size = new System.Drawing.Size(89, 21);
+            this.comboBoxType.Size = new System.Drawing.Size(76, 21);
             this.comboBoxType.TabIndex = 17;
+            this.comboBoxType.SelectedIndexChanged += new System.EventHandler(this.comboBoxType_SelectedIndexChanged);
             // 
             // labelIndex
             // 
@@ -97,7 +95,7 @@
             this.labelIndex.Depth = 0;
             this.labelIndex.Font = new System.Drawing.Font("Roboto", 11F);
             this.labelIndex.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(222)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
-            this.labelIndex.Location = new System.Drawing.Point(152, 160);
+            this.labelIndex.Location = new System.Drawing.Point(14, 162);
             this.labelIndex.MouseState = MaterialSkin.MouseState.HOVER;
             this.labelIndex.Name = "labelIndex";
             this.labelIndex.Size = new System.Drawing.Size(44, 19);
@@ -110,7 +108,7 @@
             this.labelType.Depth = 0;
             this.labelType.Font = new System.Drawing.Font("Roboto", 11F);
             this.labelType.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(222)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
-            this.labelType.Location = new System.Drawing.Point(10, 160);
+            this.labelType.Location = new System.Drawing.Point(12, 126);
             this.labelType.MouseState = MaterialSkin.MouseState.HOVER;
             this.labelType.Name = "labelType";
             this.labelType.Size = new System.Drawing.Size(41, 19);
@@ -121,7 +119,7 @@
             // 
             this.textFieldLength.Depth = 0;
             this.textFieldLength.Hint = "";
-            this.textFieldLength.Location = new System.Drawing.Point(69, 122);
+            this.textFieldLength.Location = new System.Drawing.Point(218, 126);
             this.textFieldLength.MaxLength = 32767;
             this.textFieldLength.MouseState = MaterialSkin.MouseState.HOVER;
             this.textFieldLength.Name = "textFieldLength";
@@ -129,16 +127,17 @@
             this.textFieldLength.SelectedText = "";
             this.textFieldLength.SelectionLength = 0;
             this.textFieldLength.SelectionStart = 0;
-            this.textFieldLength.Size = new System.Drawing.Size(219, 23);
+            this.textFieldLength.Size = new System.Drawing.Size(70, 23);
             this.textFieldLength.TabIndex = 14;
             this.textFieldLength.TabStop = false;
+            this.textFieldLength.Text = "8";
             this.textFieldLength.UseSystemPasswordChar = false;
             // 
             // textFieldName
             // 
             this.textFieldName.Depth = 0;
             this.textFieldName.Hint = "";
-            this.textFieldName.Location = new System.Drawing.Point(69, 83);
+            this.textFieldName.Location = new System.Drawing.Point(72, 83);
             this.textFieldName.MaxLength = 32767;
             this.textFieldName.MouseState = MaterialSkin.MouseState.HOVER;
             this.textFieldName.Name = "textFieldName";
@@ -146,7 +145,7 @@
             this.textFieldName.SelectedText = "";
             this.textFieldName.SelectionLength = 0;
             this.textFieldName.SelectionStart = 0;
-            this.textFieldName.Size = new System.Drawing.Size(220, 23);
+            this.textFieldName.Size = new System.Drawing.Size(217, 23);
             this.textFieldName.TabIndex = 13;
             this.textFieldName.TabStop = false;
             this.textFieldName.UseSystemPasswordChar = false;

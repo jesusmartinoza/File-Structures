@@ -49,6 +49,14 @@ namespace File_Structures
                 Close();
             }
         }
+
+        private void comboBoxType_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (comboBoxType.SelectedIndex == 0)
+                textFieldLength.Text = "8";
+            else
+                textFieldLength.Text = "30";
+        }
     }
 
     public interface ModifyAttributeListener

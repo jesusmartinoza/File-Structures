@@ -11,6 +11,7 @@ namespace File_Structures
     {
         CreateAttributeListener listener;
         SortedList<string, Entity> entities;
+        Dictionary<string, string> relationsData;
 
         internal FormCreateAttribute(CreateAttributeListener listener, SortedList<string, Entity> entities)
         {
@@ -25,6 +26,15 @@ namespace File_Structures
 
             comboBoxType.SelectedIndex = 0;
             comboBoxIndex.SelectedIndex = 0;
+
+            // Get attributes that are primary keys, no LINQ available :c
+            relationsData = new Dictionary<string, string>();
+            foreach (Attribute attr in MainForm.attributes)
+            {
+                if (attr.IndexTypeV == Attribute.IndexType.primaryKey)
+                    relationsData.Add(attr.Name, attr.EntityName + " - " + attr.Name);
+            }
+            comboBoxRelation.DataSource = relationsData.Values.ToList();
 
             // Config material skin
             var materialSkinManager = MaterialSkinManager.Instance;
@@ -52,7 +62,6 @@ namespace File_Structures
             var length = Convert.ToInt32(textFieldLength.Text.Length == 0 ? "0" : textFieldLength.Text);
             var indexType = (Attribute.IndexType) comboBoxIndex.SelectedIndex;
             var entity = entities[comboBoxEntity.GetItemText(comboBoxEntity.SelectedItem)];
-
             if (textFieldName.Text == String.Empty)
                 MessageBox.Show("Name is required");
             else if (entities.First(ent => ent.Key == entity.Name.Trim()).Value.DataAddress != -1)
@@ -61,6 +70,29 @@ namespace File_Structures
                 MessageBox.Show("Positive length is required");
             else {
                 listener.OnCreateAttribute(new Attribute(textFieldName.Text, type, length, indexType, entity.Name));
+            }
+        }
+
+        private void comboBoxType_SelectedValueChanged(object sender, EventArgs e)
+        {
+            // When integer
+            if (comboBoxType.SelectedIndex == 0)
+                textFieldLength.Text = "8";
+            else
+                textFieldLength.Text = "30";
+        }
+
+        private void comboBoxIndex_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            // When Foreign key
+            if (comboBoxIndex.SelectedIndex == 2)
+            {
+                lblRelation.ForeColor = System.Drawing.Color.Black;
+                comboBoxRelation.Enabled = true;
+            } else
+            {
+                lblRelation.ForeColor = System.Drawing.Color.DarkGray;
+                comboBoxRelation.Enabled = false;
             }
         }
     }

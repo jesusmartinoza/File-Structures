@@ -49,6 +49,7 @@
             this.btnAddEntry = new MaterialSkin.Controls.MaterialRaisedButton();
             this.tabPage4 = new System.Windows.Forms.TabPage();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
+            this.iconEye = new System.Windows.Forms.PictureBox();
             this.pictureBoxTree = new System.Windows.Forms.PictureBox();
             this.textBoxTreeLog = new System.Windows.Forms.TextBox();
             this.listViewIndexRep = new MaterialSkin.Controls.MaterialListView();
@@ -64,7 +65,8 @@
             this.contextMenuEntry = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem2 = new System.Windows.Forms.ToolStripMenuItem();
-            this.iconEye = new System.Windows.Forms.PictureBox();
+            this.groupBox5 = new System.Windows.Forms.GroupBox();
+            this.materialSingleLineTextField1 = new MaterialSkin.Controls.MaterialSingleLineTextField();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridViewEntities)).BeginInit();
             this.tabControl.SuspendLayout();
             this.tabPage1.SuspendLayout();
@@ -76,10 +78,11 @@
             this.groupBox1.SuspendLayout();
             this.tabPage4.SuspendLayout();
             this.groupBox3.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.iconEye)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxTree)).BeginInit();
             this.groupBox2.SuspendLayout();
             this.contextMenuEntry.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.iconEye)).BeginInit();
+            this.groupBox5.SuspendLayout();
             this.SuspendLayout();
             // 
             // dataGridViewEntities
@@ -152,7 +155,7 @@
             // 
             // emptyState
             // 
-            this.emptyState.ImageLocation = "C:\\Users\\hongo\\Documents\\File-Structures\\File Structures\\empty_state.png";
+            this.emptyState.ImageLocation = "C:\\Users\\hongo\\Documents\\Files-structures\\File Structures\\empty_state.png";
             this.emptyState.Location = new System.Drawing.Point(127, 32);
             this.emptyState.Name = "emptyState";
             this.emptyState.Size = new System.Drawing.Size(610, 252);
@@ -203,6 +206,7 @@
             // 
             // tabPage3
             // 
+            this.tabPage3.Controls.Add(this.groupBox5);
             this.tabPage3.Controls.Add(this.groupBox4);
             this.tabPage3.Controls.Add(this.groupBox1);
             this.tabPage3.Controls.Add(this.btnAddEntry);
@@ -216,9 +220,9 @@
             // groupBox4
             // 
             this.groupBox4.Controls.Add(this.listViewEntries);
-            this.groupBox4.Location = new System.Drawing.Point(151, 3);
+            this.groupBox4.Location = new System.Drawing.Point(151, 75);
             this.groupBox4.Name = "groupBox4";
-            this.groupBox4.Size = new System.Drawing.Size(652, 358);
+            this.groupBox4.Size = new System.Drawing.Size(652, 286);
             this.groupBox4.TabIndex = 5;
             this.groupBox4.TabStop = false;
             this.groupBox4.Text = "Entries";
@@ -231,12 +235,12 @@
             this.listViewEntries.Font = new System.Drawing.Font("Microsoft Sans Serif", 24F);
             this.listViewEntries.FullRowSelect = true;
             this.listViewEntries.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.Nonclickable;
-            this.listViewEntries.Location = new System.Drawing.Point(5, 14);
+            this.listViewEntries.Location = new System.Drawing.Point(6, 19);
             this.listViewEntries.MouseLocation = new System.Drawing.Point(-1, -1);
             this.listViewEntries.MouseState = MaterialSkin.MouseState.OUT;
             this.listViewEntries.Name = "listViewEntries";
             this.listViewEntries.OwnerDraw = true;
-            this.listViewEntries.Size = new System.Drawing.Size(640, 338);
+            this.listViewEntries.Size = new System.Drawing.Size(640, 261);
             this.listViewEntries.TabIndex = 1;
             this.listViewEntries.UseCompatibleStateImageBehavior = false;
             this.listViewEntries.View = System.Windows.Forms.View.Details;
@@ -318,6 +322,18 @@
             this.groupBox3.TabIndex = 6;
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "Index representation";
+            // 
+            // iconEye
+            // 
+            this.iconEye.ImageLocation = "C:\\Users\\hongo\\Documents\\File-Structures\\File Structures\\ic_eye.png";
+            this.iconEye.InitialImage = null;
+            this.iconEye.Location = new System.Drawing.Point(592, 19);
+            this.iconEye.Name = "iconEye";
+            this.iconEye.Size = new System.Drawing.Size(49, 44);
+            this.iconEye.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.iconEye.TabIndex = 3;
+            this.iconEye.TabStop = false;
+            this.iconEye.Click += new System.EventHandler(this.iconEye_Click);
             // 
             // pictureBoxTree
             // 
@@ -477,17 +493,32 @@
             this.toolStripMenuItem2.Size = new System.Drawing.Size(107, 22);
             this.toolStripMenuItem2.Text = "Delete";
             // 
-            // iconEye
+            // groupBox5
             // 
-            this.iconEye.ImageLocation = "C:\\Users\\hongo\\Documents\\File-Structures\\File Structures\\ic_eye.png";
-            this.iconEye.InitialImage = null;
-            this.iconEye.Location = new System.Drawing.Point(592, 19);
-            this.iconEye.Name = "iconEye";
-            this.iconEye.Size = new System.Drawing.Size(49, 44);
-            this.iconEye.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
-            this.iconEye.TabIndex = 3;
-            this.iconEye.TabStop = false;
-            this.iconEye.Click += new System.EventHandler(this.iconEye_Click);
+            this.groupBox5.Controls.Add(this.materialSingleLineTextField1);
+            this.groupBox5.Location = new System.Drawing.Point(151, 3);
+            this.groupBox5.Name = "groupBox5";
+            this.groupBox5.Size = new System.Drawing.Size(652, 66);
+            this.groupBox5.TabIndex = 2;
+            this.groupBox5.TabStop = false;
+            this.groupBox5.Text = "Make your queries here";
+            // 
+            // materialSingleLineTextField1
+            // 
+            this.materialSingleLineTextField1.Depth = 0;
+            this.materialSingleLineTextField1.Hint = "SELECT * FROM";
+            this.materialSingleLineTextField1.Location = new System.Drawing.Point(18, 25);
+            this.materialSingleLineTextField1.MaxLength = 32767;
+            this.materialSingleLineTextField1.MouseState = MaterialSkin.MouseState.HOVER;
+            this.materialSingleLineTextField1.Name = "materialSingleLineTextField1";
+            this.materialSingleLineTextField1.PasswordChar = '\0';
+            this.materialSingleLineTextField1.SelectedText = "";
+            this.materialSingleLineTextField1.SelectionLength = 0;
+            this.materialSingleLineTextField1.SelectionStart = 0;
+            this.materialSingleLineTextField1.Size = new System.Drawing.Size(623, 23);
+            this.materialSingleLineTextField1.TabIndex = 7;
+            this.materialSingleLineTextField1.TabStop = false;
+            this.materialSingleLineTextField1.UseSystemPasswordChar = false;
             // 
             // MainForm
             // 
@@ -516,10 +547,11 @@
             this.tabPage4.ResumeLayout(false);
             this.groupBox3.ResumeLayout(false);
             this.groupBox3.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.iconEye)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxTree)).EndInit();
             this.groupBox2.ResumeLayout(false);
             this.contextMenuEntry.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.iconEye)).EndInit();
+            this.groupBox5.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -561,6 +593,8 @@
         private System.Windows.Forms.PictureBox pictureBoxTree;
         private System.Windows.Forms.PictureBox emptyState;
         private System.Windows.Forms.PictureBox iconEye;
+        private System.Windows.Forms.GroupBox groupBox5;
+        private MaterialSkin.Controls.MaterialSingleLineTextField materialSingleLineTextField1;
     }
 }
 
