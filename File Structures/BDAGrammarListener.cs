@@ -31,23 +31,823 @@ using IToken = Antlr4.Runtime.IToken;
 [System.CLSCompliant(false)]
 public interface IBDAGrammarListener : IParseTreeListener {
 	/// <summary>
-	/// Enter a parse tree produced by <see cref="BDAGrammarParser.query"/>.
+	/// Enter a parse tree produced by <see cref="BDAGrammarParser.parse"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	void EnterQuery([NotNull] BDAGrammarParser.QueryContext context);
+	void EnterParse([NotNull] BDAGrammarParser.ParseContext context);
 	/// <summary>
-	/// Exit a parse tree produced by <see cref="BDAGrammarParser.query"/>.
+	/// Exit a parse tree produced by <see cref="BDAGrammarParser.parse"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	void ExitQuery([NotNull] BDAGrammarParser.QueryContext context);
+	void ExitParse([NotNull] BDAGrammarParser.ParseContext context);
 	/// <summary>
-	/// Enter a parse tree produced by <see cref="BDAGrammarParser.filter"/>.
+	/// Enter a parse tree produced by <see cref="BDAGrammarParser.error"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	void EnterFilter([NotNull] BDAGrammarParser.FilterContext context);
+	void EnterError([NotNull] BDAGrammarParser.ErrorContext context);
 	/// <summary>
-	/// Exit a parse tree produced by <see cref="BDAGrammarParser.filter"/>.
+	/// Exit a parse tree produced by <see cref="BDAGrammarParser.error"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	void ExitFilter([NotNull] BDAGrammarParser.FilterContext context);
+	void ExitError([NotNull] BDAGrammarParser.ErrorContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="BDAGrammarParser.sql_stmt_list"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterSql_stmt_list([NotNull] BDAGrammarParser.Sql_stmt_listContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="BDAGrammarParser.sql_stmt_list"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitSql_stmt_list([NotNull] BDAGrammarParser.Sql_stmt_listContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="BDAGrammarParser.sql_stmt"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterSql_stmt([NotNull] BDAGrammarParser.Sql_stmtContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="BDAGrammarParser.sql_stmt"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitSql_stmt([NotNull] BDAGrammarParser.Sql_stmtContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="BDAGrammarParser.alter_table_stmt"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterAlter_table_stmt([NotNull] BDAGrammarParser.Alter_table_stmtContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="BDAGrammarParser.alter_table_stmt"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitAlter_table_stmt([NotNull] BDAGrammarParser.Alter_table_stmtContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="BDAGrammarParser.analyze_stmt"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterAnalyze_stmt([NotNull] BDAGrammarParser.Analyze_stmtContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="BDAGrammarParser.analyze_stmt"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitAnalyze_stmt([NotNull] BDAGrammarParser.Analyze_stmtContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="BDAGrammarParser.attach_stmt"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterAttach_stmt([NotNull] BDAGrammarParser.Attach_stmtContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="BDAGrammarParser.attach_stmt"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitAttach_stmt([NotNull] BDAGrammarParser.Attach_stmtContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="BDAGrammarParser.begin_stmt"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterBegin_stmt([NotNull] BDAGrammarParser.Begin_stmtContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="BDAGrammarParser.begin_stmt"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitBegin_stmt([NotNull] BDAGrammarParser.Begin_stmtContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="BDAGrammarParser.commit_stmt"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterCommit_stmt([NotNull] BDAGrammarParser.Commit_stmtContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="BDAGrammarParser.commit_stmt"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitCommit_stmt([NotNull] BDAGrammarParser.Commit_stmtContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="BDAGrammarParser.compound_select_stmt"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterCompound_select_stmt([NotNull] BDAGrammarParser.Compound_select_stmtContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="BDAGrammarParser.compound_select_stmt"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitCompound_select_stmt([NotNull] BDAGrammarParser.Compound_select_stmtContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="BDAGrammarParser.create_index_stmt"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterCreate_index_stmt([NotNull] BDAGrammarParser.Create_index_stmtContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="BDAGrammarParser.create_index_stmt"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitCreate_index_stmt([NotNull] BDAGrammarParser.Create_index_stmtContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="BDAGrammarParser.create_table_stmt"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterCreate_table_stmt([NotNull] BDAGrammarParser.Create_table_stmtContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="BDAGrammarParser.create_table_stmt"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitCreate_table_stmt([NotNull] BDAGrammarParser.Create_table_stmtContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="BDAGrammarParser.create_trigger_stmt"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterCreate_trigger_stmt([NotNull] BDAGrammarParser.Create_trigger_stmtContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="BDAGrammarParser.create_trigger_stmt"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitCreate_trigger_stmt([NotNull] BDAGrammarParser.Create_trigger_stmtContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="BDAGrammarParser.create_view_stmt"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterCreate_view_stmt([NotNull] BDAGrammarParser.Create_view_stmtContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="BDAGrammarParser.create_view_stmt"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitCreate_view_stmt([NotNull] BDAGrammarParser.Create_view_stmtContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="BDAGrammarParser.create_virtual_table_stmt"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterCreate_virtual_table_stmt([NotNull] BDAGrammarParser.Create_virtual_table_stmtContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="BDAGrammarParser.create_virtual_table_stmt"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitCreate_virtual_table_stmt([NotNull] BDAGrammarParser.Create_virtual_table_stmtContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="BDAGrammarParser.delete_stmt"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterDelete_stmt([NotNull] BDAGrammarParser.Delete_stmtContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="BDAGrammarParser.delete_stmt"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitDelete_stmt([NotNull] BDAGrammarParser.Delete_stmtContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="BDAGrammarParser.delete_stmt_limited"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterDelete_stmt_limited([NotNull] BDAGrammarParser.Delete_stmt_limitedContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="BDAGrammarParser.delete_stmt_limited"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitDelete_stmt_limited([NotNull] BDAGrammarParser.Delete_stmt_limitedContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="BDAGrammarParser.detach_stmt"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterDetach_stmt([NotNull] BDAGrammarParser.Detach_stmtContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="BDAGrammarParser.detach_stmt"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitDetach_stmt([NotNull] BDAGrammarParser.Detach_stmtContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="BDAGrammarParser.drop_index_stmt"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterDrop_index_stmt([NotNull] BDAGrammarParser.Drop_index_stmtContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="BDAGrammarParser.drop_index_stmt"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitDrop_index_stmt([NotNull] BDAGrammarParser.Drop_index_stmtContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="BDAGrammarParser.drop_table_stmt"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterDrop_table_stmt([NotNull] BDAGrammarParser.Drop_table_stmtContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="BDAGrammarParser.drop_table_stmt"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitDrop_table_stmt([NotNull] BDAGrammarParser.Drop_table_stmtContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="BDAGrammarParser.drop_trigger_stmt"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterDrop_trigger_stmt([NotNull] BDAGrammarParser.Drop_trigger_stmtContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="BDAGrammarParser.drop_trigger_stmt"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitDrop_trigger_stmt([NotNull] BDAGrammarParser.Drop_trigger_stmtContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="BDAGrammarParser.drop_view_stmt"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterDrop_view_stmt([NotNull] BDAGrammarParser.Drop_view_stmtContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="BDAGrammarParser.drop_view_stmt"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitDrop_view_stmt([NotNull] BDAGrammarParser.Drop_view_stmtContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="BDAGrammarParser.factored_select_stmt"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterFactored_select_stmt([NotNull] BDAGrammarParser.Factored_select_stmtContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="BDAGrammarParser.factored_select_stmt"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitFactored_select_stmt([NotNull] BDAGrammarParser.Factored_select_stmtContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="BDAGrammarParser.insert_stmt"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterInsert_stmt([NotNull] BDAGrammarParser.Insert_stmtContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="BDAGrammarParser.insert_stmt"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitInsert_stmt([NotNull] BDAGrammarParser.Insert_stmtContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="BDAGrammarParser.pragma_stmt"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterPragma_stmt([NotNull] BDAGrammarParser.Pragma_stmtContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="BDAGrammarParser.pragma_stmt"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitPragma_stmt([NotNull] BDAGrammarParser.Pragma_stmtContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="BDAGrammarParser.reindex_stmt"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterReindex_stmt([NotNull] BDAGrammarParser.Reindex_stmtContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="BDAGrammarParser.reindex_stmt"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitReindex_stmt([NotNull] BDAGrammarParser.Reindex_stmtContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="BDAGrammarParser.release_stmt"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterRelease_stmt([NotNull] BDAGrammarParser.Release_stmtContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="BDAGrammarParser.release_stmt"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitRelease_stmt([NotNull] BDAGrammarParser.Release_stmtContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="BDAGrammarParser.rollback_stmt"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterRollback_stmt([NotNull] BDAGrammarParser.Rollback_stmtContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="BDAGrammarParser.rollback_stmt"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitRollback_stmt([NotNull] BDAGrammarParser.Rollback_stmtContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="BDAGrammarParser.savepoint_stmt"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterSavepoint_stmt([NotNull] BDAGrammarParser.Savepoint_stmtContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="BDAGrammarParser.savepoint_stmt"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitSavepoint_stmt([NotNull] BDAGrammarParser.Savepoint_stmtContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="BDAGrammarParser.simple_select_stmt"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterSimple_select_stmt([NotNull] BDAGrammarParser.Simple_select_stmtContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="BDAGrammarParser.simple_select_stmt"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitSimple_select_stmt([NotNull] BDAGrammarParser.Simple_select_stmtContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="BDAGrammarParser.select_stmt"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterSelect_stmt([NotNull] BDAGrammarParser.Select_stmtContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="BDAGrammarParser.select_stmt"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitSelect_stmt([NotNull] BDAGrammarParser.Select_stmtContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="BDAGrammarParser.select_or_values"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterSelect_or_values([NotNull] BDAGrammarParser.Select_or_valuesContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="BDAGrammarParser.select_or_values"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitSelect_or_values([NotNull] BDAGrammarParser.Select_or_valuesContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="BDAGrammarParser.update_stmt"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterUpdate_stmt([NotNull] BDAGrammarParser.Update_stmtContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="BDAGrammarParser.update_stmt"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitUpdate_stmt([NotNull] BDAGrammarParser.Update_stmtContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="BDAGrammarParser.update_stmt_limited"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterUpdate_stmt_limited([NotNull] BDAGrammarParser.Update_stmt_limitedContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="BDAGrammarParser.update_stmt_limited"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitUpdate_stmt_limited([NotNull] BDAGrammarParser.Update_stmt_limitedContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="BDAGrammarParser.vacuum_stmt"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterVacuum_stmt([NotNull] BDAGrammarParser.Vacuum_stmtContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="BDAGrammarParser.vacuum_stmt"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitVacuum_stmt([NotNull] BDAGrammarParser.Vacuum_stmtContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="BDAGrammarParser.column_def"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterColumn_def([NotNull] BDAGrammarParser.Column_defContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="BDAGrammarParser.column_def"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitColumn_def([NotNull] BDAGrammarParser.Column_defContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="BDAGrammarParser.type_name"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterType_name([NotNull] BDAGrammarParser.Type_nameContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="BDAGrammarParser.type_name"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitType_name([NotNull] BDAGrammarParser.Type_nameContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="BDAGrammarParser.column_constraint"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterColumn_constraint([NotNull] BDAGrammarParser.Column_constraintContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="BDAGrammarParser.column_constraint"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitColumn_constraint([NotNull] BDAGrammarParser.Column_constraintContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="BDAGrammarParser.conflict_clause"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterConflict_clause([NotNull] BDAGrammarParser.Conflict_clauseContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="BDAGrammarParser.conflict_clause"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitConflict_clause([NotNull] BDAGrammarParser.Conflict_clauseContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="BDAGrammarParser.expr"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterExpr([NotNull] BDAGrammarParser.ExprContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="BDAGrammarParser.expr"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitExpr([NotNull] BDAGrammarParser.ExprContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="BDAGrammarParser.foreign_key_clause"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterForeign_key_clause([NotNull] BDAGrammarParser.Foreign_key_clauseContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="BDAGrammarParser.foreign_key_clause"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitForeign_key_clause([NotNull] BDAGrammarParser.Foreign_key_clauseContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="BDAGrammarParser.raise_function"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterRaise_function([NotNull] BDAGrammarParser.Raise_functionContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="BDAGrammarParser.raise_function"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitRaise_function([NotNull] BDAGrammarParser.Raise_functionContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="BDAGrammarParser.indexed_column"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterIndexed_column([NotNull] BDAGrammarParser.Indexed_columnContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="BDAGrammarParser.indexed_column"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitIndexed_column([NotNull] BDAGrammarParser.Indexed_columnContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="BDAGrammarParser.table_constraint"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterTable_constraint([NotNull] BDAGrammarParser.Table_constraintContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="BDAGrammarParser.table_constraint"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitTable_constraint([NotNull] BDAGrammarParser.Table_constraintContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="BDAGrammarParser.with_clause"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterWith_clause([NotNull] BDAGrammarParser.With_clauseContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="BDAGrammarParser.with_clause"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitWith_clause([NotNull] BDAGrammarParser.With_clauseContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="BDAGrammarParser.qualified_table_name"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterQualified_table_name([NotNull] BDAGrammarParser.Qualified_table_nameContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="BDAGrammarParser.qualified_table_name"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitQualified_table_name([NotNull] BDAGrammarParser.Qualified_table_nameContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="BDAGrammarParser.ordering_term"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterOrdering_term([NotNull] BDAGrammarParser.Ordering_termContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="BDAGrammarParser.ordering_term"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitOrdering_term([NotNull] BDAGrammarParser.Ordering_termContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="BDAGrammarParser.pragma_value"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterPragma_value([NotNull] BDAGrammarParser.Pragma_valueContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="BDAGrammarParser.pragma_value"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitPragma_value([NotNull] BDAGrammarParser.Pragma_valueContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="BDAGrammarParser.common_table_expression"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterCommon_table_expression([NotNull] BDAGrammarParser.Common_table_expressionContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="BDAGrammarParser.common_table_expression"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitCommon_table_expression([NotNull] BDAGrammarParser.Common_table_expressionContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="BDAGrammarParser.result_column"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterResult_column([NotNull] BDAGrammarParser.Result_columnContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="BDAGrammarParser.result_column"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitResult_column([NotNull] BDAGrammarParser.Result_columnContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="BDAGrammarParser.table_or_subquery"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterTable_or_subquery([NotNull] BDAGrammarParser.Table_or_subqueryContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="BDAGrammarParser.table_or_subquery"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitTable_or_subquery([NotNull] BDAGrammarParser.Table_or_subqueryContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="BDAGrammarParser.join_clause"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterJoin_clause([NotNull] BDAGrammarParser.Join_clauseContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="BDAGrammarParser.join_clause"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitJoin_clause([NotNull] BDAGrammarParser.Join_clauseContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="BDAGrammarParser.join_operator"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterJoin_operator([NotNull] BDAGrammarParser.Join_operatorContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="BDAGrammarParser.join_operator"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitJoin_operator([NotNull] BDAGrammarParser.Join_operatorContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="BDAGrammarParser.join_constraint"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterJoin_constraint([NotNull] BDAGrammarParser.Join_constraintContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="BDAGrammarParser.join_constraint"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitJoin_constraint([NotNull] BDAGrammarParser.Join_constraintContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="BDAGrammarParser.select_core"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterSelect_core([NotNull] BDAGrammarParser.Select_coreContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="BDAGrammarParser.select_core"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitSelect_core([NotNull] BDAGrammarParser.Select_coreContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="BDAGrammarParser.compound_operator"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterCompound_operator([NotNull] BDAGrammarParser.Compound_operatorContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="BDAGrammarParser.compound_operator"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitCompound_operator([NotNull] BDAGrammarParser.Compound_operatorContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="BDAGrammarParser.cte_table_name"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterCte_table_name([NotNull] BDAGrammarParser.Cte_table_nameContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="BDAGrammarParser.cte_table_name"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitCte_table_name([NotNull] BDAGrammarParser.Cte_table_nameContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="BDAGrammarParser.signed_number"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterSigned_number([NotNull] BDAGrammarParser.Signed_numberContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="BDAGrammarParser.signed_number"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitSigned_number([NotNull] BDAGrammarParser.Signed_numberContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="BDAGrammarParser.literal_value"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterLiteral_value([NotNull] BDAGrammarParser.Literal_valueContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="BDAGrammarParser.literal_value"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitLiteral_value([NotNull] BDAGrammarParser.Literal_valueContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="BDAGrammarParser.unary_operator"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterUnary_operator([NotNull] BDAGrammarParser.Unary_operatorContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="BDAGrammarParser.unary_operator"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitUnary_operator([NotNull] BDAGrammarParser.Unary_operatorContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="BDAGrammarParser.error_message"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterError_message([NotNull] BDAGrammarParser.Error_messageContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="BDAGrammarParser.error_message"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitError_message([NotNull] BDAGrammarParser.Error_messageContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="BDAGrammarParser.module_argument"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterModule_argument([NotNull] BDAGrammarParser.Module_argumentContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="BDAGrammarParser.module_argument"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitModule_argument([NotNull] BDAGrammarParser.Module_argumentContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="BDAGrammarParser.column_alias"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterColumn_alias([NotNull] BDAGrammarParser.Column_aliasContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="BDAGrammarParser.column_alias"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitColumn_alias([NotNull] BDAGrammarParser.Column_aliasContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="BDAGrammarParser.keyword"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterKeyword([NotNull] BDAGrammarParser.KeywordContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="BDAGrammarParser.keyword"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitKeyword([NotNull] BDAGrammarParser.KeywordContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="BDAGrammarParser.name"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterName([NotNull] BDAGrammarParser.NameContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="BDAGrammarParser.name"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitName([NotNull] BDAGrammarParser.NameContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="BDAGrammarParser.function_name"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterFunction_name([NotNull] BDAGrammarParser.Function_nameContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="BDAGrammarParser.function_name"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitFunction_name([NotNull] BDAGrammarParser.Function_nameContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="BDAGrammarParser.database_name"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterDatabase_name([NotNull] BDAGrammarParser.Database_nameContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="BDAGrammarParser.database_name"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitDatabase_name([NotNull] BDAGrammarParser.Database_nameContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="BDAGrammarParser.table_name"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterTable_name([NotNull] BDAGrammarParser.Table_nameContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="BDAGrammarParser.table_name"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitTable_name([NotNull] BDAGrammarParser.Table_nameContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="BDAGrammarParser.table_or_index_name"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterTable_or_index_name([NotNull] BDAGrammarParser.Table_or_index_nameContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="BDAGrammarParser.table_or_index_name"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitTable_or_index_name([NotNull] BDAGrammarParser.Table_or_index_nameContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="BDAGrammarParser.new_table_name"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterNew_table_name([NotNull] BDAGrammarParser.New_table_nameContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="BDAGrammarParser.new_table_name"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitNew_table_name([NotNull] BDAGrammarParser.New_table_nameContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="BDAGrammarParser.column_name"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterColumn_name([NotNull] BDAGrammarParser.Column_nameContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="BDAGrammarParser.column_name"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitColumn_name([NotNull] BDAGrammarParser.Column_nameContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="BDAGrammarParser.collation_name"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterCollation_name([NotNull] BDAGrammarParser.Collation_nameContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="BDAGrammarParser.collation_name"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitCollation_name([NotNull] BDAGrammarParser.Collation_nameContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="BDAGrammarParser.foreign_table"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterForeign_table([NotNull] BDAGrammarParser.Foreign_tableContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="BDAGrammarParser.foreign_table"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitForeign_table([NotNull] BDAGrammarParser.Foreign_tableContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="BDAGrammarParser.index_name"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterIndex_name([NotNull] BDAGrammarParser.Index_nameContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="BDAGrammarParser.index_name"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitIndex_name([NotNull] BDAGrammarParser.Index_nameContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="BDAGrammarParser.trigger_name"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterTrigger_name([NotNull] BDAGrammarParser.Trigger_nameContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="BDAGrammarParser.trigger_name"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitTrigger_name([NotNull] BDAGrammarParser.Trigger_nameContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="BDAGrammarParser.view_name"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterView_name([NotNull] BDAGrammarParser.View_nameContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="BDAGrammarParser.view_name"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitView_name([NotNull] BDAGrammarParser.View_nameContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="BDAGrammarParser.module_name"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterModule_name([NotNull] BDAGrammarParser.Module_nameContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="BDAGrammarParser.module_name"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitModule_name([NotNull] BDAGrammarParser.Module_nameContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="BDAGrammarParser.pragma_name"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterPragma_name([NotNull] BDAGrammarParser.Pragma_nameContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="BDAGrammarParser.pragma_name"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitPragma_name([NotNull] BDAGrammarParser.Pragma_nameContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="BDAGrammarParser.savepoint_name"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterSavepoint_name([NotNull] BDAGrammarParser.Savepoint_nameContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="BDAGrammarParser.savepoint_name"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitSavepoint_name([NotNull] BDAGrammarParser.Savepoint_nameContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="BDAGrammarParser.table_alias"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterTable_alias([NotNull] BDAGrammarParser.Table_aliasContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="BDAGrammarParser.table_alias"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitTable_alias([NotNull] BDAGrammarParser.Table_aliasContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="BDAGrammarParser.transaction_name"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterTransaction_name([NotNull] BDAGrammarParser.Transaction_nameContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="BDAGrammarParser.transaction_name"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitTransaction_name([NotNull] BDAGrammarParser.Transaction_nameContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="BDAGrammarParser.any_name"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterAny_name([NotNull] BDAGrammarParser.Any_nameContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="BDAGrammarParser.any_name"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitAny_name([NotNull] BDAGrammarParser.Any_nameContext context);
 }

@@ -111,14 +111,23 @@ namespace File_Structures
             if (attrs == null)
                 attrs = selectedEntity.Attributes.Values.ToList();
 
+            // Add selected attributes to columns
             foreach (var attr in attrs)
             {
-                listViewEntries.Columns.Add(attr.Name, attr.Length * 4 + attr.Name.Length * 4);
+                listViewEntries.Columns.Add(attr.Name, attr.Length * 4 + attr.Name.Length * 10);
             }
 
-            foreach (Entry e in selectedEntity.Entries.Values.OrderBy(e => e.SearchValue))
+            foreach (Entry e in selectedEntity.Entries.Values)
             {
-                var list = e.Data.Values.ToList();
+                var list = new List<String>();
+
+                // Show only attributes that are in the columns
+                foreach (KeyValuePair<string, string> kvp in e.Data)
+                {
+                    if (attrs.Where(a => a.Name == kvp.Key).Count() > 0)
+                        list.Add(kvp.Value);
+                }
+
                 var listViewItem = new ListViewItem(Array.ConvertAll(list.ToArray(), d => d.ToString()));
                 listViewItem.Name = e.PrimaryValue;
                 listViewEntries.Items.Add(listViewItem);
@@ -365,12 +374,19 @@ namespace File_Structures
             BDAGrammarLexer lex = new BDAGrammarLexer(new AntlrInputStream(inputTextQuery.Text + Environment.NewLine));
             CommonTokenStream tokens = new CommonTokenStream(lex);
             BDAGrammarParser parser = new BDAGrammarParser(tokens);
-            parser.AddErrorListener(new MyErrorListener());
+            List<Attribute> attributes = new List<Attribute>();
+   
+            String msg = "";
             bool success = true;
+            bool fromFound = false;
+            bool allFound = false;
 
+            parser.AddErrorListener(new MyErrorListener());
+
+            // Parse SQL
             try
             {
-                parser.query();
+                parser.select_or_values();
             }
             catch (Exception error)
             {
@@ -381,24 +397,67 @@ namespace File_Structures
                 }
             }
 
-            String msg = "";
-            foreach (var t in tokens.GetTokens())
+            // Manage tokens
+            if(success)
             {
-                String tokenType = parser.Vocabulary.GetDisplayName(t.Type);
-                
-                switch(tokenType)
+                foreach (var t in tokens.GetTokens())
                 {
-                    case "ATTRS":
-                        msg += "Nombre atributos: " + t.Text;
-                        break;
-                    case "ID":
-                        msg += "Nombre tabla: " + t.Text;
-                        break;
+                    String tokenType = parser.Vocabulary.GetDisplayName(t.Type);
+
+                    switch (tokenType)
+                    {
+                        case "'*'":
+                            allFound = true;
+                            break;
+                        case "IDENTIFIER":
+                            // If table name
+                            if (fromFound)
+                            {
+                                var entts = file.Entities.Where(en => en.Key == t.Text);
+
+                                if (entts.Count() > 0)
+                                {
+                                    selectedEntity = entts.First().Value;
+
+                                    if (allFound)
+                                        attributes = selectedEntity.Attributes.Values.ToList();
+                                }
+                                else
+                                {
+                                    msg = "\nNo se ha encontrado tabla " + t.Text;
+                                    success = false;
+                                }
+                            }
+                            else
+                            // If attribute
+                            {
+                                var attrs = file.GetAttributes().Where(attr => attr.Name == t.Text);
+
+                                if (attrs.Count() > 0)
+                                    attributes.Add(attrs.First());
+                                else
+                                {
+                                    msg = "\nNo se ha encontrado atributo " + t.Text + " para esta entidad";
+                                    success = false;
+                                }
+                            }
+                            break;
+                        case "K_FROM":
+                            fromFound = true;
+                            break;
+                    }
+                }
+
+
+                if (success)
+                {
+                    ReloadEntriesList(attributes);
+                }
+                else
+                {
+                    MessageBox.Show(msg);
                 }
             }
-
-            if(success)
-                MessageBox.Show(msg);
         }
     }
 }

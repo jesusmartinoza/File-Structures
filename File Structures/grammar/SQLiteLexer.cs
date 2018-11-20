@@ -29,7 +29,7 @@ using DFA = Antlr4.Runtime.Dfa.DFA;
 
 [System.CodeDom.Compiler.GeneratedCode("ANTLR", "4.7.1")]
 [System.CLSCompliant(false)]
-public partial class BDAGrammarLexer : Lexer {
+public partial class SQLiteLexer : Lexer {
 	protected static DFA[] decisionToDFA;
 	protected static PredictionContextCache sharedContextCache = new PredictionContextCache();
 	public const int
@@ -97,10 +97,10 @@ public partial class BDAGrammarLexer : Lexer {
 	};
 
 
-	public BDAGrammarLexer(ICharStream input)
+	public SQLiteLexer(ICharStream input)
 	: this(input, Console.Out, Console.Error) { }
 
-	public BDAGrammarLexer(ICharStream input, TextWriter output, TextWriter errorOutput)
+	public SQLiteLexer(ICharStream input, TextWriter output, TextWriter errorOutput)
 	: base(input, output, errorOutput)
 	{
 		Interpreter = new LexerATNSimulator(this, _ATN, decisionToDFA, sharedContextCache);
@@ -159,7 +159,7 @@ public partial class BDAGrammarLexer : Lexer {
 
 	public override string SerializedAtn { get { return new string(_serializedATN); } }
 
-	static BDAGrammarLexer() {
+	static SQLiteLexer() {
 		decisionToDFA = new DFA[_ATN.NumberOfDecisions];
 		for (int i = 0; i < _ATN.NumberOfDecisions; i++) {
 			decisionToDFA[i] = new DFA(_ATN.GetDecisionState(i), i);

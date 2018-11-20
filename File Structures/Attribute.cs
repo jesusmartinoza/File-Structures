@@ -36,7 +36,7 @@ namespace File_Structures
         char type; // String or Int
         int length;
 
-        public string Name { get => name; set => name = value.PadRight(30); }
+        public string Name { get => name; set => name = value; }
         public IndexType IndexTypeV { get => indexType; set => indexType = value; }
         public string EntityName { get => entityName; set => entityName = value; }
         public char Type { get => type; set => type = value; }
