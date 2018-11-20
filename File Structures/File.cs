@@ -8,7 +8,7 @@ using System.Linq;
 namespace File_Structures
 {
     [Serializable]
-    class File
+    public class File
     {
 
         private string name;
@@ -100,9 +100,17 @@ namespace File_Structures
         /**
          * Write given entry in file
          * */
-        public void WriteEntry(Entry entry)
+        public bool AddEntry(Entry entry)
         {
-           
+            Entity parent = entities[entry.EntityName];
+            bool success = true;
+
+            if (parent.Entries.ContainsKey(entry.PrimaryValue))
+                success = false;
+            else
+                parent.Entries.Add(entry.PrimaryValue, entry);
+
+            return success;
         }
 
         /**

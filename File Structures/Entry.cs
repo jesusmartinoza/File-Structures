@@ -6,27 +6,24 @@ using System.Threading.Tasks;
 
 namespace File_Structures
 {
+    [Serializable]
     public class Entry
     {
         string primaryValue;
         string foreignValue;
         string searchValue;
-        string bPlusValue;
-        object[] data;
+        string entityName;
+        Dictionary<String, String> data;
 
         public string PrimaryValue { get => primaryValue; set => primaryValue = value; }
         public string ForeignValue { get => foreignValue; set => foreignValue = value; }
         public string SearchValue { get => searchValue; set => searchValue = value; }
-        public object[] Data { get => data; set => data = value; }
-        public long NextEntryAddress { get => (long)Data[Data.Length - 1]; set => Data[Data.Length - 1] = value; }
-        public long FileAddress { get => (long)Data[0]; set => Data[0] = value; }
-        public string BPlusValue { get => bPlusValue; set => bPlusValue = value; }
+        public string EntityName { get => entityName; set => entityName = value; }
+        public Dictionary<String, String> Data { get => data; set => data = value; }
 
-        public Entry(int dataLength)
+        public Entry()
         {
-            Data = new object[dataLength + 2]; // File Address and Next Entry Address
-            FileAddress = -1;
-            NextEntryAddress = -1;
+            Data = new Dictionary<String, String>();
         }
 
         /**
@@ -35,14 +32,10 @@ namespace File_Structures
          */
         public Entry(Entry entry)
         {
-            Data = new object[entry.Data.Length];
-            entry.Data.CopyTo(Data, 0);
-            FileAddress = entry.FileAddress;
+            Data = new Dictionary<String, String>();
             PrimaryValue = entry.PrimaryValue;
             ForeignValue = entry.ForeignValue;
             SearchValue = entry.SearchValue;
-            NextEntryAddress = entry.NextEntryAddress;
-            BPlusValue = entry.BPlusValue;
         }
 
         /**

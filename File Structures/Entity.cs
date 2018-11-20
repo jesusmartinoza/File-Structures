@@ -10,15 +10,18 @@ namespace File_Structures
     public class Entity
     {
         private string name;
+        private Dictionary<String, Entry> entries;
         private Dictionary<String, Attribute> attributes;
 
         public string Name { get => name; set => name = value; }
         public Dictionary<String, Attribute> Attributes { get => attributes; set => attributes = value; }
+        public Dictionary<String, Entry> Entries { get => entries; set => entries = value; }
 
         public Entity(string name)
         {
             Name = name;
             attributes = new Dictionary<String, Attribute>();
+            entries = new Dictionary<String, Entry>();
         }
 
         /**

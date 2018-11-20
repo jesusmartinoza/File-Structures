@@ -14,12 +14,10 @@ namespace File_Structures
     public partial class MainForm : MaterialForm, CreateEntityListener, CreateAttributeListener, CreateEntryListener,
         ModifyEntityListener, ModifyAttributeListener
     {
-        Dictionary<string, Entry> entries;
         Entity selectedEntity;
         Entry selectedEntry;
-        File file;
-
-        public static List<Attribute> attributes;
+        public static File file;
+        
         public static Dictionary<string, Entity> relations;
 
         /**
@@ -28,8 +26,6 @@ namespace File_Structures
         public MainForm()
         {
             file = new File();
-            attributes = new List<Attribute>();
-            entries = new Dictionary<string, Entry>();
             relations = new Dictionary<string, Entity>();
 
             string[] entityHeaders = { "Name"};
@@ -108,13 +104,21 @@ namespace File_Structures
         /**
          * Clear Rows of listViewEntries and fill with entries dictionary.
          * */
-        private void ReloadEntriesList()
+        private void ReloadEntriesList(List<Attribute> attrs)
         {
-            listViewEntries.Items.Clear();
-            foreach(Entry e in entries.Values.OrderBy(e => e.SearchValue))
+            listViewEntries.Clear();
+
+            if (attrs == null)
+                attrs = selectedEntity.Attributes.Values.ToList();
+
+            foreach (var attr in attrs)
             {
-                var list = e.Data.ToList();
-                list.RemoveAt(0);
+                listViewEntries.Columns.Add(attr.Name, attr.Length * 4 + attr.Name.Length * 4);
+            }
+
+            foreach (Entry e in selectedEntity.Entries.Values.OrderBy(e => e.SearchValue))
+            {
+                var list = e.Data.Values.ToList();
                 var listViewItem = new ListViewItem(Array.ConvertAll(list.ToArray(), d => d.ToString()));
                 listViewItem.Name = e.PrimaryValue;
                 listViewEntries.Items.Add(listViewItem);
@@ -149,7 +153,6 @@ namespace File_Structures
         {
             if (file.AddAttribute(attr)) {
                 ReloadAttrsGridView();
-                attributes = file.GetAttributes();
             } else {
                 MessageBox.Show(attr.Name + " already exists in file.");
             }
@@ -159,14 +162,14 @@ namespace File_Structures
          * Verify if primary key already exists.
          * Add Entry to entries list and write in file.
          */
-        public void OnCreateEntry(Entry entry, Boolean isNew, Entry originalEntry)
+        public void OnCreateEntry(Entry entry)
         {
-            if(entries.ContainsKey(entry.PrimaryValue) && isNew)
+            if(file.AddEntry(entry))
             {
-                MessageBox.Show("An entry with value " + entry.PrimaryValue + " already exists in file.");
+                ReloadEntriesList(null);
             } else
             {
-               ReloadEntriesList();
+                MessageBox.Show("An entry with value " + entry.PrimaryValue + " already exists in file.");
             }
         }
 
@@ -229,7 +232,7 @@ namespace File_Structures
                 MessageBox.Show("Select entity");
             else
             {
-                FormCreateEntry f = new FormCreateEntry(this, selectedEntity.Name.Trim(), attributes);
+                FormCreateEntry f = new FormCreateEntry(this, selectedEntity);
                 f.ShowDialog(this);
             }
         }
@@ -264,7 +267,7 @@ namespace File_Structures
         {
             if (e.RowIndex != -1)
             {
-                var attr = attributes.ElementAt(e.RowIndex);
+                var attr = file.GetAttributes().ElementAt(e.RowIndex);
 
                 if (true)//entities.First(ent => ent.Key == attr.EntityName).Value.DataAddress != -1)
                     MessageBox.Show("This entity already has entries. Cannot modify :/");
@@ -319,18 +322,11 @@ namespace File_Structures
         {
             var list = (MaterialListView)sender;
             selectedEntity = file.Entities.First(enti => enti.Key.Equals(list.FocusedItem.Text)).Value;
+
             listViewEntries.Clear();
             inputTextQuery.Text = "SELECT * FROM " + list.FocusedItem.Text;
-            
-            foreach (var attr in file.GetAttributes())
-            {
-                if (attr.EntityName.Equals(list.FocusedItem.Text))
-                    listViewEntries.Columns.Add(attr.Name, attr.Length * 4 + attr.Name.Length * 10);
-            }
-            
-            //entries = file.GetEntriesFrom(selectedEntity,
-            //     attributes.Where(a => a.EntityName.Equals(list.FocusedItem.Text)).ToList());
-            ReloadEntriesList();
+
+            ReloadEntriesList(null);
         }
 
         private void listViewEntries_MouseClick(object sender, MouseEventArgs e)
@@ -340,7 +336,7 @@ namespace File_Structures
                 ListViewItem item = listViewEntries.FocusedItem;
                 if (item.Bounds.Contains(e.Location))
                 {
-                    selectedEntry = entries.First(entry => entry.Key.Equals(item.Name)).Value;
+                    //selectedEntry = entries.First(entry => entry.Key.Equals(item.Name)).Value;
                     contextMenuEntry.Show(Cursor.Position);
                 }
             }
@@ -351,7 +347,7 @@ namespace File_Structures
             switch(e.ClickedItem.Text)
             {
                 case "Edit":
-                    FormCreateEntry f = new FormCreateEntry(this, selectedEntry, selectedEntity, attributes);
+                    FormCreateEntry f = new FormCreateEntry(this, selectedEntry, selectedEntity, file.GetAttributes());
                     f.ShowDialog(this);
                     break;
                 case "Delete": //DeleteEntry(selectedEntry);

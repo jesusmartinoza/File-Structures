@@ -14,23 +14,20 @@ namespace File_Structures
 {
     public partial class FormCreateEntry : MaterialForm
     {
-        List<Attribute> attributes;
         CreateEntryListener listener;
         Entry entry;
-        Entry originalEntry;
-        Boolean isNew;
+        Entity parent;
 
-        public FormCreateEntry(CreateEntryListener listener, String entityName, List<Attribute> attributes)
+        public FormCreateEntry(CreateEntryListener listener, Entity entity)
         {
             Init();
-            isNew = true;
-            Text = "Create entry for " + entityName;
+            Text = "Create entry for " + entity.Name;
             this.listener = listener;
-            this.attributes = attributes.Where(a => a.EntityName == entityName).ToList();
+            this.parent = entity;
 
             // Add headers
-            foreach(var attr in this.attributes)
-                gridViewAttrs.Columns.Add(attr.Name, attr.Name);
+            foreach(var attr in entity.Attributes)
+                gridViewAttrs.Columns.Add(attr.Key, attr.Value.Name);
 
             foreach (DataGridViewColumn c in gridViewAttrs.Columns)
                 c.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
@@ -45,23 +42,20 @@ namespace File_Structures
         public FormCreateEntry(CreateEntryListener listener, Entry entry, Entity entity, List<Attribute> attributes)
         {
             Init();
-            isNew = false;
             Text = "Modify entry " + entry.PrimaryValue + " of " + entity.Name.Trim();
             btnCreate.Text = "Modify";
             this.listener = listener;
-            this.attributes = attributes.Where(a => a.EntityName == entity.Name.Trim()).ToList();
-            this.originalEntry = entry;
             this.entry = new Entry(entry);
 
             // Add headers
-            foreach (var attr in this.attributes)
-                gridViewAttrs.Columns.Add(attr.Name, attr.Name);
+            foreach (var attr in entity.Attributes)
+                gridViewAttrs.Columns.Add(attr.Key, attr.Value.Name);
 
             foreach (DataGridViewColumn c in gridViewAttrs.Columns)
                 c.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
 
             // Add item to edit without fileAddress and NextEntryAddress
-            gridViewAttrs.Rows.Add(entry.Data.Where((val, idx) => idx != 0 && idx != entry.Data.Length - 1).ToArray());
+            gridViewAttrs.Rows.Add(entry.Data.Where((val, idx) => idx != 0).ToArray());
         }
 
         public void Init()
@@ -73,18 +67,15 @@ namespace File_Structures
             var materialSkinManager = MaterialSkinManager.Instance;
             materialSkinManager.AddFormToManage(this);
             materialSkinManager.Theme = MaterialSkinManager.Themes.LIGHT;
-            materialSkinManager.ColorScheme = new ColorScheme(Primary.Cyan800, Primary.Cyan900, Primary.Cyan500, Accent.Orange400, TextShade.WHITE);
+            materialSkinManager.ColorScheme = new ColorScheme(Primary.Yellow800, Primary.Yellow900, Primary.Yellow500, Accent.Pink400, TextShade.BLACK);
         }
 
         private void btnCreate_Click(object sender, EventArgs e)
         {
             Boolean valid = true;
+            entry = new Entry();
 
-            if (entry == null)
-            {
-                entry = new Entry(attributes.Count());
-                originalEntry = entry;
-            }
+            entry.EntityName = parent.Name;
 
             int i = 0;
             foreach(DataGridViewTextBoxCell cell in gridViewAttrs.Rows[0].Cells)
@@ -96,28 +87,13 @@ namespace File_Structures
                     break;
                 }
 
-                if(attributes[i].IndexTypeV == Attribute.IndexType.primaryKey)
+                if(parent.Attributes.ElementAt(i).Value.IndexTypeV == Attribute.IndexType.primaryKey)
                     entry.PrimaryValue = cell.Value.ToString();
-               /* else if (attributes[i].IndexTypeV == Attribute.IndexType.searchKey)
-                    entry.SearchValue = cell.Value.ToString();*/
-                else if (attributes[i].IndexTypeV == Attribute.IndexType.foreignKey)
+                else if (parent.Attributes.ElementAt(i).Value.IndexTypeV == Attribute.IndexType.foreignKey)
                     entry.ForeignValue = cell.Value.ToString();
-                /*else if (attributes[i].IndexTypeV == Attribute.IndexType.bPlusTree)
-                    entry.BPlusValue = cell.Value.ToString();*/
 
-                if (attributes[i].Type == 'S')
-                    entry.Data[i+1] = cell.Value.ToString().PadRight(30);
-                else
-                {
-                    int num = 0;
-                    if(Int32.TryParse(cell.Value.ToString(), out num))
-                        entry.Data[i+1] = num;
-                    else
-                    {
-                        MessageBox.Show(attributes[i].Name + " must be integer");
-                        valid = false;
-                    }
-                }
+                entry.Data.Add(parent.Attributes.ElementAt(i).Key, cell.Value.ToString());
+
                 i++;
             }
 
@@ -129,9 +105,8 @@ namespace File_Structures
 
             if(valid)
             {
-                listener.OnCreateEntry(entry, isNew, originalEntry);
+                listener.OnCreateEntry(entry);
                 entry = null;
-                originalEntry = null;
 
                 foreach (DataGridViewTextBoxCell cell in gridViewAttrs.Rows[0].Cells)
                     cell.Value = "";
@@ -141,6 +116,6 @@ namespace File_Structures
 
     public interface CreateEntryListener
     {
-        void OnCreateEntry(Entry entry, bool isNew, Entry originalEntry = null);
+        void OnCreateEntry(Entry entry);
     }
 }

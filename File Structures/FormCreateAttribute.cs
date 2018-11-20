@@ -29,7 +29,7 @@ namespace File_Structures
 
             // Get attributes that are primary keys, no LINQ available :c
             relationsData = new Dictionary<string, string>();
-            foreach (Attribute attr in MainForm.attributes)
+            foreach (Attribute attr in MainForm.file.GetAttributes())
             {
                 if (attr.IndexTypeV == Attribute.IndexType.primaryKey)
                     relationsData.Add(attr.Name, attr.EntityName + " - " + attr.Name);
@@ -40,7 +40,7 @@ namespace File_Structures
             var materialSkinManager = MaterialSkinManager.Instance;
             materialSkinManager.AddFormToManage(this);
             materialSkinManager.Theme = MaterialSkinManager.Themes.LIGHT;
-            materialSkinManager.ColorScheme = new ColorScheme(Primary.Cyan800, Primary.Cyan900, Primary.Cyan500, Accent.Orange400, TextShade.WHITE);
+            materialSkinManager.ColorScheme = new ColorScheme(Primary.Yellow800, Primary.Yellow900, Primary.Yellow500, Accent.Pink400, TextShade.BLACK);
         }
 
         /**
