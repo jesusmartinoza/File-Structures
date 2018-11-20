@@ -140,23 +140,26 @@ namespace File_Structures
                     int num = 0;
                     int value = 0;
 
-                    switch (exp.op)
+                    if(satisfy)
                     {
-                        case ">":
-                            int.TryParse(e.Data[exp.attribute], out num);
-                            int.TryParse(exp.value, out value);
+                        switch (exp.op)
+                        {
+                            case ">":
+                                int.TryParse(e.Data[exp.attribute], out num);
+                                int.TryParse(exp.value, out value);
 
-                            satisfy = num > value;
-                            break;
-                        case "<":
-                            int.TryParse(e.Data[exp.attribute], out num);
-                            int.TryParse(exp.value, out value);
+                                satisfy = num > value;
+                                break;
+                            case "<":
+                                int.TryParse(e.Data[exp.attribute], out num);
+                                int.TryParse(exp.value, out value);
 
-                            satisfy = num < value;
-                            break;
-                        case "=":
-                            satisfy = e.Data[exp.attribute] == exp.value;
-                            break;
+                                satisfy = num < value;
+                                break;
+                            case "=":
+                                satisfy = e.Data[exp.attribute] == exp.value;
+                                break;
+                        }
                     }
                 }
 
