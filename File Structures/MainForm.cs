@@ -20,6 +20,15 @@ namespace File_Structures
         
         public static Dictionary<string, Entity> relations;
 
+        // Structure to represent a sql filter for example
+        // (...) WHERE Age(attribute) <(op) 12(value)
+        struct FilterExp
+        {
+            public String attribute;
+            public String op;
+            public String value;
+        }
+
         /**
          * Initialize components and MaterialForm
          * */
@@ -104,12 +113,15 @@ namespace File_Structures
         /**
          * Clear Rows of listViewEntries and fill with entries dictionary.
          * */
-        private void ReloadEntriesList(List<Attribute> attrs)
+        private void ReloadEntriesList(List<Attribute> attrs, Dictionary<String, FilterExp> expresions)
         {
             listViewEntries.Clear();
 
             if (attrs == null)
                 attrs = selectedEntity.Attributes.Values.ToList();
+
+            if (expresions == null)
+                expresions = new Dictionary<string, FilterExp>();
 
             // Add selected attributes to columns
             foreach (var attr in attrs)
@@ -120,17 +132,47 @@ namespace File_Structures
             foreach (Entry e in selectedEntity.Entries.Values)
             {
                 var list = new List<String>();
+                var satisfy = true;
 
-                // Show only attributes that are in the columns
-                foreach (KeyValuePair<string, string> kvp in e.Data)
+                // Search for items that satisfy the expresions
+                foreach (var exp in expresions.Values.ToList())
                 {
-                    if (attrs.Where(a => a.Name == kvp.Key).Count() > 0)
-                        list.Add(kvp.Value);
+                    int num = 0;
+                    int value = 0;
+
+                    switch (exp.op)
+                    {
+                        case ">":
+                            int.TryParse(e.Data[exp.attribute], out num);
+                            int.TryParse(exp.value, out value);
+
+                            satisfy = num > value;
+                            break;
+                        case "<":
+                            int.TryParse(e.Data[exp.attribute], out num);
+                            int.TryParse(exp.value, out value);
+
+                            satisfy = num < value;
+                            break;
+                        case "=":
+                            satisfy = e.Data[exp.attribute] == exp.value;
+                            break;
+                    }
                 }
 
-                var listViewItem = new ListViewItem(Array.ConvertAll(list.ToArray(), d => d.ToString()));
-                listViewItem.Name = e.PrimaryValue;
-                listViewEntries.Items.Add(listViewItem);
+                if(satisfy)
+                {
+                    // Show only attributes that are in the columns
+                    foreach (KeyValuePair<string, string> kvp in e.Data)
+                    {
+                        if (attrs.Where(a => a.Name == kvp.Key).Count() > 0)
+                            list.Add(kvp.Value);
+                    }
+
+                    var listViewItem = new ListViewItem(Array.ConvertAll(list.ToArray(), d => d.ToString()));
+                    listViewItem.Name = e.PrimaryValue;
+                    listViewEntries.Items.Add(listViewItem);
+                }
             }
         }
 
@@ -175,7 +217,7 @@ namespace File_Structures
         {
             if(file.AddEntry(entry))
             {
-                ReloadEntriesList(null);
+                ReloadEntriesList(null, null);
             } else
             {
                 MessageBox.Show("An entry with value " + entry.PrimaryValue + " already exists in file.");
@@ -335,7 +377,7 @@ namespace File_Structures
             listViewEntries.Clear();
             inputTextQuery.Text = "SELECT * FROM " + list.FocusedItem.Text;
 
-            ReloadEntriesList(null);
+            ReloadEntriesList(null, null);
         }
 
         private void listViewEntries_MouseClick(object sender, MouseEventArgs e)
@@ -375,10 +417,11 @@ namespace File_Structures
             CommonTokenStream tokens = new CommonTokenStream(lex);
             BDAGrammarParser parser = new BDAGrammarParser(tokens);
             List<Attribute> attributes = new List<Attribute>();
-   
+            Dictionary<String, FilterExp> expresions = new Dictionary<string, FilterExp>();
+
             String msg = "";
+            String kType = "DEFAULT"; // DEFAULT, FROM, WHERE
             bool success = true;
-            bool fromFound = false;
             bool allFound = false;
 
             parser.AddErrorListener(new MyErrorListener());
@@ -402,6 +445,7 @@ namespace File_Structures
             {
                 foreach (var t in tokens.GetTokens())
                 {
+                    var exp = new FilterExp();
                     String tokenType = parser.Vocabulary.GetDisplayName(t.Type);
 
                     switch (tokenType)
@@ -411,47 +455,87 @@ namespace File_Structures
                             break;
                         case "IDENTIFIER":
                             // If table name
-                            if (fromFound)
+                            switch(kType)
                             {
-                                var entts = file.Entities.Where(en => en.Key == t.Text);
+                                case "FROM":
+                                    var entts = file.Entities.Where(en => en.Key == t.Text);
 
-                                if (entts.Count() > 0)
-                                {
-                                    selectedEntity = entts.First().Value;
+                                    if (entts.Count() > 0)
+                                    {
+                                        selectedEntity = entts.First().Value;
 
-                                    if (allFound)
-                                        attributes = selectedEntity.Attributes.Values.ToList();
-                                }
-                                else
-                                {
-                                    msg = "\nNo se ha encontrado tabla " + t.Text;
-                                    success = false;
-                                }
-                            }
-                            else
-                            // If attribute
-                            {
-                                var attrs = file.GetAttributes().Where(attr => attr.Name == t.Text);
+                                        if (allFound)
+                                            attributes = selectedEntity.Attributes.Values.ToList();
+                                    }
+                                    else
+                                    {
+                                        msg = "\nNo se ha encontrado tabla " + t.Text;
+                                        success = false;
+                                    }
+                                    break;
+                                case "WHERE":
+                                case "K_AND":
+                                    var attrsWhere = selectedEntity.Attributes.Where(attr => attr.Key == t.Text);
 
-                                if (attrs.Count() > 0)
-                                    attributes.Add(attrs.First());
-                                else
-                                {
-                                    msg = "\nNo se ha encontrado atributo " + t.Text + " para esta entidad";
-                                    success = false;
-                                }
+                                    if (attrsWhere.Count() > 0)
+                                    {
+                                        exp = new FilterExp();
+                                        exp.attribute = t.Text;
+
+                                        expresions.Add(t.Text, exp);
+                                    }
+                                    else
+                                    {
+                                        msg = "\nNo se ha encontrado atributo " + t.Text + " para esta entidad";
+                                        success = false;
+                                    }
+                                    break;
+                                case "DEFAULT":
+                                    // If attribute
+                                    var attrs = selectedEntity.Attributes.Where(attr => attr.Key == t.Text);
+
+                                    if (attrs.Count() > 0)
+                                        attributes.Add(attrs.First().Value);
+                                    else
+                                    {
+                                        msg = "\nNo se ha encontrado atributo " + t.Text + " para esta entidad";
+                                        success = false;
+                                    }
+                                    break;
                             }
                             break;
                         case "K_FROM":
-                            fromFound = true;
+                            kType = "FROM";
+                            break;
+                        case "K_WHERE":
+                            kType = "WHERE";
+                            break;
+                        case "'>'":
+                        case "'<'":
+                        case "'=='":
+                        case "'='":
+                            if (success)
+                            {
+                                exp = expresions.ElementAt(expresions.Count() - 1).Value; // Get last expresion
+                                exp.op = t.Text.Replace('\'', ' ').Trim();
+                                expresions[exp.attribute] = exp;
+                            }  
+                            break;
+                        case "STRING_LITERAL":
+                        case "NUMERIC_LITERAL":
+                            if(success)
+                            {
+                                exp = expresions.ElementAt(expresions.Count() - 1).Value; // Get last expresion
+                                exp.value = t.Text.Replace('\'', ' ').Trim();
+                                expresions[exp.attribute] = exp;
+                            }
                             break;
                     }
                 }
 
-
                 if (success)
                 {
-                    ReloadEntriesList(attributes);
+                    ReloadEntriesList(attributes, expresions);
                 }
                 else
                 {
