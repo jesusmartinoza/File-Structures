@@ -9,13 +9,14 @@ options {
 /*
  * Parser Rules
  */
-query: 'SELECT' SEP (ATTRS | '*' ) SEP 'FROM' SEP ID SEP OP;
+query: 'SELECT' SEP ((ID | (ID ',')+) | '*' ) SEP 'FROM' SEP ID filter?;
+filter: SEP 'WHERE' SEP OP (NUM | ID);
 
 /*
  * Lexer Rules
  */
-ATTRS: ID | (ID ',')+;
 ID: ('a'..'z'|'A'..'Z')+;
+NUM: ('0'..'9')+;
 SEP:(' ' |'\t')+;
 OP: '<' | '>' | '=' | 'NOT' | '!';
 //END: 'END';

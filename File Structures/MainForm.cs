@@ -5,6 +5,7 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
+using Antlr4.Runtime;
 using MaterialSkin;
 using MaterialSkin.Controls;
 
@@ -316,6 +317,19 @@ namespace File_Structures
          */
         private void listViewEntities_SelectedIndexChanged(object sender, EventArgs e)
         {
+            var list = (MaterialListView)sender;
+            selectedEntity = file.Entities.First(enti => enti.Key.Equals(list.FocusedItem.Text)).Value;
+            listViewEntries.Clear();
+            inputTextQuery.Text = "SELECT * FROM " + list.FocusedItem.Text;
+            
+            foreach (var attr in file.GetAttributes())
+            {
+                if (attr.EntityName.Equals(list.FocusedItem.Text))
+                    listViewEntries.Columns.Add(attr.Name, attr.Length * 4 + attr.Name.Length * 10);
+            }
+            
+            //entries = file.GetEntriesFrom(selectedEntity,
+            //     attributes.Where(a => a.EntityName.Equals(list.FocusedItem.Text)).ToList());
             ReloadEntriesList();
         }
 
@@ -348,6 +362,47 @@ namespace File_Structures
         private void iconEye_Click(object sender, EventArgs e)
         {
             System.Diagnostics.Process.Start(pictureBoxTree.ImageLocation);
+        }
+
+        private void btnQuery_Click(object sender, EventArgs e)
+        {
+            BDAGrammarLexer lex = new BDAGrammarLexer(new AntlrInputStream(inputTextQuery.Text + Environment.NewLine));
+            CommonTokenStream tokens = new CommonTokenStream(lex);
+            BDAGrammarParser parser = new BDAGrammarParser(tokens);
+            parser.AddErrorListener(new MyErrorListener());
+            bool success = true;
+
+            try
+            {
+                parser.query();
+            }
+            catch (Exception error)
+            {
+                if (!error.Message.Contains("input ' '"))
+                {
+                    MessageBox.Show(error.Message);
+                    success = false;
+                }
+            }
+
+            String msg = "";
+            foreach (var t in tokens.GetTokens())
+            {
+                String tokenType = parser.Vocabulary.GetDisplayName(t.Type);
+                
+                switch(tokenType)
+                {
+                    case "ATTRS":
+                        msg += "Nombre atributos: " + t.Text;
+                        break;
+                    case "ID":
+                        msg += "Nombre tabla: " + t.Text;
+                        break;
+                }
+            }
+
+            if(success)
+                MessageBox.Show(msg);
         }
     }
 }

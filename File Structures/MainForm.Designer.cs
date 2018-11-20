@@ -41,6 +41,9 @@
             this.btnAddAttr = new MaterialSkin.Controls.MaterialRaisedButton();
             this.dataGridViewAttrs = new System.Windows.Forms.DataGridView();
             this.tabPage3 = new System.Windows.Forms.TabPage();
+            this.groupBox5 = new System.Windows.Forms.GroupBox();
+            this.btnQuery = new MaterialSkin.Controls.MaterialRaisedButton();
+            this.inputTextQuery = new MaterialSkin.Controls.MaterialSingleLineTextField();
             this.groupBox4 = new System.Windows.Forms.GroupBox();
             this.listViewEntries = new MaterialSkin.Controls.MaterialListView();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
@@ -65,8 +68,6 @@
             this.contextMenuEntry = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem2 = new System.Windows.Forms.ToolStripMenuItem();
-            this.groupBox5 = new System.Windows.Forms.GroupBox();
-            this.materialSingleLineTextField1 = new MaterialSkin.Controls.MaterialSingleLineTextField();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridViewEntities)).BeginInit();
             this.tabControl.SuspendLayout();
             this.tabPage1.SuspendLayout();
@@ -74,6 +75,7 @@
             this.tabPage2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridViewAttrs)).BeginInit();
             this.tabPage3.SuspendLayout();
+            this.groupBox5.SuspendLayout();
             this.groupBox4.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.tabPage4.SuspendLayout();
@@ -82,7 +84,6 @@
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxTree)).BeginInit();
             this.groupBox2.SuspendLayout();
             this.contextMenuEntry.SuspendLayout();
-            this.groupBox5.SuspendLayout();
             this.SuspendLayout();
             // 
             // dataGridViewEntities
@@ -214,7 +215,50 @@
             this.tabPage3.Size = new System.Drawing.Size(812, 389);
             this.tabPage3.TabIndex = 2;
             this.tabPage3.Text = "Entries";
-            this.tabPage3.UseVisualStyleBackColor = true;
+            // 
+            // groupBox5
+            // 
+            this.groupBox5.Controls.Add(this.btnQuery);
+            this.groupBox5.Controls.Add(this.inputTextQuery);
+            this.groupBox5.Location = new System.Drawing.Point(151, 3);
+            this.groupBox5.Name = "groupBox5";
+            this.groupBox5.Size = new System.Drawing.Size(652, 66);
+            this.groupBox5.TabIndex = 2;
+            this.groupBox5.TabStop = false;
+            this.groupBox5.Text = "Make your queries here";
+            // 
+            // btnQuery
+            // 
+            this.btnQuery.AutoSize = true;
+            this.btnQuery.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.btnQuery.Depth = 0;
+            this.btnQuery.Icon = null;
+            this.btnQuery.Location = new System.Drawing.Point(572, 17);
+            this.btnQuery.MouseState = MaterialSkin.MouseState.HOVER;
+            this.btnQuery.Name = "btnQuery";
+            this.btnQuery.Primary = true;
+            this.btnQuery.Size = new System.Drawing.Size(68, 36);
+            this.btnQuery.TabIndex = 8;
+            this.btnQuery.Text = "Query!";
+            this.btnQuery.UseVisualStyleBackColor = true;
+            this.btnQuery.Click += new System.EventHandler(this.btnQuery_Click);
+            // 
+            // inputTextQuery
+            // 
+            this.inputTextQuery.Depth = 0;
+            this.inputTextQuery.Hint = "SELECT * FROM";
+            this.inputTextQuery.Location = new System.Drawing.Point(18, 25);
+            this.inputTextQuery.MaxLength = 32767;
+            this.inputTextQuery.MouseState = MaterialSkin.MouseState.HOVER;
+            this.inputTextQuery.Name = "inputTextQuery";
+            this.inputTextQuery.PasswordChar = '\0';
+            this.inputTextQuery.SelectedText = "";
+            this.inputTextQuery.SelectionLength = 0;
+            this.inputTextQuery.SelectionStart = 0;
+            this.inputTextQuery.Size = new System.Drawing.Size(536, 23);
+            this.inputTextQuery.TabIndex = 7;
+            this.inputTextQuery.TabStop = false;
+            this.inputTextQuery.UseSystemPasswordChar = false;
             // 
             // groupBox4
             // 
@@ -491,33 +535,6 @@
             this.toolStripMenuItem2.Size = new System.Drawing.Size(107, 22);
             this.toolStripMenuItem2.Text = "Delete";
             // 
-            // groupBox5
-            // 
-            this.groupBox5.Controls.Add(this.materialSingleLineTextField1);
-            this.groupBox5.Location = new System.Drawing.Point(151, 3);
-            this.groupBox5.Name = "groupBox5";
-            this.groupBox5.Size = new System.Drawing.Size(652, 66);
-            this.groupBox5.TabIndex = 2;
-            this.groupBox5.TabStop = false;
-            this.groupBox5.Text = "Make your queries here";
-            // 
-            // materialSingleLineTextField1
-            // 
-            this.materialSingleLineTextField1.Depth = 0;
-            this.materialSingleLineTextField1.Hint = "SELECT * FROM";
-            this.materialSingleLineTextField1.Location = new System.Drawing.Point(18, 25);
-            this.materialSingleLineTextField1.MaxLength = 32767;
-            this.materialSingleLineTextField1.MouseState = MaterialSkin.MouseState.HOVER;
-            this.materialSingleLineTextField1.Name = "materialSingleLineTextField1";
-            this.materialSingleLineTextField1.PasswordChar = '\0';
-            this.materialSingleLineTextField1.SelectedText = "";
-            this.materialSingleLineTextField1.SelectionLength = 0;
-            this.materialSingleLineTextField1.SelectionStart = 0;
-            this.materialSingleLineTextField1.Size = new System.Drawing.Size(623, 23);
-            this.materialSingleLineTextField1.TabIndex = 7;
-            this.materialSingleLineTextField1.TabStop = false;
-            this.materialSingleLineTextField1.UseSystemPasswordChar = false;
-            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -540,6 +557,8 @@
             ((System.ComponentModel.ISupportInitialize)(this.dataGridViewAttrs)).EndInit();
             this.tabPage3.ResumeLayout(false);
             this.tabPage3.PerformLayout();
+            this.groupBox5.ResumeLayout(false);
+            this.groupBox5.PerformLayout();
             this.groupBox4.ResumeLayout(false);
             this.groupBox1.ResumeLayout(false);
             this.tabPage4.ResumeLayout(false);
@@ -549,7 +568,6 @@
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxTree)).EndInit();
             this.groupBox2.ResumeLayout(false);
             this.contextMenuEntry.ResumeLayout(false);
-            this.groupBox5.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -592,7 +610,8 @@
         private System.Windows.Forms.PictureBox emptyState;
         private System.Windows.Forms.PictureBox iconEye;
         private System.Windows.Forms.GroupBox groupBox5;
-        private MaterialSkin.Controls.MaterialSingleLineTextField materialSingleLineTextField1;
+        private MaterialSkin.Controls.MaterialSingleLineTextField inputTextQuery;
+        private MaterialSkin.Controls.MaterialRaisedButton btnQuery;
     }
 }
 
