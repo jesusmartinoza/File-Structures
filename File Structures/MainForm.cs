@@ -150,14 +150,31 @@ namespace File_Structures
 
                                 satisfy = num > value;
                                 break;
+                            case ">=":
+                                int.TryParse(e.Data[exp.attribute], out num);
+                                int.TryParse(exp.value, out value);
+
+                                satisfy = num >= value;
+                                break;
                             case "<":
                                 int.TryParse(e.Data[exp.attribute], out num);
                                 int.TryParse(exp.value, out value);
 
                                 satisfy = num < value;
                                 break;
+                            case "<=":
+                                int.TryParse(e.Data[exp.attribute], out num);
+                                int.TryParse(exp.value, out value);
+
+                                satisfy = num <= value;
+                                break;
                             case "=":
+                            case "==":
                                 satisfy = e.Data[exp.attribute] == exp.value;
+                                break;
+                            case "!=":
+                            case "NOT":
+                                satisfy = e.Data[exp.attribute] != exp.value;
                                 break;
                         }
                     }
@@ -514,15 +531,26 @@ namespace File_Structures
                             kType = "WHERE";
                             break;
                         case "'>'":
+                        case "'>='":
                         case "'<'":
+                        case "'<='":
                         case "'=='":
                         case "'='":
+                        case "'!='":
                             if (success)
                             {
                                 exp = expresions.ElementAt(expresions.Count() - 1).Value; // Get last expresion
                                 exp.op = t.Text.Replace('\'', ' ').Trim();
                                 expresions[exp.attribute] = exp;
                             }  
+                            break;
+                        case "K_NOT":
+                            if (success)
+                            {
+                                exp = expresions.ElementAt(expresions.Count() - 1).Value; // Get last expresion
+                                exp.op = "NOT";
+                                expresions[exp.attribute] = exp;
+                            }
                             break;
                         case "STRING_LITERAL":
                         case "NUMERIC_LITERAL":
