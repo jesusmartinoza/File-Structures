@@ -80,6 +80,8 @@ namespace File_Structures
             int i = 0;
             foreach(DataGridViewTextBoxCell cell in gridViewAttrs.Rows[0].Cells)
             {
+                var attribute = parent.Attributes.ElementAt(i).Value;
+
                 if (cell.Value == null || cell.Value.ToString() == String.Empty)
                 {
                     MessageBox.Show("All fields are required");
@@ -87,10 +89,24 @@ namespace File_Structures
                     break;
                 }
 
-                if(parent.Attributes.ElementAt(i).Value.IndexTypeV == Attribute.IndexType.primaryKey)
+                if(attribute.IndexTypeV == Attribute.IndexType.primaryKey)
                     entry.PrimaryValue = cell.Value.ToString();
-                else if (parent.Attributes.ElementAt(i).Value.IndexTypeV == Attribute.IndexType.foreignKey)
+                else if (attribute.IndexTypeV == Attribute.IndexType.foreignKey)
+                {
+                    // If foreign key validate that pk really exists
+                    var entriesList = MainForm.file
+                        .GetEntriesFrom(attribute.ForeignName)
+                        .Where(entry => entry.PrimaryValue == cell.Value.ToString());
+
+                    if(entriesList.Count() == 0)
+                    {
+                        MessageBox.Show("No entry with Id " + cell.Value.ToString() + " found in Entity " +  attribute.ForeignName);
+                        valid = false;
+                        break;
+                    }
+
                     entry.ForeignValue = cell.Value.ToString();
+                }
 
                 entry.Data.Add(parent.Attributes.ElementAt(i).Key, cell.Value.ToString());
 
@@ -99,8 +115,10 @@ namespace File_Structures
 
             if (entry.PrimaryValue == null)
             {
-                MessageBox.Show("Every entry needs a primary key");
-                valid = false;
+                entry.PrimaryValue = "";
+
+                foreach (DataGridViewTextBoxCell cell in gridViewAttrs.Rows[0].Cells)
+                    entry.PrimaryValue += cell.Value.ToString().Trim();
             }
 
             if(valid)

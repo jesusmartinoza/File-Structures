@@ -19,6 +19,7 @@ namespace File_Structures
             CenterToScreen();
             this.listener = listener;
             this.entities = entities;
+            relationsData = new Dictionary<string, string>();
 
             comboBoxEntity.DataSource = this.entities.ToList();
             comboBoxEntity.SelectedIndex = 0;
@@ -27,14 +28,6 @@ namespace File_Structures
             comboBoxType.SelectedIndex = 0;
             comboBoxIndex.SelectedIndex = 0;
 
-            // Get attributes that are primary keys, no LINQ available :c
-            relationsData = new Dictionary<string, string>();
-            foreach (Attribute attr in MainForm.file.GetAttributes())
-            {
-                if (attr.IndexTypeV == Attribute.IndexType.primaryKey)
-                    relationsData.Add(attr.Name, attr.EntityName + " - " + attr.Name);
-            }
-            comboBoxRelation.DataSource = relationsData.Values.ToList();
 
             // Config material skin
             var materialSkinManager = MaterialSkinManager.Instance;
@@ -62,14 +55,25 @@ namespace File_Structures
             var length = Convert.ToInt32(textFieldLength.Text.Length == 0 ? "0" : textFieldLength.Text);
             var indexType = (Attribute.IndexType) comboBoxIndex.SelectedIndex;
             var entity = entities[comboBoxEntity.GetItemText(comboBoxEntity.SelectedItem)];
+
             if (textFieldName.Text == String.Empty)
                 MessageBox.Show("Name is required");
-           /*else if (entities.First(ent => ent.Key == entity.Name.Trim()).Value.DataAddress != -1)
-                MessageBox.Show(entity.Name.Trim() +  " already has entries. Cannot add new attributes :/");*/
+            else if (entities.First(ent => ent.Key == entity.Name.Trim()).Value.Entries.Count > 0)
+                MessageBox.Show(entity.Name.Trim() +  " already has entries. Cannot add new attributes :/");
             else if(length <= 0)
                 MessageBox.Show("Positive length is required");
             else {
-                listener.OnCreateAttribute(new Attribute(textFieldName.Text, type, length, indexType, entity.Name));
+                var attribute = new Attribute(textFieldName.Text, type, length, indexType, entity.Name);
+
+                if (indexType == Attribute.IndexType.foreignKey)
+                {
+                    var foreignName = comboBoxRelation.GetItemText(comboBoxRelation.SelectedItem);
+
+                    foreignName = foreignName.Substring(0, foreignName.IndexOf('-') - 1).Trim();
+                    attribute.ForeignName = foreignName;
+                }
+
+                listener.OnCreateAttribute(attribute);
             }
         }
 
@@ -94,6 +98,22 @@ namespace File_Structures
                 lblRelation.ForeColor = System.Drawing.Color.DarkGray;
                 comboBoxRelation.Enabled = false;
             }
+        }
+
+        private void comboBoxEntity_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            var name = comboBoxEntity.GetItemText(comboBoxEntity.SelectedItem);
+
+            relationsData.Clear();
+
+            // Get attributes that are primary keys, no LINQ available :c
+            foreach (Attribute attr in MainForm.file.GetAttributes())
+            {
+                if (attr.IndexTypeV == Attribute.IndexType.primaryKey && !name.Contains(attr.EntityName))
+                    relationsData.Add(attr.EntityName + "*" + attr.Name, attr.EntityName + " - " + attr.Name);
+            }
+
+            comboBoxRelation.DataSource = relationsData.Values.ToList();
         }
     }
 

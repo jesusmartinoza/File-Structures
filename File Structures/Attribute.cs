@@ -35,12 +35,14 @@ namespace File_Structures
         string entityName;
         char type; // String or Int
         int length;
+        string foreignName; // String if value is a foreignKey
 
         public string Name { get => name; set => name = value; }
         public IndexType IndexTypeV { get => indexType; set => indexType = value; }
         public string EntityName { get => entityName; set => entityName = value; }
         public char Type { get => type; set => type = value; }
         public int Length { get => length; set => length = value; }
+        public string ForeignName { get => foreignName; set => foreignName = value; }
 
         /**
          *  Constructor used to create an attribute in memory.

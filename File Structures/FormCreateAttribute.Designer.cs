@@ -195,6 +195,7 @@
             this.comboBoxEntity.Name = "comboBoxEntity";
             this.comboBoxEntity.Size = new System.Drawing.Size(219, 21);
             this.comboBoxEntity.TabIndex = 11;
+            this.comboBoxEntity.SelectedIndexChanged += new System.EventHandler(this.comboBoxEntity_SelectedIndexChanged);
             // 
             // comboBoxRelation
             // 
@@ -209,12 +210,12 @@
             // 
             this.lblRelation.AutoSize = true;
             this.lblRelation.Depth = 0;
-            this.lblRelation.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F);
-            this.lblRelation.ForeColor = System.Drawing.Color.DarkGray;
+            this.lblRelation.Font = new System.Drawing.Font("Roboto", 11F);
+            this.lblRelation.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(222)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
             this.lblRelation.Location = new System.Drawing.Point(12, 239);
             this.lblRelation.MouseState = MaterialSkin.MouseState.HOVER;
             this.lblRelation.Name = "lblRelation";
-            this.lblRelation.Size = new System.Drawing.Size(53, 15);
+            this.lblRelation.Size = new System.Drawing.Size(64, 19);
             this.lblRelation.TabIndex = 12;
             this.lblRelation.Text = "Relation";
             // 

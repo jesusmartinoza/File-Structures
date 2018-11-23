@@ -72,13 +72,21 @@ namespace File_Structures
         }
 
         /**
-         * Go to entity and the read data
+         * Find entries from entityName
          * */
-        public Dictionary<string, Entry> GetEntriesFrom(Entity entity, List<Attribute> attributes)
+        public List<Entry> GetEntriesFrom(String entityName)
         {
-            var dic = new Dictionary<string, Entry>();
+            var list = new List<Entry>();
 
-            return dic;
+            foreach (KeyValuePair<string, Entity> kvp in Entities)
+            {
+                Entity e = kvp.Value;
+
+                if(e.Name == entityName)
+                    list.AddRange(e.Entries.Values);
+            }
+            
+            return list;
         }
 
         /**
