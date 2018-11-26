@@ -172,7 +172,7 @@ namespace File_Structures
                             case "==":
                                 satisfy = e.Data[exp.attribute] == exp.value;
                                 break;
-                            case "!=":
+                            case "<>":
                             case "NOT":
                                 satisfy = e.Data[exp.attribute] != exp.value;
                                 break;
@@ -443,6 +443,8 @@ namespace File_Structures
             String kType = "DEFAULT"; // DEFAULT, FROM, WHERE
             bool success = true;
             bool allFound = false;
+            int numAttrs = 0;
+            int numCommas = 0; // Commas between attributes
 
             parser.AddErrorListener(new MyErrorListener());
 
@@ -521,6 +523,7 @@ namespace File_Structures
                                         msg = "\nNo se ha encontrado atributo " + t.Text + " para esta entidad";
                                         success = false;
                                     }
+                                    numAttrs++;
                                     break;
                             }
                             break;
@@ -536,7 +539,7 @@ namespace File_Structures
                         case "'<='":
                         case "'=='":
                         case "'='":
-                        case "'!='":
+                        case "'<>'":
                             if (success)
                             {
                                 exp = expresions.ElementAt(expresions.Count() - 1).Value; // Get last expresion
@@ -561,12 +564,18 @@ namespace File_Structures
                                 expresions[exp.attribute] = exp;
                             }
                             break;
+                        case "','":
+                            numCommas++;
+                            break;
                     }
                 }
 
                 if (success)
                 {
-                    ReloadEntriesList(attributes, expresions);
+                    if(numAttrs - 1 == numCommas)
+                        ReloadEntriesList(attributes, expresions);
+                    else
+                        MessageBox.Show("Invalid number of attributes");
                 }
                 else
                 {
